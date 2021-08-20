@@ -1,7 +1,6 @@
-#[macro_use]
-extern crate ff;
-
+mod compiler;
 mod types;
+mod vm;
 
 fn main() {
     println!("Hello, world!");
