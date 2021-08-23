@@ -1,19 +1,21 @@
 use super::Open;
 
 pub struct SecInt<T: Open>(T);
+pub struct SecFixPt<T: Open>(T);
+pub struct SecGF2<T: Open, const N: usize>(T);
 
-struct Shamir(i32);
+struct BGW(Shamir);
 
-impl Open for Shamir {
-    fn open(self) -> PubInt {
+impl Open for BGW {
+    fn open(self) {
         todo!()
     }
 }
 
-struct Masked(i32);
+struct GMW(i32);
 
 impl Open for Masked {
-    fn open(self) -> PubInt {
+    fn open(self) {
         todo!()
     }
 }
