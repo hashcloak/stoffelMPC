@@ -1,9 +1,8 @@
-mod public;
-mod secret;
+use std::io::{Read, Write};
 
-use public::{PubFixPt, PubGF2, PubInt};
-use secret::{SecFixPt, SecGF2, SecInt};
+mod int;
 
 pub trait Open {
-    fn open(self);
+    type Public;
+    fn open<U: Read + Write>(self, channel: &mut U) -> Self::Public;
 }
