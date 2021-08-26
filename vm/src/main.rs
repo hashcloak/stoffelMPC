@@ -1,3 +1,5 @@
+fn main() {}
+
 pub struct StoffelVM {
     stack: Vec<u8>,
     memory: Vec<u8>,

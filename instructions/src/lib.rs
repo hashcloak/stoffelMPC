@@ -107,7 +107,7 @@ pub enum Instructions {
     RAWINPUT = 0xF4,
     INPUTPERSONAL = 0xF5,
     STARTIPUT = 0x61,
-    STOPINPUT = 0x62,  
+    STOPINPUT = 0x62,
     READSOCKETC = 0x63,
     READSOCKETS = 0x64,
     WRITESOCKETC = 0x65,
@@ -159,7 +159,7 @@ pub enum Instructions {
     GCONVGF2N = 0x1C1,
     // IO
     PRINTMEM = 0xB0,
-    PRINTREG = 0XB1,
+    PRINTREG = 0xB1,
     RAND = 0xB2,
     PRINTREGPLAIN = 0xB3,
     PRINTCHR = 0xB4,
@@ -171,7 +171,7 @@ pub enum Instructions {
     PRINTCHRINT = 0xBA,
     PRINTSTRINT = 0xBB,
     PRINTFLOATPLAIN = 0xBC,
-    WRITEFILESHARE = 0xBD,     
+    WRITEFILESHARE = 0xBD,
     READFILESHARE = 0xBE,
     CONDPRINTSTR = 0xBF,
     PRINTFLOATPREC = 0xE0,
@@ -182,5 +182,5 @@ pub enum Instructions {
     GBITCOM = 0x185,
     // Secure socket
     INITSECURESOCKET = 0x1BA,
-    RESPSECURESOCKET = 0x1BBN
+    RESPSECURESOCKET = 0x1BB,
 }

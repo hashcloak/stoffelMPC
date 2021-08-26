@@ -1,13 +1,8 @@
-[package]
-name = "stoffel_mpc"
-version = "0.1.0"
-edition = "2018"
+[workspace]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
-[dependencies]
-ff = {version = "0.10", features = ["derive"]}
-rand_core = "0.6"
-subtle = "2"
-bitvec = "0.22"
-byteorder = "1"
+members = [
+    "vm",
+    "compiler",
+    "types",
+    "instructions"
+]
