@@ -1,9 +1,7 @@
-use ark_ff::Field;
 use std::io::{Read, Write};
 use std::ops::{Add, Mul};
 
 mod shamir;
-use shamir::ShamirSecret;
 
 pub trait Open {
     type Public;
@@ -21,12 +19,6 @@ impl<T: Add<Output = T> + Open> Add for SecInt<T> {
 
     fn add(self, rhs: Self) -> Self {
         SecInt(self.0 + rhs.0)
-    }
-}
-
-impl<T: Field> SecInt<ShamirSecret<T>> {
-    pub fn new(integer: i32) -> SecInt<ShamirSecret<T>> {
-        todo!()
     }
 }
 
