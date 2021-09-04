@@ -2,21 +2,21 @@ use super::Open;
 use super::PubInt;
 use ark_bls12_381::Fr;
 use ark_ff::BigInteger256;
-use ark_ff::Field;
+use ark_ff::{Field, PrimeField};
 use std::io::{Read, Write};
 use std::ops::{Add, Mul};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-pub(crate) struct ShamirSecret<T: Field>(T);
+pub(crate) struct ShamirSecret<T: PrimeField>(T);
 
 impl ShamirSecret<Fr> {
     pub fn new(element: BigInteger256) -> ShamirSecret<Fr> {
-        let field_element = Fr::new(element);
+        let field_element = PrimeField::from_repr(element).unwrap();
         ShamirSecret(field_element)
     }
 }
 
-impl<T: Field> Open for ShamirSecret<T> {
+impl<T: PrimeField> Open for ShamirSecret<T> {
     type Public = PubInt;
 
     fn open<U: Read + Write>(self, channel: &mut U) -> Self::Public {
@@ -24,7 +24,7 @@ impl<T: Field> Open for ShamirSecret<T> {
     }
 }
 
-impl<T: Field> Add for ShamirSecret<T> {
+impl<T: PrimeField> Add for ShamirSecret<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self::Output {
@@ -32,7 +32,7 @@ impl<T: Field> Add for ShamirSecret<T> {
     }
 }
 
-impl<T: Field> Mul for ShamirSecret<T> {
+impl<T: PrimeField> Mul for ShamirSecret<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {

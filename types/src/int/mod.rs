@@ -1,4 +1,4 @@
-use ark_ff::Field;
+use ark_ff::{Field, PrimeField};
 use std::io::{Read, Write};
 use std::ops::{Add, Mul};
 
@@ -24,7 +24,7 @@ impl<T: Add<Output = T> + Open> Add for SecInt<T> {
     }
 }
 
-impl<T: Field> SecInt<ShamirSecret<T>> {
+impl<T: PrimeField> SecInt<ShamirSecret<T>> {
     pub fn new(integer: i32) -> SecInt<ShamirSecret<T>> {
         todo!()
     }
