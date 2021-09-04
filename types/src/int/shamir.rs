@@ -3,6 +3,7 @@ use super::PubInt;
 use ark_bls12_381::Fr;
 use ark_ff::BigInteger256;
 use ark_ff::{Field, PrimeField};
+use ark_poly::univariate::DensePolynomial;
 use std::io::{Read, Write};
 use std::ops::{Add, Mul};
 
@@ -40,6 +41,12 @@ impl<T: PrimeField> Mul for ShamirSecret<T> {
     }
 }
 
+impl std::fmt::Display for ShamirSecret<Fr> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}", self.0)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -48,7 +55,7 @@ mod tests {
     fn shamir_new() {
         let shamir_1 = ShamirSecret::<Fr>::new(42.into());
         let shamir_2 = ShamirSecret::<Fr>::new(2.into());
-        println!("First: {:?}\n Second: {:?}", shamir_1, shamir_2);
+        println!("First: {}\n Second: {}", shamir_1, shamir_2);
 
         assert_eq!(shamir_1 + shamir_2, ShamirSecret::<Fr>::new(44.into()));
         assert_eq!(shamir_1 * shamir_2, ShamirSecret::<Fr>::new(84.into()));

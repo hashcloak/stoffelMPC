@@ -1,9 +1,9 @@
 use ark_ff::{Field, PrimeField};
 use std::io::{Read, Write};
 use std::ops::{Add, Mul};
+use crate::int::shamir::ShamirSecret;
 
 mod shamir;
-use shamir::ShamirSecret;
 
 pub trait Open {
     type Public;
