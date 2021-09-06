@@ -2,18 +2,19 @@ use super::Open;
 use super::PubInt;
 use ark_bls12_381::Fr;
 use ark_ff::BigInteger256;
-use ark_ff::{Field, PrimeField};
-use ark_poly::univariate::DensePolynomial;
+use ark_ff::PrimeField;
 use std::io::{Read, Write};
 use std::ops::{Add, Mul};
+use thiserror::Error;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub(crate) struct ShamirSecret<T: PrimeField>(T);
 
 impl ShamirSecret<Fr> {
-    pub fn new(element: BigInteger256) -> ShamirSecret<Fr> {
-        let field_element = PrimeField::from_repr(element).unwrap();
-        ShamirSecret(field_element)
+    pub fn new(element: BigInteger256) -> Result<ShamirSecret<Fr>, ShamirError> {
+        let field_element =
+            PrimeField::from_repr(element).ok_or(ShamirError::InitError(element))?;
+        Ok(ShamirSecret(field_element))
     }
 }
 
@@ -47,17 +48,41 @@ impl std::fmt::Display for ShamirSecret<Fr> {
     }
 }
 
+#[derive(Debug, Error)]
+pub enum ShamirError {
+    #[error("Unable to create ShamirSecret from element {0}")]
+    InitError(BigInteger256),
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn shamir_new() {
-        let shamir_1 = ShamirSecret::<Fr>::new(42.into());
-        let shamir_2 = ShamirSecret::<Fr>::new(2.into());
-        println!("First: {}\n Second: {}", shamir_1, shamir_2);
+        let _shamir_1 = ShamirSecret::<Fr>::new(0.into()).unwrap();
+        let _shamir_2 = ShamirSecret::<Fr>::new(2310498322.into()).unwrap();
+    }
 
-        assert_eq!(shamir_1 + shamir_2, ShamirSecret::<Fr>::new(44.into()));
-        assert_eq!(shamir_1 * shamir_2, ShamirSecret::<Fr>::new(84.into()));
+    #[test]
+    fn shamir_add() {
+        let shamir_1 = ShamirSecret::<Fr>::new(5.into()).unwrap();
+        let shamir_2 = ShamirSecret::<Fr>::new(3.into()).unwrap();
+
+        assert_eq!(
+            shamir_1 + shamir_2,
+            ShamirSecret::<Fr>::new(8.into()).unwrap()
+        );
+    }
+
+    #[test]
+    fn shamir_multiply() {
+        let shamir_1 = ShamirSecret::<Fr>::new(42.into()).unwrap();
+        let shamir_2 = ShamirSecret::<Fr>::new(5.into()).unwrap();
+
+        assert_eq!(
+            shamir_1 * shamir_2,
+            ShamirSecret::<Fr>::new(210.into()).unwrap()
+        );
     }
 }
