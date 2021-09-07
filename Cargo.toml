@@ -3,6 +3,6 @@
 members = [
     "vm",
     "compiler",
-    "types",
+    "mpc",
     "instructions"
 ]

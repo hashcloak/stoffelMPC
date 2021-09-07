@@ -1,28 +1,17 @@
-use super::Open;
-use super::PubInt;
 use ark_bls12_381::Fr;
 use ark_ff::BigInteger256;
 use ark_ff::{Field, PrimeField};
-use std::io::{Read, Write};
 use std::ops::{Add, Mul};
 use thiserror::Error;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
-pub(crate) struct ShamirSecret<T: Field>(T);
+pub struct ShamirSecret<T: Field>(T);
 
 impl<T: PrimeField> ShamirSecret<T> {
     pub fn new(element: BigInteger256) -> Result<ShamirSecret<Fr>, ShamirError> {
         let field_element =
             PrimeField::from_repr(element).ok_or(ShamirError::InitError(element))?;
         Ok(ShamirSecret(field_element))
-    }
-}
-
-impl<T: Field> Open for ShamirSecret<T> {
-    type Public = PubInt;
-
-    fn open<U: Read + Write>(self, channel: &mut U) -> Self::Public {
-        todo!()
     }
 }
 

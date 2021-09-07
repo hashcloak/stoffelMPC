@@ -1,22 +1,16 @@
-use ark_ff::{Field, PrimeField};
-use std::io::{Read, Write};
+use ark_ff::Field;
 use std::ops::{Add, Mul};
-use crate::int::shamir::ShamirSecret;
 
 mod shamir;
-
-pub trait Open {
-    type Public;
-    fn open<U: Read + Write>(self, channel: &mut U) -> Self::Public;
-}
+pub use shamir::{ShamirError, ShamirSecret};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PubInt(i32);
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub struct SecInt<T: Open>(T);
+pub struct SecInt<T>(T);
 
-impl<T: Add<Output = T> + Open> Add for SecInt<T> {
+impl<T: Add<Output = T>> Add for SecInt<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -24,7 +18,7 @@ impl<T: Add<Output = T> + Open> Add for SecInt<T> {
     }
 }
 
-impl<T: PrimeField> SecInt<ShamirSecret<T>> {
+impl<T: Field> SecInt<ShamirSecret<T>> {
     pub fn new(integer: i32) -> SecInt<ShamirSecret<T>> {
         todo!()
     }
@@ -32,7 +26,7 @@ impl<T: PrimeField> SecInt<ShamirSecret<T>> {
 
 // We need to consider that it is probably also possible to add/mulitply this way:
 // secret +/* public = secret
-impl<T: Add<Output = T> + Open> Add<PubInt> for SecInt<T> {
+impl<T: Add<Output = T>> Add<PubInt> for SecInt<T> {
     type Output = Self;
 
     fn add(self, rhs: PubInt) -> Self {
@@ -40,18 +34,10 @@ impl<T: Add<Output = T> + Open> Add<PubInt> for SecInt<T> {
     }
 }
 
-impl<T: Mul<Output = T> + Open> Mul for SecInt<T> {
+impl<T: Mul<Output = T>> Mul for SecInt<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self::Output {
         SecInt(self.0 * rhs.0)
-    }
-}
-
-impl<T: Open> Open for SecInt<T> {
-    type Public = T::Public;
-
-    fn open<U: Read + Write>(self, channel: &mut U) -> Self::Public {
-        self.0.open::<U>(channel)
     }
 }
