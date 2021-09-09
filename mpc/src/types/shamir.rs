@@ -8,8 +8,7 @@ pub struct Shamir<T: Field>(T);
 
 impl Shamir<Fr> {
     pub fn new(integer: BigInteger256) -> Result<Shamir<Fr>, ShamirError> {
-        let field_element =
-            PrimeField::from_repr(integer).ok_or(ShamirError::InitError(integer))?;
+        let field_element = PrimeField::from_repr(integer).ok_or(ShamirError::Init(integer))?;
         Ok(Shamir(field_element))
     }
 }
@@ -39,9 +38,7 @@ impl<T: PrimeField> std::fmt::Display for Shamir<T> {
 #[derive(Debug, Error)]
 pub enum ShamirError {
     #[error("Unable to create ShamirSecret from element {0}")]
-    InitError(BigInteger256),
-    #[error("Unable to convert into BigInteger")]
-    Conversion,
+    Init(BigInteger256),
 }
 
 #[cfg(test)]

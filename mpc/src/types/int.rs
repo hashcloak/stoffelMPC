@@ -51,7 +51,8 @@ impl<T: Mul<Output = T>> Mul for SecInt<T> {
 
 impl<T: std::fmt::Display> std::fmt::Display for SecInt<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self.0)
+        let out = self.0.to_string();
+        write!(f, "{}", out.trim_start_matches('0'))
     }
 }
 
@@ -97,5 +98,7 @@ mod tests {
     #[test]
     fn sec_int_shamir_display() {
         let secret_int = SecInt::<Shamir<Fr>>::new(42_u64).unwrap();
+
+        assert_eq!(secret_int.to_string(), "2A");
     }
 }

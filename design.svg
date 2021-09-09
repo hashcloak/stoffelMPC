@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="67.312325mm"
-   height="69.266289mm"
-   viewBox="0 0 67.312325 69.266288"
+   width="101.55595mm"
+   height="60.843029mm"
+   viewBox="0 0 101.55595 60.843029"
    version="1.1"
    id="svg5"
    inkscape:version="1.1 (c4e8f9ed74, 2021-05-24)"
@@ -24,10 +24,10 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="1.6831681"
-     inkscape:cx="151.50002"
-     inkscape:cy="111.39707"
+     inkscape:cx="45.747065"
+     inkscape:cy="207.05003"
      inkscape:window-width="1920"
-     inkscape:window-height="1149"
+     inkscape:window-height="1029"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -39,6 +39,20 @@
      lock-margins="false" />
   <defs
      id="defs2">
+    <marker
+       style="overflow:visible"
+       id="Arrow1Lstart"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart"
+       inkscape:isstock="true">
+      <path
+         transform="matrix(0.8,0,0,0.8,10,0)"
+         style="fill:context-stroke;fill-rule:evenodd;stroke:context-stroke;stroke-width:1pt"
+         d="M 0,0 5,-5 -12.5,0 5,5 Z"
+         id="path23673" />
+    </marker>
     <rect
        x="129.89497"
        y="8.7189789"
@@ -50,10 +64,10 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-18.888301,-8.983227)">
+     transform="translate(-40.564817,16.353452)">
     <g
        id="g8233"
-       transform="translate(21.407849,-18.174087)">
+       transform="translate(3.9874591,-38.987547)">
       <rect
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.279799;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect51"
@@ -75,7 +89,7 @@
     </g>
     <g
        id="g8241"
-       transform="translate(20.973747,10.537134)">
+       transform="translate(77.327987,-38.496498)">
       <g
          id="g9580">
         <rect
@@ -100,7 +114,7 @@
     </g>
     <g
        id="g16996"
-       transform="translate(-31.64727,-41.809247)">
+       transform="translate(21.194176,-47.137487)">
       <rect
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.279799;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect9582"
@@ -118,11 +132,16 @@
            id="tspan9584"
            style="stroke-width:0.128943"
            x="61.757641"
-           y="73.84034">Types</tspan></text>
+           y="73.84034">MPC</tspan><tspan
+           sodipodi:role="line"
+           style="stroke-width:0.128943"
+           x="61.757641"
+           y="80.287468"
+           id="tspan1256" /></text>
     </g>
     <g
        id="g25358"
-       transform="translate(-39.560885,12.39807)">
+       transform="translate(16.903894,-51.435521)">
       <rect
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.313134;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect16998"
@@ -142,62 +161,32 @@
            x="60.782814"
            y="55.953087">Instructions</tspan></text>
     </g>
-    <g
-       id="g29657"
-       transform="matrix(0.5962367,0,0,0.5962367,11.279421,12.190438)">
-      <rect
-         style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.279799;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-         id="rect25360"
-         width="26.735617"
-         height="10.877283"
-         x="21.126728"
-         y="61.961922" />
-      <text
-         xml:space="preserve"
-         style="font-style:normal;font-weight:normal;font-size:5.1577px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.128943"
-         x="26.143494"
-         y="68.823463"
-         id="text25364"><tspan
-           sodipodi:role="line"
-           id="tspan25362"
-           style="stroke-width:0.128943"
-           x="26.143494"
-           y="68.823463">Secret</tspan><tspan
-           sodipodi:role="line"
-           style="stroke-width:0.128943"
-           x="26.143494"
-           y="75.270592"
-           id="tspan28332" /></text>
-    </g>
-    <g
-       id="g29667"
-       transform="matrix(0.5962367,0,0,0.5962367,3.2879119,17.586441)">
-      <g
-         id="g33064"
-         transform="translate(13.403248,-19.927384)">
-        <rect
-           style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.279799;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-           id="rect29659"
-           width="26.735617"
-           height="10.877283"
-           x="21.126728"
-           y="61.961922" />
-        <text
-           xml:space="preserve"
-           style="font-style:normal;font-weight:normal;font-size:5.1577px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.128943"
-           x="26.76932"
-           y="68.823463"
-           id="text29665"><tspan
-             sodipodi:role="line"
-             style="stroke-width:0.128943"
-             x="26.76932"
-             y="68.823463"
-             id="tspan29663">Public</tspan></text>
-      </g>
-    </g>
+    <rect
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.203257;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect29659"
+       width="23.796743"
+       height="6.4490047"
+       x="76.735611"
+       y="37.338943" />
+    <text
+       xml:space="preserve"
+       style="font-style:normal;font-weight:normal;font-size:3.07521px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.0768805"
+       x="80.081718"
+       y="41.411835"
+       id="text29665"><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.0768805"
+         x="80.081718"
+         y="41.411835"
+         id="tspan29663">Types</tspan><tspan
+         sodipodi:role="line"
+         style="stroke-width:0.0768805"
+         x="80.081718"
+         y="45.255848"
+         id="tspan14406" /></text>
     <g
        id="g65018"
-       transform="translate(-0.48270454,10.667602)">
+       transform="translate(55.920139,-38.366036)">
       <rect
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.182593;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect33066"
@@ -219,7 +208,7 @@
     </g>
     <g
        id="g38693"
-       transform="matrix(0.58311413,0,0,0.58311413,-0.72698525,57.392775)">
+       transform="matrix(0.58311413,0,0,0.58311413,55.675858,8.3591382)">
       <g
          id="g40228"
          transform="translate(6.4662072,-11.258297)">
@@ -245,7 +234,7 @@
     </g>
     <g
        id="g40238"
-       transform="matrix(0.58311413,0,0,0.58311413,-1.4314334,37.200161)">
+       transform="matrix(0.58311413,0,0,0.58311413,-18.803219,22.709961)">
       <g
          id="g40236"
          transform="translate(6.4662072,-11.258297)">
@@ -275,7 +264,7 @@
     </g>
     <g
        id="g46288"
-       transform="translate(-3.7917323,12.763567)">
+       transform="translate(-21.163518,-1.7266259)">
       <rect
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.182593;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect42271"
@@ -297,7 +286,7 @@
     </g>
     <g
        id="g49580"
-       transform="matrix(0.61020373,0,0,0.61020373,22.96335,3.1728378)">
+       transform="matrix(0.60841084,0,0,0.61023129,75.807329,-2.157029)">
       <rect
          style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.337508;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
          id="rect46290"
@@ -315,15 +304,45 @@
            id="tspan46292"
            style="stroke-width:0.128943"
            x="2.7865846"
-           y="60.70649">MPC Protocols</tspan></text>
+           y="60.70649">Protocols</tspan></text>
     </g>
     <text
        xml:space="preserve"
-       transform="matrix(0.26458333,0,0,0.26458333,-8.2044156,5.9534744)"
+       transform="matrix(0.26458333,0,0,0.26458333,26.475761,-19.383205)"
        id="text68738"
        style="font-style:normal;font-weight:normal;font-size:40px;line-height:1.25;font-family:sans-serif;white-space:pre;shape-inside:url(#rect68740);fill:#000000;fill-opacity:1;stroke:none"><tspan
          x="129.89453"
          y="44.109375"
-         id="tspan90924">StoffelMPC</tspan></text>
+         id="tspan26873">StoffelMPC</tspan></text>
+    <g
+       id="g20472"
+       transform="matrix(0.58311413,0,0,0.58311413,-18.803219,16.386701)">
+      <g
+         id="g20470"
+         transform="translate(6.4662072,-11.258297)">
+        <g
+           id="g20468"
+           transform="translate(3.7675059,-14.608826)">
+          <rect
+             style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.313134;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+             id="rect20462"
+             width="33.588581"
+             height="10.843948"
+             x="92.847198"
+             y="24.152737" />
+          <text
+             xml:space="preserve"
+             style="font-style:normal;font-weight:normal;font-size:5.1577px;line-height:1.25;font-family:sans-serif;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.128943"
+             x="100.21131"
+             y="30.997612"
+             id="text20466"><tspan
+               sodipodi:role="line"
+               style="stroke-width:0.128943"
+               x="100.21131"
+               y="30.997612"
+               id="tspan20464">Scanning</tspan></text>
+        </g>
+      </g>
+    </g>
   </g>
 </svg>
