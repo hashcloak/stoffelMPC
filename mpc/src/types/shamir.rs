@@ -1,3 +1,4 @@
+use crate::utils::Polynomial;
 use ark_bls12_381::Fr;
 use ark_ff::{BigInteger256, Field, PrimeField};
 use std::ops::{Add, Mul};
@@ -8,8 +9,38 @@ pub struct Shamir<T: Field>(T);
 
 impl Shamir<Fr> {
     pub fn new(integer: BigInteger256) -> Result<Shamir<Fr>, ShamirError> {
-        let field_element = PrimeField::from_repr(integer).ok_or(ShamirError::Init(integer))?;
+        let field_element =
+            PrimeField::from_repr(integer).ok_or(ShamirError::PrimeFieldConvert(integer))?;
         Ok(Shamir(field_element))
+    }
+
+    pub fn t_n_sharing(
+        secret: BigInteger256,
+        threshold: usize,
+        samples: usize,
+    ) -> Result<Vec<Self>, ShamirError> {
+        let mut polynomial = Polynomial::<Fr>::random(threshold - 1);
+        polynomial.set_coeff(
+            0,
+            PrimeField::from_repr(secret).ok_or(ShamirError::PrimeFieldConvert(secret))?,
+        );
+        let shares: Vec<Shamir<Fr>> = (0..samples as u64)
+            .map(|x| BigInteger256::from(x + 1))
+            .filter_map::<Fr, _>(PrimeField::from_repr)
+            .map(|x| polynomial.evaluate(&x))
+            .map(Shamir::from)
+            .collect();
+
+        if shares.len() != samples {
+            return Err(ShamirError::CreateSharing);
+        }
+        Ok(shares)
+    }
+}
+
+impl<T: Field> From<T> for Shamir<T> {
+    fn from(element: T) -> Self {
+        Shamir(element)
     }
 }
 
@@ -37,8 +68,10 @@ impl<T: PrimeField> std::fmt::Display for Shamir<T> {
 
 #[derive(Debug, Error)]
 pub enum ShamirError {
-    #[error("Unable to create ShamirSecret from element {0}")]
-    Init(BigInteger256),
+    #[error("Unable to convert element {0} into prime field")]
+    PrimeFieldConvert(BigInteger256),
+    #[error("Unable to create sharing")]
+    CreateSharing,
 }
 
 #[cfg(test)]
@@ -80,5 +113,10 @@ mod tests {
             shamir_1.to_string(),
             "000000000000000000000000000000000000000000000000000000000000002A"
         );
+    }
+
+    #[test]
+    fn shamir_sharing() {
+        let _sharing = Shamir::<Fr>::t_n_sharing(BigInteger256::from(42), 3, 5).unwrap();
     }
 }

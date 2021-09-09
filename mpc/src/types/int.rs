@@ -1,12 +1,20 @@
 use super::shamir::{Shamir, ShamirError};
 use ark_bls12_381::Fr;
+use ark_ff::BigInteger256;
 use num_bigint::BigUint;
 use std::convert::TryInto;
 use std::ops::{Add, Mul};
 use thiserror::Error;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PubInt(i32);
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+pub struct PubInt(pub BigUint);
+
+impl From<BigInteger256> for PubInt {
+    fn from(integer: BigInteger256) -> Self {
+        // The unwrap() should be safe because the operation is infallible
+        PubInt(integer.try_into().unwrap())
+    }
+}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SecInt<T>(T);
@@ -20,24 +28,18 @@ impl<T: Add<Output = T>> Add for SecInt<T> {
 }
 
 impl SecInt<Shamir<Fr>> {
-    pub fn new(integer: impl Into<BigUint>) -> Result<SecInt<Shamir<Fr>>, SecIntError> {
-        let integer = integer
-            .into()
-            .try_into()
-            .map_err(|_| SecIntError::Infallible)?;
+    pub fn new(integer: impl Into<BigUint>) -> Result<Self, IntegerError> {
+        // The unwrap() should be safe because the operation is infallible
+        let integer = integer.into().try_into().unwrap();
         Ok(SecInt(
-            Shamir::new(integer).map_err(SecIntError::InitShamir)?,
+            Shamir::new(integer).map_err(IntegerError::InitShamir)?,
         ))
     }
-}
 
-// We need to consider that it is probably also possible to add/mulitply this way:
-// secret +/* public = secret
-impl<T: Add<Output = T>> Add<PubInt> for SecInt<T> {
-    type Output = Self;
-
-    fn add(self, rhs: PubInt) -> Self {
-        todo!()
+    pub fn add_public(&mut self, pub_int: PubInt) -> Result<Self, IntegerError> {
+        let new_secret = SecInt::new(pub_int.0)?;
+        *self = *self + new_secret;
+        Ok(*self)
     }
 }
 
@@ -57,11 +59,9 @@ impl<T: std::fmt::Display> std::fmt::Display for SecInt<T> {
 }
 
 #[derive(Debug, Error)]
-pub enum SecIntError {
+pub enum IntegerError {
     #[error("Unable to initialize SecInt with ShamirSecret {0}")]
     InitShamir(#[source] ShamirError),
-    #[error("Impossible Error happened")]
-    Infallible,
 }
 
 #[cfg(test)]
