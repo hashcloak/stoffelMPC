@@ -1,3 +1,5 @@
+#![allow(non_camel_case_types)]
+
 pub enum Instructions {
     // Emulation
     CISC = 0x00,
