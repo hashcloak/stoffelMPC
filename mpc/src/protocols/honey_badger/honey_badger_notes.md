@@ -10,6 +10,17 @@ HoneyBadgerMPC operates on the finite field behind the BL12-381 curve. This mean
 elements are a multiple of some $2^k$-root of unity $\omega$. We should check how these
 operations are supported in the ark-ff crate.
 
+### Batch Reconstruction
+This is the [algorithm] \(page 13, second box\) used to batch-reconstruct shares, which makes use
+of RobustInterpolate twice. The key idea is to extend $t + 1$ sharings to $n$ sharings, by 
+switching the roles of coefficients and points, so $M(x_{ij}) \alpha_j = y_i$ becomes
+$M(\alpha_{ij}) x_j = y_i$, with $i = (1...n)$ and $j = (1...t+1)$. Then every player sends his
+row $j$ to player $j$, who robust-interpolates all the equations he received this way and hence
+reconstucts $y_j$. This process is repeated once more and we end up with $t +1$ opened values
+$x_1, x_2, ..., x_{t + 1}$.
+
+[algorithm]: https://www.iacr.org/archive/crypto2007/46220565/46220565.pdf
+
 ### Robust Interpolation
 
 Honey Badger MPC is based on a robust form of Shamir Secret Sharing. We assume that $t < n/3$ 
@@ -23,18 +34,12 @@ have to use a form of [online error correction].
 ### RSDecode
 
 Used to correct errors if RobustInterpolate receives a set of shares, which do not agree. This
-can either use ordinary matrix multiplication or an [FFT-based algorithm]. It seems that the
+can either use ordinary matrix multiplication, in which case the [Berlekamp-Welch] algorithm is used, 
+or an FFT-based algorithm ([Soro-Lacan]). It seems that the
 FFT-based approach is faster for Vandermonde matrices, which have more than 10k columns.
 
-[FFT-based algorithm]: https://sci-hub.mksa.top/10.1109/ccnc.2010.5421749
-
-
-
-### Batch Reconstruction
-
-This is the [algorithm] used to batch-reconstruct shares, which makes use of RobustInterpolate twice.
-
-[algorithm]: https://www.iacr.org/archive/crypto2007/46220565/46220565.pdf
+[Berlekamp-Welch]: https://jeremykun.com/2015/09/07/welch-berlekamp
+[Soro-Lacan]: https://sci-hub.mksa.top/10.1109/ccnc.2010.5421749
 
 ### TODO:
 

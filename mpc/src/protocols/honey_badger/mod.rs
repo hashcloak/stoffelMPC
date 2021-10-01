@@ -3,6 +3,8 @@ use crate::types::{PubInt, SecInt};
 use std::io::{Read, Write};
 use std::marker::PhantomData;
 
+const FFT_THRESHOLD: usize = 1000;
+
 pub struct HoneyBadger<T> {
     parties: Vec<Box<dyn Channel>>,
     threshold: usize,
@@ -10,8 +12,12 @@ pub struct HoneyBadger<T> {
 }
 
 impl<T> HoneyBadger<T> {
-    fn batch_recieve(secrets: &[SecInt<T>]) -> Vec<PubInt> {
-        todo!();
+    fn batch_recieve(&mut self, secrets: &[SecInt<T>]) -> Vec<PubInt> {
+        if self.parties.len() < FFT_THRESHOLD {
+            self.vandermonde_interpolate(secrets)
+        } else {
+            self.fft_interpolate(secrets)
+        }
     }
 
     fn robust_interpolate(secrets: &[SecInt<T>]) -> Vec<PubInt> {
@@ -26,11 +32,11 @@ impl<T> HoneyBadger<T> {
         todo!();
     }
 
-    fn vandermonde_interpolate() {
+    fn vandermonde_interpolate(&mut self, secrets: &[SecInt<T>]) -> Vec<PubInt> {
         todo!();
     }
 
-    fn fft_interpolate() {
+    fn fft_interpolate(&mut self, secrets: &[SecInt<T>]) -> Vec<PubInt> {
         todo!()
     }
 }

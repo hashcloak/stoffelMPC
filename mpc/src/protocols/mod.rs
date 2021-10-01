@@ -12,5 +12,5 @@ pub trait Protocol<T>: Open<T> + Channel {
 }
 
 pub trait Open<T> {
-    fn open<U: Channel>(channel: &mut U, secrets: SecInt<T>) -> PubInt;
+    fn open<U: Channel>(channel: &mut U, secret: SecInt<T>) -> PubInt;
 }
