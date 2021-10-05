@@ -4,26 +4,43 @@ use ark_ff::{BigInteger256, Field, PrimeField};
 use std::ops::{Add, Mul};
 use thiserror::Error;
 
+/// A Shamir secret
+///
+/// This type is used to represent a secret-shared value using polynomials.
+/// It can be used as an inner representation of some integer value.
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Shamir<T: Field>(T);
 
 impl Shamir<Fr> {
+    /// Create a new Shamir secret
+    ///
+    /// This implementation uses the BLS12-381 prime field.
     pub fn new(integer: BigInteger256) -> Result<Shamir<Fr>, ShamirError> {
         let field_element =
             PrimeField::from_repr(integer).ok_or(ShamirError::PrimeFieldConvert(integer))?;
         Ok(Shamir(field_element))
     }
 
+    /// Create a sharing for a provided secret
+    ///
+    /// This creates a polynomial of degree `threshold` - 1, i.e. `threshold` evaluation points
+    /// are needed to reconstruct the secret. Will return `samples` evaluations of the
+    /// polynomial for x = (1, 2, ..., `samples`).
     pub fn t_n_sharing(
         secret: BigInteger256,
         threshold: usize,
         samples: usize,
     ) -> Result<Vec<Self>, ShamirError> {
+        if samples < threshold {
+            return Err(ShamirError::Underdetermined);
+        }
+
         let mut polynomial = Polynomial::<Fr>::random(threshold - 1);
         polynomial.set_coeff(
             0,
             PrimeField::from_repr(secret).ok_or(ShamirError::PrimeFieldConvert(secret))?,
         );
+
         let shares: Vec<Shamir<Fr>> = (0..samples as u64)
             .map(|x| BigInteger256::from(x + 1))
             .filter_map::<Fr, _>(PrimeField::from_repr)
@@ -72,6 +89,8 @@ pub enum ShamirError {
     PrimeFieldConvert(BigInteger256),
     #[error("Unable to create sharing")]
     CreateSharing,
+    #[error("Not enough evaluation points to reconstruct secret")]
+    Underdetermined,
 }
 
 #[cfg(test)]

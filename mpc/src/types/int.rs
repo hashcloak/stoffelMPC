@@ -6,16 +6,23 @@ use std::convert::TryInto;
 use std::ops::{Add, Mul};
 use thiserror::Error;
 
+/// A public integer
+///
+/// This type is used for providing public integers of arbitrary size.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PubInt(pub BigUint);
 
 impl From<BigInteger256> for PubInt {
     fn from(integer: BigInteger256) -> Self {
-        // The unwrap() should be safe because the operation is infallible
+        // This unwrap() should be safe because the operation is infallible
         PubInt(integer.try_into().unwrap())
     }
 }
 
+/// The secret integer type
+///
+/// This type wraps different implementation for secret integers
+/// in order to provide a stable API for every type it wraps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SecInt<T>(T);
 
@@ -28,6 +35,9 @@ impl<T: Add<Output = T>> Add for SecInt<T> {
 }
 
 impl SecInt<Shamir<Fr>> {
+    /// Creates a new secret integer using a Shamir secret
+    ///
+    /// This will return a Shamir secret wrapped in a `SecInt`
     pub fn new(integer: impl Into<BigUint>) -> Result<Self, IntegerError> {
         // The unwrap() should be safe because the operation is infallible
         let integer = integer.into().try_into().unwrap();
@@ -36,6 +46,10 @@ impl SecInt<Shamir<Fr>> {
         ))
     }
 
+    /// Adds a `PubInt`
+    ///
+    /// This allows adding a public integer to a secret integer returning a new
+    /// secret integer.
     pub fn add_public(&mut self, pub_int: PubInt) -> Result<Self, IntegerError> {
         let new_secret = SecInt::new(pub_int.0)?;
         *self = *self + new_secret;
