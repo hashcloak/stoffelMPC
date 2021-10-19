@@ -1,9 +1,11 @@
 #![allow(non_camel_case_types)]
+/// These are the instructions for the StoffelMPC VM. These instructions are taken from the MP-SPDZ's VM instructions
+/// These instructions may be reduced or added to at a later time.
 
 pub enum Instructions {
-    // Emulation
+    /// Emulation
     CISC = 0x00,
-    // Load/store
+    /// Load/store
     LDI = 0x01,
     LDSI = 0x02,
     LDMC = 0x03,
@@ -26,7 +28,7 @@ pub enum Instructions {
     PUSHINT = 0xCE,
     POPINT = 0xCF,
     MOVINT = 0xD0,
-    // Machine
+    /// Machine
     LDTN = 0x10,
     LDARG = 0x11,
     REQBL = 0x12,
@@ -46,7 +48,7 @@ pub enum Instructions {
     THRESHOLD = 0xE3,
     PLAYERID = 0xE4,
     USE_EDABIT = 0xE5,
-    // Addition
+    /// Addition
     ADDC = 0x20,
     ADDS = 0x21,
     ADDM = 0x22,
@@ -60,7 +62,7 @@ pub enum Instructions {
     SUBSI = 0x2A,
     SUBCFI = 0x2B,
     SUBSFI = 0x2C,
-    // Multiplication/division
+    /// Multiplication/division
     MULC = 0x30,
     MULM = 0x31,
     MULCI = 0x32,
@@ -75,7 +77,7 @@ pub enum Instructions {
     FLOORDIVC = 0x3b,
     GMULBITC = 0x136,
     GMULBITM = 0x137,
-    // Open
+    /// Open
     OPEN = 0xA5,
     MULS = 0xA6,
     MULRS = 0xA7,
@@ -85,7 +87,7 @@ pub enum Instructions {
     MATMULSM = 0xAB,
     CONV2DS = 0xAC,
     CHECK = 0xAF,
-    // Data access
+    /// Data access
     TRIPLE = 0x50,
     BIT = 0x51,
     SQUARE = 0x52,
@@ -100,7 +102,7 @@ pub enum Instructions {
     SEDABIT = 0x5A,
     RANDOMS = 0x5B,
     RANDOMFULLS = 0x5D,
-    // Input
+    /// Input
     INPUT = 0x60,
     INPUTFIX = 0xF0,
     INPUTFLOAT = 0xF1,
@@ -121,7 +123,7 @@ pub enum Instructions {
     ACCEPTCLIENTCONNECTION = 0x6d,
     CLOSECLIENTCONNECTION = 0x6e,
     READCLIENTPUBLICKEY = 0x6f,
-    // Bitwise logic
+    /// Bitwise logic
     ANDC = 0x70,
     XORC = 0x71,
     ORC = 0x72,
@@ -129,13 +131,13 @@ pub enum Instructions {
     XORCI = 0x74,
     ORCI = 0x75,
     NOTC = 0x76,
-    // Bitwise shifts
+    /// Bitwise shifts
     SHLC = 0x80,
     SHRC = 0x81,
     SHLCI = 0x82,
     SHRCI = 0x83,
     SHRSI = 0x84,
-    // Branching and comparison
+    /// Branching and comparison
     JMP = 0x90,
     JMPNZ = 0x91,
     JMPEQZ = 0x92,
@@ -145,7 +147,7 @@ pub enum Instructions {
     GTC = 0x96,
     EQC = 0x97,
     JMPI = 0x98,
-    // Integers
+    /// Integers
     BITDECINT = 0x99,
     LDINT = 0x9A,
     ADDINT = 0x9B,
@@ -155,11 +157,11 @@ pub enum Instructions {
     PRINTINT = 0x9F,
     INCINT = 0xD1,
     SHUFFLE = 0xD2,
-    // Conversion
+    /// Conversion
     CONVINT = 0xC0,
     CONVMODP = 0xC1,
     GCONVGF2N = 0x1C1,
-    // IO
+    /// IO
     PRINTMEM = 0xB0,
     PRINTREG = 0xB1,
     RAND = 0xB2,
@@ -182,7 +184,8 @@ pub enum Instructions {
     FLOATOUTPUT = 0xE7,
     GBITDEC = 0x184,
     GBITCOM = 0x185,
-    // Secure socket
+    /// Secure socket
     INITSECURESOCKET = 0x1BA,
     RESPSECURESOCKET = 0x1BB,
 }
+
