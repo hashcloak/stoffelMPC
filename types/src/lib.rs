@@ -1,24 +1,24 @@
 
 
-pub type cint = int64;
-pub type sint = int64;
-pub type cfloat = float64;
-pub type sfloat = float64;
-pub type cgf2n = int64;
-pub type sgf2n = int64;
-pub type cbit = bool;
-pub type sbit = bool;
+pub struct cint(int64);
+pub struct sint(int64);
+pub struct regint(int64);
+pub struct cfloat(float64);
+pub struct sfloat(float64);
+pub struct cgf2n(int64);
+pub struct sgf2n(int64);
+pub struct cbit(bool);
+pub struct sbit(bool);
 
-pub trait MPCType {
+
+pub trait ClearType {
+    pub fn add();
+    pub fn mul();
 
 }
 
-pub trait ClearType: MPCType {
-
-}
-
-pub trait SecretSharedType: MPCType {
-    
+pub trait SecretSharedType: ClearType {
+    pub fn open(&self) -> ClearType;
 }
 
 
