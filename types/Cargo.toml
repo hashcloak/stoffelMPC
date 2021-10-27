@@ -2,8 +2,13 @@
 name = "types"
 version = "0.1.0"
 authors = ["Mikerah <mikerah@hashcloak.com>"]
-edition = "2018"
+edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ark-ff = "0.3"
+ark-poly = "0.3"
+ark-bls12-381 = "0.3"
+thiserror = "1"
+num-bigint = "0.4"

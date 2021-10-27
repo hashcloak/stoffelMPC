@@ -1,4 +1,3 @@
-use crate::utils::Polynomial;
 use ark_bls12_381::Fr;
 use ark_ff::{BigInteger256, Field, PrimeField};
 use std::ops::{Add, Mul};
@@ -19,39 +18,6 @@ impl Shamir<Fr> {
         let field_element =
             PrimeField::from_repr(integer).ok_or(ShamirError::PrimeFieldConvert(integer))?;
         Ok(Shamir(field_element))
-    }
-
-    /// Create a sharing for a provided secret
-    ///
-    /// This creates a polynomial of degree `threshold` - 1, i.e. `threshold` evaluation points
-    /// are needed to reconstruct the secret. Will return `samples` evaluations of the
-    /// polynomial for x = (1, 2, ..., `samples`).
-    pub fn t_n_sharing(
-        secret: BigInteger256,
-        threshold: usize,
-        samples: usize,
-    ) -> Result<Vec<Self>, ShamirError> {
-        if samples < threshold {
-            return Err(ShamirError::Underdetermined);
-        }
-
-        let mut polynomial = Polynomial::<Fr>::random(threshold - 1);
-        polynomial.set_coeff(
-            0,
-            PrimeField::from_repr(secret).ok_or(ShamirError::PrimeFieldConvert(secret))?,
-        );
-
-        let shares: Vec<Shamir<Fr>> = (0..samples as u64)
-            .map(|x| BigInteger256::from(x + 1))
-            .filter_map::<Fr, _>(PrimeField::from_repr)
-            .map(|x| polynomial.evaluate(&x))
-            .map(Shamir::from)
-            .collect();
-
-        if shares.len() != samples {
-            return Err(ShamirError::CreateSharing);
-        }
-        Ok(shares)
     }
 }
 

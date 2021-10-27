@@ -6,7 +6,7 @@ use std::convert::TryInto;
 use std::ops::{Add, Mul};
 use thiserror::Error;
 
-/// A public integer
+/// Public integer
 ///
 /// This type is used for providing public integers of arbitrary size.
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
@@ -19,7 +19,7 @@ impl From<BigInteger256> for PubInt {
     }
 }
 
-/// The secret integer type
+/// Secret integer type
 ///
 /// This type wraps different implementation for secret integers
 /// in order to provide a stable API for every type it wraps.
