@@ -1,39 +1,15 @@
-use types;
+use types::{PubFixed, PubGf2, PubInt, SecFixed, SecGf2, SecInt};
 
-pub Trait Register {
+pub trait Register {}
 
-}
+impl Register for PubInt {}
 
+impl<T> Register for SecInt<T> {}
 
-impl Register for  types::cint {
-    
-}
+impl Register for PubFixed {}
 
-impl Register for types::cfloat {
-    
-}
+impl<T> Register for SecFixed<T> {}
 
-impl Register for types::cgf2n {
+impl Register for PubGf2 {}
 
-}
-
-impl Register for types::cbit {
-
-}
-
-impl Register for types::sint {
-
-}
-
-impl Register for types::sfloat {
-
-}
-
-impl Register for types::sgf2n {
-
-}
-
-impl Register for types::sbit {
-
-}
-
+impl<T> Register for SecGf2<T> {}
