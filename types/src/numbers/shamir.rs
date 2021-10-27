@@ -99,9 +99,4 @@ mod tests {
             "000000000000000000000000000000000000000000000000000000000000002A"
         );
     }
-
-    #[test]
-    fn shamir_sharing() {
-        let _sharing = Shamir::<Fr>::t_n_sharing(BigInteger256::from(42), 3, 5).unwrap();
-    }
 }
