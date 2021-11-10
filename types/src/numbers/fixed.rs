@@ -1,3 +1,5 @@
+use super::secret_sharing::SecretSharing;
+
 /// Public fixed point type
 ///
 /// This type is used for providing arithmetic for fixed point numbers
@@ -9,4 +11,4 @@ pub struct PubFixed();
 /// This type wraps different implementations for secret fixed point types
 /// in order to provide a stable API for every type it wraps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
-pub struct SecFixed<T>(T);
+pub struct SecFixed<T: SecretSharing>(T);

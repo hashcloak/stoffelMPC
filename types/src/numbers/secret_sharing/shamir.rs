@@ -1,5 +1,6 @@
-use ark_bls12_381::Fr;
-use ark_ff::{BigInteger256, Field, PrimeField};
+use super::{SecretSharing, SecretSharingError};
+use ark_ff::{Field, PrimeField};
+use num_bigint::BigUint;
 use std::ops::{Add, Mul};
 use thiserror::Error;
 
@@ -10,13 +11,12 @@ use thiserror::Error;
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
 pub struct Shamir<T: Field>(T);
 
-impl Shamir<Fr> {
+impl<T: PrimeField> Shamir<T> {
     /// Create a new Shamir secret
     ///
     /// This implementation uses the BLS12-381 prime field.
-    pub fn new(integer: BigInteger256) -> Result<Shamir<Fr>, ShamirError> {
-        let field_element =
-            PrimeField::from_repr(integer).ok_or(ShamirError::PrimeFieldConvert(integer))?;
+    pub fn new(integer: BigUint) -> Result<Shamir<T>, ShamirError> {
+        let field_element = T::from(integer);
         Ok(Shamir(field_element))
     }
 }
@@ -49,10 +49,16 @@ impl<T: PrimeField> std::fmt::Display for Shamir<T> {
     }
 }
 
+impl<T: PrimeField> SecretSharing for Shamir<T> {
+    fn share(&mut self) -> Result<(), SecretSharingError> {
+        todo!()
+    }
+}
+
 #[derive(Debug, Error)]
 pub enum ShamirError {
-    #[error("Unable to convert element {0} into prime field")]
-    PrimeFieldConvert(BigInteger256),
+    #[error("Unable to convert element into prime field")]
+    PrimeFieldConvert,
     #[error("Unable to create sharing")]
     CreateSharing,
     #[error("Not enough evaluation points to reconstruct secret")]
@@ -61,39 +67,41 @@ pub enum ShamirError {
 
 #[cfg(test)]
 mod tests {
+    use ark_bls12_381::Fr;
+
     use super::*;
 
     #[test]
     fn shamir_new() {
-        let _shamir_1 = Shamir::<Fr>::new(BigInteger256::from(0_u64)).unwrap();
-        let _shamir_2 = Shamir::<Fr>::new(BigInteger256::from(2310498322_u64)).unwrap();
+        let _shamir_1 = Shamir::<Fr>::new(0_u64.into()).unwrap();
+        let _shamir_2 = Shamir::<Fr>::new(2310498322_u64.into()).unwrap();
     }
 
     #[test]
     fn shamir_add() {
-        let shamir_1 = Shamir::<Fr>::new(BigInteger256::from(5_u64)).unwrap();
-        let shamir_2 = Shamir::<Fr>::new(BigInteger256::from(3_u64)).unwrap();
+        let shamir_1 = Shamir::<Fr>::new(5_u64.into()).unwrap();
+        let shamir_2 = Shamir::<Fr>::new(3_u64.into()).unwrap();
 
         assert_eq!(
             shamir_1 + shamir_2,
-            Shamir::<Fr>::new(BigInteger256::from(8_u64)).unwrap()
+            Shamir::<Fr>::new(8_u64.into()).unwrap()
         );
     }
 
     #[test]
     fn shamir_multiply() {
-        let shamir_1 = Shamir::<Fr>::new(BigInteger256::from(42_u64)).unwrap();
-        let shamir_2 = Shamir::<Fr>::new(BigInteger256::from(5_u64)).unwrap();
+        let shamir_1 = Shamir::<Fr>::new(42_u64.into()).unwrap();
+        let shamir_2 = Shamir::<Fr>::new(5_u64.into()).unwrap();
 
         assert_eq!(
             shamir_1 * shamir_2,
-            Shamir::<Fr>::new(BigInteger256::from(210_u64)).unwrap()
+            Shamir::<Fr>::new(210_u64.into()).unwrap()
         );
     }
 
     #[test]
     fn shamir_display() {
-        let shamir_1 = Shamir::<Fr>::new(BigInteger256::from(42_u64)).unwrap();
+        let shamir_1 = Shamir::<Fr>::new(42_u64.into()).unwrap();
         assert_eq!(
             shamir_1.to_string(),
             "000000000000000000000000000000000000000000000000000000000000002A"
