@@ -1,3 +1,6 @@
+mod instructions;
+mod register;
+
 fn main() {}
 
 pub struct StoffelVM {
