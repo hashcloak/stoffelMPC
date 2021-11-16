@@ -4,4 +4,4 @@ pub mod float;
 pub mod gf2;
 pub mod int;
 
-mod secret_sharing;
+pub mod secret_sharing;
