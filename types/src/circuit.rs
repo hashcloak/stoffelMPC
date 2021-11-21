@@ -1,5 +1,8 @@
 
-trait Gate {
+type Wire = u64;
+
+pub trait Gate {
+
     pub fn set_inputs();
     pub fn set_outputs();
     pub fn n_inputs();
@@ -8,12 +11,38 @@ trait Gate {
     pub fn get_outputs()
 }
 
-enum ArithmeticGate {
+pub trait Circuit {
+
+    pub fn set_inputs();
+    pub fn set_outputs();
+    pub fn get_inputs();
+    pub fn get_outputs();
+
+
+    pub fn size();
+    pub fn encode();
+    pub fn decode();
+
+    pub fn execute();
+}
+
+pub enum CircuitType {
+    ArithmeticCircuit,
+    BooleanCircuit
+}
+
+pub struct Circuit {
+    pub circuit_type: CircuitType,
+    pub inputs: Vec<Gate>,
+    pub outputs: Vec<Gate>,
+}
+
+pub enum ArithmeticGate {
     Add,
     Mul
 }
 
-enum BooleanGate {
+pub enum BooleanGate {
     AND,
     OR,
     NOT,
@@ -70,5 +99,39 @@ impl Gate for BooleanGate {
 
     fn get_outputs() {
         todo!()
+    }
+}
+
+impl Circuit for Circuit {
+    pub fn set_inputs() {
+        todo!();
+    }
+
+    pub fn set_outputs() {
+        todo!();
+    }
+
+    pub fn get_inputs() {
+        todo!();
+    }
+
+    pub fn get_outputs() {
+        todo!();
+    }
+
+    pub fn size() {
+        todo!();
+    }
+
+    pub fn encode() {
+        todo!();
+    }
+
+    pub fn decode() {
+        todo!();
+    }
+
+    pub fn execute() {
+        todo!();
     }
 }
