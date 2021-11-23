@@ -33,8 +33,14 @@ pub enum CircuitType {
 
 pub struct Circuit {
     pub circuit_type: CircuitType,
+    pub gate_type: GateType
     pub inputs: Vec<Gate>,
     pub outputs: Vec<Gate>,
+}
+
+pub enum GateType {
+    ArithmeticGate,
+    BooleanGate
 }
 
 pub enum ArithmeticGate {
@@ -135,3 +141,8 @@ impl Circuit for Circuit {
         todo!();
     }
 }
+
+#[#[test]
+fn name() {
+    unimplemented!();
+}]
