@@ -1,148 +1,60 @@
+struct Wire(usize);
 
-type Wire = u64;
-
-pub trait Gate {
-
-    pub fn set_inputs();
-    pub fn set_outputs();
-    pub fn n_inputs();
-    pub fn n_outputs();
-    pub fn get_inputs();
-    pub fn get_outputs()
+enum Circuit<T> {
+    Arithmetic(ArithmeticCircuit<T>),
+    Boolean(BooleanCircuit<T>),
 }
 
-pub trait Circuit {
-
-    pub fn set_inputs();
-    pub fn set_outputs();
-    pub fn get_inputs();
-    pub fn get_outputs();
-
-
-    pub fn size();
-    pub fn encode();
-    pub fn decode();
-
-    pub fn execute();
+struct ArithmeticGate<T> {
+    first: Wire,
+    second: Wire,
+    operation: fn(x: T, y: T) -> T,
 }
 
-pub enum CircuitType {
-    ArithmeticCircuit,
-    BooleanCircuit
-}
-
-pub struct Circuit {
-    pub circuit_type: CircuitType,
-    pub gate_type: GateType
-    pub inputs: Vec<Gate>,
-    pub outputs: Vec<Gate>,
-}
-
-pub enum GateType {
-    ArithmeticGate,
-    BooleanGate
-}
-
-pub enum ArithmeticGate {
-    Add,
-    Mul
-}
-
-pub enum BooleanGate {
-    AND,
-    OR,
-    NOT,
-    XOR,
-    NAND
-}
-
-impl Gate for ArithmeticGate {
-    fn set_inputs() {
-        todo!();
+impl<T> ArithmeticGate<T> {
+    pub fn new(first: Wire, second: Wire, operation: fn(x: T, y: T) -> T) -> ArithmeticGate<T> {
+        ArithmeticGate {
+            first,
+            second,
+            operation,
+        }
     }
 
-    fn set_outputs() {
-        todo!();
-    }
-
-    fn n_inputs() {
-        todo!();
-    }
-
-    fn n_outputs() {
-        todo!();
-    }
-
-    fn get_inputs() {
-        todo!();
-    }
-
-    fn get_outputs() {
-        todo!()
+    pub fn execute(&self, x: T, y: T) -> T {
+        (self.operation)(x, y)
     }
 }
 
-impl Gate for BooleanGate {
-    fn set_inputs() {
-        todo!();
-    }
-
-    fn set_outputs() {
-        todo!();
-    }
-
-    fn n_inputs() {
-        todo!();
-    }
-
-    fn n_outputs() {
-        todo!();
-    }
-
-    fn get_inputs() {
-        todo!();
-    }
-
-    fn get_outputs() {
-        todo!()
+impl<T: std::ops::Add<Output = T>> ArithmeticGate<T> {
+    pub fn add(first: Wire, second: Wire) -> ArithmeticGate<T> {
+        ArithmeticGate {
+            first,
+            second,
+            operation: |first: T, second: T| -> T { first + second },
+        }
     }
 }
 
-impl Circuit for Circuit {
-    pub fn set_inputs() {
-        todo!();
-    }
-
-    pub fn set_outputs() {
-        todo!();
-    }
-
-    pub fn get_inputs() {
-        todo!();
-    }
-
-    pub fn get_outputs() {
-        todo!();
-    }
-
-    pub fn size() {
-        todo!();
-    }
-
-    pub fn encode() {
-        todo!();
-    }
-
-    pub fn decode() {
-        todo!();
-    }
-
-    pub fn execute() {
-        todo!();
+impl<T: std::ops::Mul<Output = T>> ArithmeticGate<T> {
+    pub fn mul(first: Wire, second: Wire) -> ArithmeticGate<T> {
+        ArithmeticGate {
+            first,
+            second,
+            operation: |first: T, second: T| -> T { first * second },
+        }
     }
 }
 
-#[#[test]
-fn name() {
-    unimplemented!();
-}]
+// WIP
+struct BooleanCircuit<T> {marker: std::marker::PhantomData<T>}
+
+struct ArithmeticCircuit<T> {
+    inputs: Vec<ArithmeticGate<T>>,
+}
+
+impl<T: Clone> ArithmeticCircuit<T> {
+    pub fn execute(&self) -> T {
+        let outputs: Vec<Option<T>> = vec![None; self.inputs.len()];
+        todo!();
+    }
+}
