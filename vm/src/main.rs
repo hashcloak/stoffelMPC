@@ -1,5 +1,4 @@
 mod instructions;
-mod register;
 
 fn main() {}
 
