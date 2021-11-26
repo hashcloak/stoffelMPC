@@ -1,4 +1,5 @@
 use super::secret_sharing::{shamir::Shamir, SecretSharing};
+use super::{MPCType};
 use ark_ff::PrimeField;
 use num_bigint::BigUint;
 use std::ops::{Add, Mul};
@@ -10,12 +11,81 @@ use thiserror::Error;
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
 pub struct PubInt(BigUint);
 
+impl MPCType for PubInt {
+
+    fn square(self) -> Self {
+        todo!();
+    }
+
+    fn pow(self, exp: usize) -> Self {
+        todo!();
+    }
+
+    fn min(self, a: Self) -> Self {
+        todo!();
+    }
+
+    fn max(self, a: Self) -> Self {
+        todo!();
+    }
+
+    fn if_else(self, a: Self, b: Self) -> Self {
+        todo!();
+    }
+
+    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
+        todo!();
+    }
+}
+
+impl Add for PubInt {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self {
+        todo!();
+    }
+}
+
+impl Mul for PubInt {
+    type Output = Self; 
+
+    fn mul(self, rhs: Self) -> Self {
+        todo!();
+    }
+}
+
 /// Secret integer type
 ///
 /// This type wraps different implementation for secret integers
 /// in order to provide a stable API for every type it wraps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 pub struct SecInt<T: SecretSharing>(T);
+
+impl<T: SecretSharing + Add<Output = T> + Mul<Output = T>> MPCType for SecInt<T> {
+    fn square(self) -> Self {
+        todo!();
+    }
+
+    fn pow(self, exp: usize) -> Self {
+        todo!();
+    }
+
+    fn min(self, a: Self) -> Self {
+        todo!();
+    }
+
+    fn max(self, a: Self) -> Self {
+        todo!();
+    }
+
+    fn if_else(self, a: Self, b: Self) -> Self {
+        todo!();
+    }
+
+    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
+        todo!();
+    }
+}
 
 impl<T: SecretSharing + Add<Output = T>> Add for SecInt<T> {
     type Output = Self;
