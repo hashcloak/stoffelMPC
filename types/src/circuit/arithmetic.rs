@@ -1,6 +1,34 @@
-use super::Wire;
+use super::{Circuit, Wire};
 
-pub struct ArithmeticCircuit();
+pub struct ArithmeticCircuit<T>(Vec<ArithmeticGate<T>>);
+
+impl<T> Circuit for ArithmeticCircuit<T> {
+    type Gate = ArithmeticGate<T>;
+
+    fn gates(&self) -> &[Self::Gate] {
+        todo!()
+    }
+
+    fn mut_gates(&mut self) -> &mut [Self::Gate] {
+        todo!()
+    }
+
+    fn nth_gate(&self, n: usize) -> &Self::Gate {
+        todo!()
+    }
+
+    fn mut_nth_gate(&mut self, n: usize) -> &mut Self::Gate {
+        todo!()
+    }
+
+    fn execute(&self) -> Self::Gate {
+        todo!()
+    }
+
+    fn size(&self) -> usize {
+        todo!()
+    }
+}
 
 /// A gate type for arithmetic operations
 pub struct ArithmeticGate<T> {
