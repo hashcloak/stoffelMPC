@@ -1,5 +1,7 @@
 use super::Wire;
 
+pub struct BooleanCircuit<T>(Vec<BooleanGate<T>>);
+
 /// A gate type for boolean operations
 pub struct BooleanGate<T> {
     first: Wire,
