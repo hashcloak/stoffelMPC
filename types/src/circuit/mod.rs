@@ -3,6 +3,7 @@ mod boolean;
 
 trait Circuit<T: Copy + Default> {
     type CircuitGate;
+
     fn inputs(&self) -> &[T];
     fn inputs_mut(&mut self) -> &mut [T];
 
@@ -26,4 +27,8 @@ trait Circuit<T: Copy + Default> {
     }
 
     fn execute(&self) -> T;
+
+    // TODO
+    // we need to define the return type
+    fn stats(&self);
 }
