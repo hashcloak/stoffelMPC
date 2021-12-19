@@ -1,5 +1,6 @@
 use super::{Circuit, Gate};
 
+/// A boolean circuit
 pub struct BooleanCircuit<T: Copy + Default> {
     inputs: Vec<T>,
     gates: Vec<BooleanGate<T>>,
@@ -32,7 +33,6 @@ pub struct BooleanGate<T: Copy + Default> {
 }
 
 impl<T: Copy + Default> Gate<T> for BooleanGate<T> {
-    // Execute the gate, yielding a result of the operation
     fn compute(&self, values: &[T]) -> T {
         (self.operation)(values)
     }
