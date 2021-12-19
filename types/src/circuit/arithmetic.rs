@@ -1,5 +1,6 @@
 use super::{Circuit, Gate};
 
+/// An arithmetic circuit
 pub struct ArithmeticCircuit<T: Copy + Default> {
     inputs: Vec<T>,
     gates: Vec<ArithmeticGate<T>>,
@@ -27,12 +28,11 @@ impl<T: Copy + Default> Circuit<T> for ArithmeticCircuit<T> {
 
 /// A gate type for arithmetic operations
 pub struct ArithmeticGate<T: Copy + Default> {
-    pub wires: Vec<usize>,
+    wires: Vec<usize>,
     operation: fn(values: &[T]) -> T,
 }
 
 impl<T: Copy + Default> Gate<T> for ArithmeticGate<T> {
-    // Execute the gate, yielding a result of the operation
     fn compute(&self, values: &[T]) -> T {
         (self.operation)(values)
     }
