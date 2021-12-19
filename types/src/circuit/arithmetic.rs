@@ -73,3 +73,38 @@ impl<T: Copy + Default + std::ops::Mul<Output = T>> ArithmeticGate<T> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn arithmetic_circuit_simple() {
+        let gate_add: ArithmeticGate<i32> = ArithmeticGate::add(&[0, 1]);
+        let gate_mul: ArithmeticGate<i32> = ArithmeticGate::mul(&[0, 1]);
+
+        let circuit_add = ArithmeticCircuit {
+            inputs: vec![5, 7],
+            gates: vec![gate_add],
+        };
+        let circuit_mul = ArithmeticCircuit {
+            inputs: vec![5, 7],
+            gates: vec![gate_mul],
+        };
+        assert_eq!(circuit_add.execute(), 12_i32);
+        assert_eq!(circuit_mul.execute(), 35_i32);
+    }
+
+    #[test]
+    fn arithmetic_circuit_complicated() {
+        let gate_add: ArithmeticGate<i32> = ArithmeticGate::add(&[0, 1]);
+        let gate_mul: ArithmeticGate<i32> = ArithmeticGate::mul(&[2, 3]);
+
+        let circuit = ArithmeticCircuit {
+            inputs: vec![2, 3, 5],
+            gates: vec![gate_add, gate_mul],
+        };
+
+        assert_eq!(circuit.execute(), 25_i32);
+    }
+}
