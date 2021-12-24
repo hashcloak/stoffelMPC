@@ -1,0 +1,108 @@
+// HBS where we only care about trader amounts
+
+program HoneyBadgerSwap {
+    struct Pool {
+        assetAID: int,
+        assetBID: int,
+        amountA: sint,
+        amountB: sint
+    }
+    
+    struct UserData {
+        userID: int,
+        assets: Map<int, sint>
+    }
+    
+    struct LPData {
+        lpID: sint,
+        shares: sint,
+        userData: UserData
+    }
+    
+    storage Pool pool;
+
+    storage Map<int, UserData> userData;
+    storage Map<int, LPData> lpData;
+    
+    fn initialize_pool(assetAID: sint, amountA: sint, assetBID: sint, amountB: sint) {
+        sint k = amountA * amountB;
+        pool = Pool {assetAID: assetAID, amountA: amountA, assetBID:assetBID, amountB: amountB, k: k};
+    }
+    
+    // 2 ways to go about implementing this
+    // 1: inputs are negative to indicate trade direction
+    pub fn trade(userID: int, assetA: sint, amountA: sint, assetB, amountB: sint) -> bool {
+        // Trade A for B
+        if amountA < 0 {
+            sint newAmountA = pools[0].amountA + amountA;
+            sint priceAssetB = pools[0].k / newAmountA;
+            sint newAmountB = pools[0].amountB - priceAssetB
+            
+            userData[userID].assets[assetA] += amountA;
+            userData[userID].assets[assetB] += amountB;
+            
+            pools[0].amountA = newAmountA;
+            pools[0].amountB = newAmountB;
+            
+            return true;
+        }
+        
+        // Trade B for A
+        if amountA >= 0 {
+            Same code as above with a sign change
+            return true
+        }
+        return false
+    }
+    // Clearly not so intuitive to implement and incur extra costs due to comparisons
+    
+    // 2 : Inputs are positive
+    pub fn trade(userID: int, amountA: sint, amountB: sint) -> bool {
+        if amountA < 0 or amount B < 0 {
+            return false;
+        }
+        
+        sint newAmountA = pools[0].amountA - amountA;
+        sint priceAssetB = pools[0].k / (pools[0].amountA - newAmountA)
+        sint newAmountB = pools[0].k / priceAssetB
+        
+        userData[userID].assets[assetA] -= amountA;
+        userData[userID].assets[assetB] += amountB;
+
+        pools[0].amountA = newAmountA;
+        pools[0].amountB = newAmountB;
+    }
+    
+     
+    // Obviously, needs way more input validation. Will be added when we have more details
+    // about the language for a complete, realistic example.
+    pub fn addLiquidity(lpID: int, amountA: sint, maxAmountB: sint) -> sint {
+        sint tokenBAmount = (amountA * pool.amountB) / pool.amountA;
+        sint sharesMinted = (amountA * totalShares) / pool.amountA;
+
+        lpData[lpID].shares += sharesMinted;
+        totalShares += sharesMinted;
+
+        lpData[lpID].userData.amountA += amountA;
+        lpData[lpID].userData.amountB += amountB;
+
+        pool.amountA += amountA;
+        pool.amountB += tokenBAmount;
+        
+    }
+    
+    // Again, missing some basic functionality but does what we need to do for basic ideation on syntax
+    pub fn removeLiquidity(lpID: int, shares: sint) {
+        sint amountA = (shares * pool.amountA) / totalShares;
+        sint amountB = (shares * pool.amountB) / totalShares;
+
+        lpData[lpID].shares -= shares;
+        totalShares -= shares;
+
+        lpData[lpID].userData.amountA -= amountA;
+        lpData[lpID].userData.amountB -= amountB;
+
+        pool.amountA -= amountA;
+        pool.amountB -= amountB;
+    }
+}
