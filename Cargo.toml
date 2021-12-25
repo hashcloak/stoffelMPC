@@ -4,5 +4,6 @@ members = [
     "vm",
     "compiler",
     "mpc",
-    "types"
+    "types",
+    "zkp"
 ]
