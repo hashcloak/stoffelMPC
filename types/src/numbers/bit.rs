@@ -5,7 +5,7 @@ use std::ops::{Add, Mul};
 /// Public bit type
 ///
 /// This type is used for providing arithmetic for bits
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy, Default)]
 pub struct PubBit(bool);
 
 impl MPCType for PubBit { 
@@ -54,7 +54,7 @@ impl Mul for PubBit {
 ///
 /// This type wraps different implementations for secret bit types
 /// in order to provide a stable API for every type it wraps.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct SecBit<T: SecretSharing>(T);
 
 impl<T: SecretSharing> MPCType for SecBit<T> {

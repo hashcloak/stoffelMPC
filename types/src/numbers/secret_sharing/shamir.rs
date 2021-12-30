@@ -8,7 +8,7 @@ use thiserror::Error;
 ///
 /// This type is used to represent a secret-shared value using polynomials.
 /// It can be used as an inner representation of some integer value.
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Clone, Copy, Default)]
 pub struct Shamir<T: Field>(T);
 
 impl<T: PrimeField> Shamir<T> {
