@@ -9,7 +9,8 @@ pub mod secret_sharing;
 
 /// This trait is a catch-all for a type that is used 
 /// within MPC protocols. 
-pub trait MPCType: Sized + Add<Output=Self> + Mul<Output=Self> {
+
+pub trait MPCType: Sized + Add<Output=Self> + Mul<Output=Self>{
 
     /// Returns the square of an MPCType
     fn square(self) -> Self;

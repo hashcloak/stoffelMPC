@@ -8,8 +8,8 @@ use thiserror::Error;
 /// Public integer
 ///
 /// This type is used for providing public integers of arbitrary size.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PubInt(BigUint);
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy, Default)]
+pub struct PubInt([u64; 4]);
 
 impl MPCType for PubInt {
 
@@ -58,7 +58,7 @@ impl Mul for PubInt {
 ///
 /// This type wraps different implementation for secret integers
 /// in order to provide a stable API for every type it wraps.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct SecInt<T: SecretSharing>(T);
 
 impl<T: SecretSharing + Add<Output = T> + Mul<Output = T>> MPCType for SecInt<T> {
