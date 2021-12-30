@@ -17,6 +17,13 @@ pub struct Memory<T: MPCType>(Vec<T>);
 
 impl<T: MPCType> Register<T> {
 
+    fn read(&mut self, i: usize) -> T {
+        self.0[i]
+    }
+
+    fn write(&mut self, i: usize, element: T) {
+        self.0[i] = element;
+    }
 }
 
 impl<T: MPCType> StackRegister<T> {
@@ -25,8 +32,7 @@ impl<T: MPCType> StackRegister<T> {
         self.0.push(element);
     }
 
-    fn pop<'a>(&mut self, mut element: &'a mut T) {
-        //let tmp = self.0.pop().unwrap();
+    fn pop<'a>(&mut self, element: &'a mut T) {
         *element = self.0.pop().unwrap();
     }
 
