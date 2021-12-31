@@ -53,7 +53,29 @@ impl<T: MPCType> StackRegister<T> {
 }
 
 impl<T: MPCType, const N: usize> Memory<T, N> {
+    fn new() -> Self {
+        todo!();
+    }
 
+    fn read() -> T {
+        todo!();
+    }
+
+    fn write() {
+        todo!();
+    }
+
+    fn allocate() {
+        todo!();
+    }
+
+    fn deallocate() {
+        todo!();
+    }
+
+    fn resize() {
+        todo!();
+    }
 }
 
 impl<T: MPCType, const N: usize> Default for Memory<T, N> {
