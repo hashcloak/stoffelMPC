@@ -12,8 +12,8 @@ pub struct Register<T: MPCType>(Vec<T>);
 #[derive(Clone, Debug, Default)]
 pub struct StackRegister<T: MPCType>(Vec<T>);
 
-#[derive(Clone, Debug, Default)]
-pub struct Memory<T: MPCType>(Vec<T>);
+#[derive(Clone, Debug)]
+pub struct Memory<T: MPCType, const N: usize>([T; N]);
 
 impl<T: MPCType> Register<T> {
 
@@ -52,6 +52,12 @@ impl<T: MPCType> StackRegister<T> {
 
 }
 
-impl<T: MPCType> Memory<T> {
+impl<T: MPCType, const N: usize> Memory<T, N> {
 
+}
+
+impl<T: MPCType, const N: usize> Default for Memory<T, N> {
+    fn default() -> Self {
+        Memory([T::default(); N])
+    }
 }
