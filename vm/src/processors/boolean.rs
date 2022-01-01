@@ -1,30 +1,31 @@
-use super::{Processor, Register, StackRegister};
+use super::processor::Processor;
+use crate::state::{Register, StackRegister};
 use types::numbers::{MPCType};
 
-pub struct BooleanProcessor {
+pub struct BooleanProcessor<T: MPCType> {
     // Registers
-    reg_cgf2: Register,
-    reg_sgf2: Register,
-    reg_cgf2n: Register,
-    reg_sgf2n: Register,
+    reg_cgf2: Register<T>,
+    reg_sgf2: Register<T>,
+    reg_cgf2n: Register<T>,
+    reg_sgf2n: Register<T>,
 
     // Stack Registers
-    stack_cgf2: StackRegister,
-    stack_sgf2: StackRegister,
-    stack_cgf2n: StackRegister,
-    stack_sgf2n: StackRegister
+    stack_cgf2: StackRegister<T>,
+    stack_sgf2: StackRegister<T>,
+    stack_cgf2n: StackRegister<T>,
+    stack_sgf2n: StackRegister<T>
 }
 
-impl Processor for BooleanProcessor {
+impl<T: MPCType> Processor for BooleanProcessor<T> {
     fn clear_registers() {
         todo!();
     }
 
-    fn get_program_counter() -> uint {
+    fn get_program_counter() -> usize {
         todo!();
     }
 
-    fn get_program_size() -> uint {
+    fn get_program_size() -> usize {
         todo!();
     }
 
@@ -58,6 +59,6 @@ impl Processor for BooleanProcessor {
 
 }
 
-impl BooleanProcessor {
+impl<T: MPCType> BooleanProcessor<T> {
 
 }
