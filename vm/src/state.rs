@@ -7,13 +7,13 @@ use types::numbers::{
 };
 
 #[derive(Clone, Debug, Default)]
-pub struct Register<T: MPCType>(Vec<T>);
+pub(crate) struct Register<T: MPCType>(Vec<T>);
 
 #[derive(Clone, Debug, Default)]
-pub struct StackRegister<T: MPCType>(Vec<T>);
+pub(crate) struct StackRegister<T: MPCType>(Vec<T>);
 
 #[derive(Clone, Debug)]
-pub struct Memory<T: MPCType, const N: usize>([T; N]);
+pub(crate) struct Memory<T: MPCType, const N: usize>([T; N]);
 
 impl<T: MPCType> Register<T> {
 
