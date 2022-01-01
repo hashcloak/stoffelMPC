@@ -1,31 +1,32 @@
-use super::{Processor, Register, StackRegister};
+use super::processor::Processor;
+use crate::state::{Register, StackRegister};
 use types::numbers::{MPCType};
 
-pub struct ArithmeticProcessor {
+pub struct ArithmeticProcessor<T: MPCType> {
     // Registers
-    reg_cint_mod_p: Register,
-    reg_register_int: Register,
-    reg_sint_mod_p: Register,
-    reg_sregister_int: Register,
+    reg_cint_mod_p: Register<T>,
+    reg_register_int: Register<T>,
+    reg_sint_mod_p: Register<T>,
+    reg_sregister_int: Register<T>,
 
     // Stacks
-    stack_cint_mod_p: StackRegister,
-    stack_register_int: StackRegister,
-    reg_sint_mod_p: StackRegister,
-    reg_sregister_int: StackRegister
+    stack_cint_mod_p: StackRegister<T>,
+    stack_register_int: StackRegister<T>,
+    stack_sint_mod_p: StackRegister<T>,
+    stack_sregister_int: StackRegister<T>
 
 }
 
-impl Processor for ArithmeticProcessor {
+impl<T: MPCType> Processor for ArithmeticProcessor<T> {
     fn clear_registers() {
         todo!();
     }
 
-    fn get_program_counter() -> uint {
+    fn get_program_counter() -> usize {
         todo!();
     }
 
-    fn get_program_size() -> uint {
+    fn get_program_size() -> usize {
         todo!();
     }
 
@@ -59,6 +60,6 @@ impl Processor for ArithmeticProcessor {
 
 }
 
-impl ArithmeticProcessor {
+impl<T: MPCType> ArithmeticProcessor<T> {
 
 }
