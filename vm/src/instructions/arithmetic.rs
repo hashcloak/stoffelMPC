@@ -1,928 +1,581 @@
-use super::processors::{ArithmeticProcessor};
+use crate::processors::arithmetic::{ArithmeticProcessor};
+use types::numbers::{MPCType};
 
 // Assign immediate value to clear register
-pub fn LDI<A: ArithmeticProcessor>() {
+pub fn LDI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Assign immeidate value to secret register
-pub fn LDSI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Assign clear memory value(s) to clear register by immediate address
-pub fn LDMC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Assign secret memory value(s) to secret register by immediate address
-pub fn LDMS<A: ArithmeticProcessor>() {
+pub fn LDSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Assign clear register to clear memory value(s) by immediate address
-pub fn STMC<A: ArithmeticProcessor>() {
+pub fn STMC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Assign secret register to secret memory value(s) by immediate address
-pub fn STMS<A: ArithmeticProcessor>() {
+pub fn STMS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Assign clear memory value(s) to clear register by register address
-pub fn LDMCI<A: ArithmeticProcessor>() {
+pub fn LDMCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Assign secret memory value(s) to secret register by register address
-pub fn LDMSI<A: ArithmeticProcessor>() {
+pub fn LDMSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Assign clear register to clear memory value(s) by register address
-pub fn STMCI<A: ArithmeticProcessor>() {
+pub fn STMCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Assign secret register to secret memory value(s) by register address
-pub fn STMSI<A: ArithmeticProcessor>() {
+pub fn STMSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Copy clear register
-pub fn MOVC<A: ArithmeticProcessor>() {
+pub fn MOVC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Copy secret register
-pub fn MOVS<A: ArithmeticProcessor>() {
+pub fn MOVS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store number of current thread in clear integer register
-pub fn LDTN<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store the argument passed to the current thread in clear integer register
-pub fn LDARG<A: ArithmeticProcessor>() {
+pub fn LDTN<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Require on computation modulus
 // @dev: Do we need to keep this?
-pub fn REQBL<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear integer register to the thread argument
-pub fn STARG<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Output time since start of computation
-pub fn TIME<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Start timer
-pub fn START<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Stop timer
-pub fn STOP<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Offline data usage
-pub fn USE<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Input usage
-pub fn USE_INP<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Start tape/bytecode file in another thread
-pub fn RUN_TAPE<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Join thread
-pub fn JOIN_TAPE<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Crash runtime if the register's value is > 0
-pub fn CRASH<A: ArithmeticProcessor>() {
+pub fn REQBL<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Custom preprocessed data usage
-pub fn USE_PREP<A: ArithmeticProcessor>() {
+pub fn USE_PREP<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Matrix multiplication usage
-pub fn USE_MATMUL<A: ArithmeticProcessor>() {
+pub fn USE_MATMUL<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear addition
-pub fn ADDC<A: ArithmeticProcessor>() {
+pub fn ADDC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Secret addition
-pub fn ADDS<A: ArithmeticProcessor>() {
+pub fn ADDS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Mixed addition
-pub fn ADDM<A: ArithmeticProcessor>() {
+pub fn ADDM<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Addition of clear register and immediate value
-pub fn ADDCI<A: ArithmeticProcessor>() {
+pub fn ADDCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Addition of secret register and immediate value
-pub fn ADDSI<A: ArithmeticProcessor>() {
+pub fn ADDSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear subtraction
-pub fn SUBC<A: ArithmeticProcessor>() {
+pub fn SUBC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Secret subtraction
-pub fn SUBS<A: ArithmeticProcessor>() {
+pub fn SUBS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Subtract clear from secret value
-pub fn SUBML<A: ArithmeticProcessor>() {
+pub fn SUBML<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Subtract secret from clear value
-pub fn SUBMR<A: ArithmeticProcessor>() {
+pub fn SUBMR<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Subtraction immediate value from clear register
-pub fn SUBCI<A: ArithmeticProcessor>() {
+pub fn SUBCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Subtraction immediate value from secret register
-pub fn SUBSI<A: ArithmeticProcessor>() {
+pub fn SUBSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Subtraction of clear register from immediate value
-pub fn SUBCFI<A: ArithmeticProcessor>() {
+pub fn SUBCFI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Subtraction of secret register from immediate value
-pub fn SUBSFI<A: ArithmeticProcessor>() {
+pub fn SUBSFI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear multiplcation
-pub fn MULC<A: ArithmeticProcessor>() {
+pub fn MULC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Multiply secret and clear value
-pub fn MULM<A: ArithmeticProcessor>() {
+pub fn MULM<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Multipleication of clear register and immediate value
-pub fn MULCI<A: ArithmeticProcessor>() {
+pub fn MULCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Multiplication of secret register and immediate value
-pub fn MULSI<A: ArithmeticProcessor>() {
+pub fn MULSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear division
-pub fn DIVC<A: ArithmeticProcessor>() {
+pub fn DIVC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Division of secret register and immediate value
-pub fn DIVCI<A: ArithmeticProcessor>() {
+pub fn DIVCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear modular reduction
-pub fn MODC<A: ArithmeticProcessor>() {
+pub fn MODC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Modular reduction of clear register and immediate value
-pub fn MODCI<A: ArithmeticProcessor>() {
+pub fn MODCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear legendre symbol computation over prime p
-pub fn LEGENDREC<A: ArithmeticProcessor>() {
+pub fn LEGENDREC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear truncated hash computation
-pub fn DIGESTC<A: ArithmeticProcessor>() {
+pub fn DIGESTC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Inverse of power of two modulo prime
-pub fn INV2M<A: ArithmeticProcessor>() {
+pub fn INV2M<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear integer floor division
-pub fn FLOORDIVC<A: ArithmeticProcessor>() {
+pub fn FLOORDIVC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store fresh random triples in secret register
-pub fn TRIPLE<A: ArithmeticProcessor>() {
+pub fn TRIPLE<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store fresh random bits in secret register
-pub fn BIT<A: ArithmeticProcessor>() {
+pub fn BIT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store fresh random squares in secret register
-pub fn SQUARE<A: ArithmeticProcessor>() {
+pub fn SQUARE<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store fresh random inverses in secret register
-pub fn INV<A: ArithmeticProcessor>() {
+pub fn INV<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store custom preprocessed data in secret register
-pub fn PREP<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store fresh random daBits in secret register
-// @dev: Do we need to keep this?
-pub fn DABIT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store frehs random loose edaBits in secret register
-// @dev: Do we need to keep this?
-pub fn EDABIT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store fresh random strict edaBits in secret register
-pub fn SEDABIT<A: ArithmeticProcessor>() {
+pub fn PREP<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store fresh length-restricted random shares in secret register
-pub fn RANDOMS<A: ArithmeticProcessor>() {
+pub fn RANDOMS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store fresh random input maskes in secret register and clear regiser of the relevant player
-pub fn INPUTMASKREG<A: ArithmeticProcessor>() {
+pub fn INPUTMASKREG<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store shares of a fresh secret random element in secret register
-pub fn RANDOMFULLS<A: ArithmeticProcessor>() {
+pub fn RANDOMFULLS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Read a variable number of clear values in internal representation from socket for a specified 
 // client id and store them in clear registers
-pub fn READSOCKETC<A: ArithmeticProcessor>() {
+pub fn READSOCKETC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Read a variable number of secret values in internal representation from socket for a specified 
 // client id and store them in secret registers
-pub fn READSOCKETS<A: ArithmeticProcessor>() {
+pub fn READSOCKETS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Write a variable number of secret shares from registers into a socket for a specified client id
-pub fn WRITESOCKETS<A: ArithmeticProcessor>() {
+pub fn WRITESOCKETS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Read a variable number of 32-bit integers from socket for a specified client id and store them in clear integer registers
-pub fn WRITESOCKETSHARE<A: ArithmeticProcessor>() {
+pub fn WRITESOCKETSHARE<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Open a server socket on a party-specific port number and listen for client connections
 // @dev: Does this need to be an opcode?
-pub fn LISTEN<A: ArithmeticProcessor>() {
+pub fn LISTEN<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Wait for a connection at the given port and write socket handle to clear integer register
 // @dev: Does this need to be an opcode?
-pub fn ACCEPTCLIENTCONNECTION<A: ArithmeticProcessor>() {
+pub fn ACCEPTCLIENTCONNECTION<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Close connection to client
 // @dev: Does this need to be an opcode?
-pub fn CLOSECLIENTCONNECTION<A: ArithmeticProcessor>() {
+pub fn CLOSECLIENTCONNECTION<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Logical AND of clear registers
-pub fn ANDC<A: ArithmeticProcessor>() {
+pub fn ANDC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Logical XOR of clear registers
-pub fn XORC<A: ArithmeticProcessor>() {
+pub fn XORC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Logical OR of clear registers
-pub fn ORC<A: ArithmeticProcessor>() {
+pub fn ORC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Logical AND of clear registers and immediate value
-pub fn ANDCI<A: ArithmeticProcessor>() {
+pub fn ANDCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Logical XOR of clear register and immediate value
-pub fn XORCI<A: ArithmeticProcessor>() {
+pub fn XORCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Logical OR of clear register and immediate value
-pub fn ORCI<A: ArithmeticProcessor>() {
+pub fn ORCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Clear logical NOT of a constant number of bits of clear register
-pub fn NOTC<A: ArithmeticProcessor>() {
+pub fn NOTC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Bitwise left shift of clear register
-pub fn SHLC<A: ArithmeticProcessor>() {
+pub fn SHLC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Bitwise right shift of clear register
-pub fn SHRC<A: ArithmeticProcessor>() {
+pub fn SHRC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Bitwise left shift of clear by immediate value
-pub fn SHLCI<A: ArithmeticProcessor>() {
+pub fn SHLCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Bitwise right shift of clear register by immediate value
-pub fn SHRCI<A: ArithmeticProcessor>() {
+pub fn SHRCI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Bitwise right shift of secret register by immediate value
-pub fn SHRSI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Unconditional relative jump in the bytecode
-pub fn JMP<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Conditional relative jump in the bytecode
-// NZ = Not Zero
-pub fn JMPNZ<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Conditional relative jump in the bytecode
-pub fn JMPEQZ<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer zero test
-pub fn EQZC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer less than zero test
-pub fn LTZC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer less than comparison
-pub fn LTC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer greater than comparison
-pub fn GTC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer equality test
-pub fn EQC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Unconditional relative jump in the bytecode
-pub fn JMPI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer bit decomposition
-pub fn BITDECINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store immediate value in clear integer register
-pub fn LDINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer register addition
-pub fn ADDINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clera integer register subtraction
-pub fn SUBINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer register multiplication
-pub fn MULINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Clear integer register division with floor rounding
-pub fn DIVINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Output clear integer register
-// @dev: Should we keep this?
-pub fn PRINTINT<A: ArithmeticProcessor>() {
+pub fn SHRSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Reveat secret registers to clear registers
-pub fn OPEN<A: ArithmeticProcessor>() {
+pub fn OPEN<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Element-wise mupleication of secret registers
-pub fn MULS<A: ArithmeticProcessor>() {
+pub fn MULS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Constant-vector mutiplication of secret registers
-pub fn MULRS<A: ArithmeticProcessor>() {
+pub fn MULRS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Dot product of secret register
-pub fn DOTPRODS<A: ArithmeticProcessor>() {
+pub fn DOTPRODS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Probabilistic truncation if supported by protocol
-pub fn TRUNC_PR<A: ArithmeticProcessor>() {
+pub fn TRUNC_PR<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Secret matrix multiplication from registers
-pub fn MATMULS<A: ArithmeticProcessor>() {
+pub fn MATMULS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Secret matrix multiplication reading directly from memory
-pub fn MATMULSM<A: ArithmeticProcessor>() {
+pub fn MATMULSM<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Secret 2D convolution
-pub fn CONV2DS<A: ArithmeticProcessor>() {
+pub fn CONV2DS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Force MAC check in current thread and all idle thread if current thread is the main thread
-pub fn CHECK<A: ArithmeticProcessor>() {
+pub fn CHECK<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Debugging output of clear register
 // @dev: Should we keep this?
-pub fn PRINTREG<A: ArithmeticProcessor>() {
+pub fn PRINTREG<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store insecure random value of specified length in clear integer register
-pub fn RAND<A: ArithmeticProcessor>() {
+pub fn RAND<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Output clear register
-pub fn PRINTREGPLAIN<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Output a single byte
-pub fn PRINTCHR<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Output four bytes
-pub fn PRINTSTR<A: ArithmeticProcessor>() {
+pub fn PRINTREGPLAIN<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store publc input in clear register
-pub fn PUBINPUT<A: ArithmeticProcessor>() {
+pub fn PUBINPUT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Output floating-number from clear registers
-pub fn PRINTFLOATPLAIN<A: ArithmeticProcessor>() {
+pub fn PRINTFLOATPLAIN<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Write shares to Persistence/Transactions-P<playerno>.data
-pub fn WRITEFILESHARE<A: ArithmeticProcessor>() {
+pub fn WRITEFILESHARE<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Read shares from Persistence/Transactions-P<playerno>.data
-pub fn READFILESHARE<A: ArithmeticProcessor>() {
+pub fn READFILESHARE<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Conditionally output four bytes
-pub fn CONDPRINTSTR<A: ArithmeticProcessor>() {
+pub fn CONDPRINTSTR<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Convert clear integer register to clear register
-pub fn CONVINT<A: ArithmeticProcessor>() {
+pub fn CONVINT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Convert clear integer register to clear register
-pub fn CONVMODP<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Assign clear integer memory value(s) to clear integer register by immediate address
-pub fn LDMINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Assign clear integer memory value(s) to clear integer register by immeiate address
-pub fn STMINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Assign clear integer memory value(s) to clear integer register by register address
-pub fn LDMINTI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Assign clear integer to clear integer memory value(s) by register address
-pub fn STMINTI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Pushes clear integer register to the thread-local stack
-pub fn PUSHINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Pops from the thread-local stack to clear integer
-pub fn POPINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear integer register
-pub fn MOVINT<A: ArithmeticProcessor>() {
+pub fn CONVMODP<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Create incremental clear integer
-pub fn INCINT<A: ArithmeticProcessor>() {
+pub fn INCINT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Randomly shuffles clear integer vector with public randomness
-pub fn SHUFFLE<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Set number of digits after decimal point for PRINTFLOATPLAIN
-// @dev: Do we need this?
-pub fn PRINTFLOATPREC<A: ArithmeticProcessor>() {
+pub fn SHUFFLE<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Conditionally output clear register
-pub fn CONDPRINTPLAIN<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store number of players in clear integer register
-pub fn NPLAYERS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store maximal number of corrupt players in clear integer register
-pub fn THRESHOLD<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store current player number in clear integer register
-pub fn PLAYERID<A: ArithmeticProcessor>() {
+pub fn CONDPRINTPLAIN<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // edaBit usage
-pub fn USE_EDABIT<A: ArithmeticProcessor>() {
+pub fn USE_EDABIT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Binary integer output
-pub fn INTOUTPUT<A: ArithmeticProcessor>() {
+pub fn INTOUTPUT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Binary floating-point output
-pub fn FLOATOUTPUT<A: ArithmeticProcessor>() {
+pub fn FLOATOUTPUT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store private input in secret registers
-pub fn INPUTMIXED<A: ArithmeticProcessor>() {
+pub fn INPUTMIXED<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store private input in secret registers
-pub fn INPUTMIXEDREG<A: ArithmeticProcessor>() {
+pub fn INPUTMIXEDREG<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Store private input in secret registers
-pub fn RAWINPUT<A: ArithmeticProcessor>() {
+pub fn RAWINPUT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Private input from cint
-pub fn INPUTPERSONAL<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Bitwise XOR of secret bit register
-pub fn XORS<A: ArithmeticProcessor>() {
+pub fn INPUTPERSONAL<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Bitwise XOR of single secret and clear bit registers
-pub fn XORM<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Constant-vector AND of secret bit registeers
-pub fn ANDRS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Secret bit register decomposition
-pub fn BITDECS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Secret bit register decomposition
-pub fn BITCOMS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear integer register to secret bit register
-pub fn CONVSINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Store immediate in secret bit register
-pub fn LDBITS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Bitwise AND of secret bit register vector
-pub fn ANDS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Secret bit register vector transpose
-pub fn TRANS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy fresh secret random bit to secret bit register
-pub fn BITB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Bitwise AND of single secret and clear bit registers
-pub fn ANDM<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Bitwise NOT of secret register vector
-pub fn NOTS<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Bitwise XOR of single clear bit register and immediate
-pub fn XORCBI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Secret bit register decomposition
-pub fn BITDECC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Bitwise NOT of secret register vector
-pub fn NOTCB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear integer register to clear bit register
-pub fn CONVCINT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Reveal secret bit register vectors and copy result to clear bit register vectors
-pub fn REVEAL<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear bit memory cell with compile-time address to clear bit register
-pub fn LDMCB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear bit register to cleare bit memory cell with compile-time address
-pub fn STMCB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Bitwise XOR of two single clear bit registers
-pub fn XORCB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Integer addition two single clear bit registers
-pub fn ADDCB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Integer addition single clear bit register and immediate
-pub fn ADDCBI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Integer multiplication single clear bit register and immediate
-pub fn MULCBI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Right shift of clear bit register by immediate
-pub fn SHRCBI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Left shift of clear bit register by immediate
-pub fn SHLCBI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear register vector by bit to clear bit register vectors
-pub fn CONVCINTVEC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Signed output of clear bit register
-pub fn PRINTREGSIGNED<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Debug output of clear bit register
-pub fn PRINTREGB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Output clear bit register
-pub fn PRINTREGPLAINB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Output floating-number from clear bit registers
-pub fn PRINTFLOATPLAINB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Conditionally output four bytes
-pub fn CONDPRINTSTRB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear bit register to clear integer register
-pub fn CONVCBIT<A: ArithmeticProcessor>() {
+pub fn XORM<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Copy clear bit register vector to clear regiser by bit
-pub fn CONVBITVEC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy secret bit memory cell with compile-time address to secret bit register
-pub fn LDMSB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy secret bit register to secret bit memory cell with compile-time address
-pub fn STMSB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy secret bit memory cell with run-time address to secret bit register
-pub fn LDMSBI<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy secret bit register to secret bit memory cell with run-time address
-pub fn STMSBI<A: ArithmeticProcessor>() {
+pub fn CONVBITVEC<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Copy secret bit register
-pub fn MOV<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy private input to secret bit register vectors
-pub fn INPUTB<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy private input secret bit registers bit by bit
-pub fn INPUTBVEC<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Local share conversion
-pub fn SPLIT<A: ArithmeticProcessor>() {
-    todo!();
-}
-
-// Copy clear bit register vector to secret bit register vector
-pub fn CONVCBIT2S<A: ArithmeticProcessor>() {
+pub fn MOV<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Copy clear bit memory cell with run-time address to clear bit register
-pub fn LDMCBI<A: ArithmeticProcessor>() {
+pub fn LDMCBI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
 // Copy clear bit register to clear bit memory cell with run-time address
-pub fn STMCBI<A: ArithmeticProcessor>() {
+pub fn STMCBI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GLDSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GSTMS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GLDMSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GSTMSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GMOVS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GADDS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GADDM<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GADDSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GSUBS<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GSUBSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GSUBSFI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GSUBML<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GSUBMR<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GMULM<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GMULSI<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GTRIPLE<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GBIT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
+    todo!();
+}
+
+pub fn GCONVINT<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
