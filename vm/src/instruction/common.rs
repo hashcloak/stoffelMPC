@@ -1,6 +1,6 @@
 // VM Instructions that are common to both GC and Arithmetic circuits
 
-use crate::processors::processor::{Processor};
+use crate::processor::Processor;
 
 // Output a single byte
 pub fn PRINTCHR<P: Processor>(p: &mut P) {
@@ -217,3 +217,4 @@ pub fn THRESHOLD<P: Processor>(p: &mut P) {
 pub fn PLAYERID<P: Processor>(p: &mut P) {
     todo!();
 }
+

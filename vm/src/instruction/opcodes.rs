@@ -2,7 +2,7 @@
 /// These are the instructions for the StoffelMPC VM. These instructions are taken from the MP-SPDZ's VM instructions
 /// These instructions may be reduced or added to at a later time.
 
-pub enum Instructions {
+pub enum Opcodes {
     /// Emulation
     CISC = 0x00,
     /// Load/store
@@ -188,4 +188,3 @@ pub enum Instructions {
     INITSECURESOCKET = 0x1BA,
     RESPSECURESOCKET = 0x1BB,
 }
-

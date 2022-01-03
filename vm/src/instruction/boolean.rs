@@ -1,5 +1,5 @@
-use crate::processors::boolean::{BooleanProcessor};
-use types::numbers::{MPCType};
+use crate::processor::boolean::BooleanProcessor;
+use types::numbers::MPCType;
 
 // Copy private input to secret bit register vectors
 pub fn INPUTB<T: MPCType>(bp: &mut BooleanProcessor<T>) {
@@ -26,7 +26,6 @@ pub fn LDMSDI<T: MPCType>(bp: &mut BooleanProcessor<T>) {
 pub fn STMSDI<T: MPCType>(bp: &mut BooleanProcessor<T>) {
     todo!();
 }
-
 
 pub fn STMSDCI<T: MPCType>(bp: &mut BooleanProcessor<T>) {
     todo!();
@@ -241,3 +240,4 @@ pub fn SEDABIT<T: MPCType>(bp: &mut BooleanProcessor<T>) {
 pub fn SPLIT<T: MPCType>(bp: &mut BooleanProcessor<T>) {
     todo!();
 }
+

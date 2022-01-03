@@ -1,6 +1,6 @@
-use super::processor::Processor;
+use super::Processor;
 use crate::state::{Register, StackRegister};
-use types::numbers::{MPCType};
+use types::numbers::MPCType;
 
 pub struct BooleanProcessor<T: MPCType> {
     // Registers
@@ -13,7 +13,7 @@ pub struct BooleanProcessor<T: MPCType> {
     stack_cgf2: StackRegister<T>,
     stack_sgf2: StackRegister<T>,
     stack_cgf2n: StackRegister<T>,
-    stack_sgf2n: StackRegister<T>
+    stack_sgf2n: StackRegister<T>,
 }
 
 impl<T: MPCType> Processor for BooleanProcessor<T> {
@@ -56,9 +56,6 @@ impl<T: MPCType> Processor for BooleanProcessor<T> {
     fn give_private_output(to_store_in_memory: bool) {
         todo!()
     }
-
 }
 
-impl<T: MPCType> BooleanProcessor<T> {
-
-}
+impl<T: MPCType> BooleanProcessor<T> {}

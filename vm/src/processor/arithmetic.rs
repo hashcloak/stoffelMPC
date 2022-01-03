@@ -1,6 +1,6 @@
-use super::processor::Processor;
+use super::Processor;
 use crate::state::{Register, StackRegister};
-use types::numbers::{MPCType};
+use types::numbers::MPCType;
 
 pub struct ArithmeticProcessor<T: MPCType> {
     // Registers
@@ -13,8 +13,7 @@ pub struct ArithmeticProcessor<T: MPCType> {
     stack_cint_mod_p: StackRegister<T>,
     stack_register_int: StackRegister<T>,
     stack_sint_mod_p: StackRegister<T>,
-    stack_sregister_int: StackRegister<T>
-
+    stack_sregister_int: StackRegister<T>,
 }
 
 impl<T: MPCType> Processor for ArithmeticProcessor<T> {
@@ -57,9 +56,7 @@ impl<T: MPCType> Processor for ArithmeticProcessor<T> {
     fn give_private_output(to_store_in_memory: bool) {
         todo!()
     }
-
 }
 
-impl<T: MPCType> ArithmeticProcessor<T> {
+impl<T: MPCType> ArithmeticProcessor<T> {}
 
-}

@@ -1,4 +1,4 @@
-use crate::processors::arithmetic::{ArithmeticProcessor};
+use crate::processor::arithmetic::{ArithmeticProcessor};
 use types::numbers::{MPCType};
 
 // Assign immediate value to clear register
