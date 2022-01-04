@@ -2,7 +2,7 @@ use thiserror::Error;
 
 pub mod shamir;
 
-pub trait SecretSharing {
+pub trait SecretSharing: Copy + Default {
     fn share(&mut self) -> Result<(), SecretSharingError>;
 }
 
