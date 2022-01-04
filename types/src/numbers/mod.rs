@@ -7,10 +7,9 @@ use std::ops::{Add, Mul};
 
 pub mod secret_sharing;
 
-/// This trait is a catch-all for a type that is used 
-/// within MPC protocols. 
-pub trait MPCType: Sized + Add<Output=Self> + Mul<Output=Self> {
-
+/// This trait is a catch-all for a type that is used
+/// within MPC protocols.
+pub trait MPCType: Sized + Add<Output = Self> + Mul<Output = Self> + Copy + Default {
     /// Returns the square of an MPCType
     fn square(self) -> Self;
 
@@ -29,3 +28,4 @@ pub trait MPCType: Sized + Add<Output=Self> + Mul<Output=Self> {
     /// Returns (a, b) if self == 0 and (b, a) if self == 1
     fn cond_swap(self, a: Self, b: Self) -> (Self, Self);
 }
+

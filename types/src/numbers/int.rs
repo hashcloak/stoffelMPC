@@ -1,6 +1,6 @@
 use super::secret_sharing::{shamir::Shamir, SecretSharing};
-use super::{MPCType};
-use ark_ff::PrimeField;
+use super::MPCType;
+use ark_ff::{BigInteger256, PrimeField};
 use num_bigint::BigUint;
 use std::ops::{Add, Mul};
 use thiserror::Error;
@@ -8,11 +8,10 @@ use thiserror::Error;
 /// Public integer
 ///
 /// This type is used for providing public integers of arbitrary size.
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord)]
-pub struct PubInt(BigUint);
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy, Default)]
+pub struct PubInt(BigInteger256);
 
 impl MPCType for PubInt {
-
     fn square(self) -> Self {
         todo!();
     }
@@ -47,7 +46,7 @@ impl Add for PubInt {
 }
 
 impl Mul for PubInt {
-    type Output = Self; 
+    type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
         todo!();
@@ -58,7 +57,7 @@ impl Mul for PubInt {
 ///
 /// This type wraps different implementation for secret integers
 /// in order to provide a stable API for every type it wraps.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct SecInt<T: SecretSharing>(T);
 
 impl<T: SecretSharing + Add<Output = T> + Mul<Output = T>> MPCType for SecInt<T> {

@@ -1,11 +1,11 @@
 use super::secret_sharing::SecretSharing;
-use super::{MPCType};
+use super::MPCType;
 use std::ops::{Add, Mul};
 
 /// Public floating point type
 ///
 /// This type is used for providing arithmetic for floating point numbers
-#[derive(Debug, Clone, PartialEq, PartialOrd)]
+#[derive(Debug, Clone, PartialEq, PartialOrd, Copy, Default)]
 pub struct PubFloat(f32);
 
 impl MPCType for PubFloat {
@@ -54,9 +54,8 @@ impl Mul for PubFloat {
 ///
 /// This type wraps different implementations for secret floating point types
 /// in order to provide a stable API for every type it wraps.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct SecFloat<T: SecretSharing>(T);
-
 
 impl<T: SecretSharing> MPCType for SecFloat<T> {
     fn square(self) -> Self {
@@ -99,3 +98,4 @@ impl<T: SecretSharing> Mul for SecFloat<T> {
         todo!();
     }
 }
+
