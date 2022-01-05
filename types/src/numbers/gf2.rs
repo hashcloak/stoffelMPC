@@ -1,5 +1,5 @@
 use super::secret_sharing::SecretSharing;
-use super::{MPCType};
+use super::MPCType;
 use std::ops::{Add, Mul};
 
 /// Public Gf2 type
@@ -104,3 +104,4 @@ impl<T: SecretSharing> Mul for SecGf2<T> {
         todo!();
     }
 }
+

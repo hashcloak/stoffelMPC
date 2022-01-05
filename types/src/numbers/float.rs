@@ -1,5 +1,5 @@
 use super::secret_sharing::SecretSharing;
-use super::{MPCType};
+use super::MPCType;
 use std::ops::{Add, Mul};
 
 /// Public floating point type
@@ -57,7 +57,6 @@ impl Mul for PubFloat {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
 pub struct SecFloat<T: SecretSharing>(T);
 
-
 impl<T: SecretSharing> MPCType for SecFloat<T> {
     fn square(self) -> Self {
         todo!();
@@ -99,3 +98,4 @@ impl<T: SecretSharing> Mul for SecFloat<T> {
         todo!();
     }
 }
+

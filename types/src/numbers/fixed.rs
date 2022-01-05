@@ -1,5 +1,5 @@
 use super::secret_sharing::SecretSharing;
-use super::{MPCType};
+use super::MPCType;
 use std::ops::{Add, Mul};
 
 /// Public fixed point type
@@ -98,3 +98,4 @@ impl<T: SecretSharing> Mul for SecFixed<T> {
         todo!();
     }
 }
+

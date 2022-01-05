@@ -1,5 +1,5 @@
 use super::secret_sharing::SecretSharing;
-use super::{MPCType};
+use super::MPCType;
 use std::ops::{Add, Mul};
 
 /// Public bit type
@@ -8,7 +8,7 @@ use std::ops::{Add, Mul};
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy, Default)]
 pub struct PubBit(bool);
 
-impl MPCType for PubBit { 
+impl MPCType for PubBit {
     fn square(self) -> Self {
         todo!();
     }
@@ -98,3 +98,4 @@ impl<T: SecretSharing> Mul for SecBit<T> {
         todo!();
     }
 }
+
