@@ -17,7 +17,7 @@ pub(crate) struct Memory<T: MPCType, const N: usize>([T; N]);
 
 impl<T: MPCType> Register<T> {
 
-    fn read(&mut self, i: usize) -> T {
+    fn read(&self, i: usize) -> T {
         self.0[i]
     }
 
@@ -32,8 +32,8 @@ impl<T: MPCType> StackRegister<T> {
         self.0.push(element);
     }
 
-    fn pop<'a>(&mut self, element: &'a mut T) {
-        *element = self.0.pop().unwrap();
+    fn pop(&mut self) -> T {
+        self.0.pop().unwrap()
     }
 
     fn peek<'a>(&'a mut self, location: usize, mut element: &'a mut T) {
