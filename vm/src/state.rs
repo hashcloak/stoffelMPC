@@ -32,8 +32,8 @@ impl<T: MPCType> StackRegister<T> {
         self.0.push(element);
     }
 
-    fn pop<'a>(&mut self, element: &'a mut T) {
-        *element = self.0.pop().unwrap();
+    fn pop(&mut self) -> T {
+        self.0.pop().unwrap()
     }
 
     fn peek<'a>(&'a mut self, location: usize, mut element: &'a mut T) {
