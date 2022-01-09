@@ -17,7 +17,7 @@ pub(crate) struct Memory<T: MPCType, const N: usize>([T; N]);
 
 impl<T: MPCType> Register<T> {
 
-    fn read(&mut self, i: usize) -> T {
+    fn read(&self, i: usize) -> T {
         self.0[i]
     }
 
