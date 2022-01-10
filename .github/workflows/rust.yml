@@ -23,6 +23,4 @@ jobs:
         override: true
         components: rustfmt, clippy
     - name: Run tests
-      uses: action-rs/cargo@v1
-      with:
-        command: test
+      run: cargo +nightly test
