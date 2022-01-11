@@ -1,5 +1,5 @@
-use crate::processor::arithmetic::{ArithmeticProcessor};
-use types::numbers::{MPCType};
+use crate::processors::arithmetic::ArithmeticProcessor;
+use types::numbers::MPCType;
 
 // Assign immediate value to clear register
 pub fn ldi<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
@@ -237,13 +237,13 @@ pub fn randomfulls<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
-// Read a variable number of clear values in internal representation from socket for a specified 
+// Read a variable number of clear values in internal representation from socket for a specified
 // client id and store them in clear registers
 pub fn readsocketc<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();
 }
 
-// Read a variable number of secret values in internal representation from socket for a specified 
+// Read a variable number of secret values in internal representation from socket for a specified
 // client id and store them in secret registers
 pub fn readsockets<T: MPCType>(ap: &mut ArithmeticProcessor<T>) {
     todo!();

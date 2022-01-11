@@ -1,5 +1,5 @@
-mod instruction;
-mod processor;
+mod instructions;
+mod processors;
 mod state;
 
 fn main() {}

@@ -1,4 +1,4 @@
-use crate::processor::boolean::BooleanProcessor;
+use crate::processors::boolean::BooleanProcessor;
 use types::numbers::MPCType;
 
 // Copy private input to secret bit register vectors
