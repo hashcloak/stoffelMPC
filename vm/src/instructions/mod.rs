@@ -1,5 +1,5 @@
-mod arithmetic;
-mod boolean;
-mod common;
-mod opcodes;
+pub mod arithmetic;
+pub mod boolean;
+pub mod common;
+pub mod opcodes;
 
