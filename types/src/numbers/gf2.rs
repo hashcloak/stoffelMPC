@@ -104,4 +104,3 @@ impl<T: SecretSharing> Mul for SecGf2<T> {
         todo!();
     }
 }
-

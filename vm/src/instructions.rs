@@ -188,4 +188,3 @@ pub enum Instructions {
     INITSECURESOCKET = 0x1BA,
     RESPSECURESOCKET = 0x1BB,
 }
-

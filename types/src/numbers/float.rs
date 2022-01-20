@@ -98,4 +98,3 @@ impl<T: SecretSharing> Mul for SecFloat<T> {
         todo!();
     }
 }
-

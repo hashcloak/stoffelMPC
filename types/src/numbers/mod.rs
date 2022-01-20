@@ -28,4 +28,3 @@ pub trait MPCType: Sized + Add<Output = Self> + Mul<Output = Self> + Copy + Defa
     /// Returns (a, b) if self == 0 and (b, a) if self == 1
     fn cond_swap(self, a: Self, b: Self) -> (Self, Self);
 }
-
