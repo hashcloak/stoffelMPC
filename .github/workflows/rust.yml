@@ -10,10 +10,18 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build:
-
+  lint:
     runs-on: ubuntu-latest
-
+    steps:
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: nightly
+          components: rustfmt, clippy
+      - uses: actions/checkout@v2
+      - run: ./.github/workflows/lint.sh
+  build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install latest nightly
@@ -22,7 +30,5 @@ jobs:
         toolchain: nightly
         override: true
         components: rustfmt, clippy
-    - name: Format code
-      run: cargo fmt
     - name: Run tests
       run: cargo +nightly test
