@@ -8,7 +8,7 @@ use types::numbers::{
 };
 
 use super::processors::{Processor, arithmetic::ArithmeticProcessor, boolean::BooleanProcessor};
-use super::state::{Memory, Register, StackRegister};
+use super::state::{Memory, Register, StackRegister, GlobalMemory};
 
 
 pub trait StoffelVM {
@@ -33,19 +33,21 @@ enum VMMode {
     Optimized
 }
 
-pub struct ArithmeticStoffelVM<T: MPCType> {
+pub struct ArithmeticStoffelVM<T: MPCType, N: const usize> {
     processors: Vec<ArithmeticProcessor<T>>,
     program_counter: usize,
+    global_memory: GlobalMemory<N>
     mode: VMMode,
 }
 
-pub struct BooleanStoffelVM<T: MPCType> {
+pub struct BooleanStoffelVM<T: MPCType, N: const usize> {
     processors: Vec<BooleanProcessor<T>>,
     program_counter: usize,
+    global_memory: GlobalMemory<N>
     mode: VMMode,
 }
 
-impl<T: MPCType> StoffelVM for ArithmeticStoffelVM<T> {
+impl<T: MPCType, N: const usize> StoffelVM for ArithmeticStoffelVM<T, N> {
     fn load_program() {
         todo!();
     }
@@ -75,7 +77,7 @@ impl<T: MPCType> StoffelVM for ArithmeticStoffelVM<T> {
     }
 }
 
-impl<T: MPCType> StoffelVM for BooleanStoffelVM<T> {
+impl<T: MPCType, N: const usize> StoffelVM for BooleanStoffelVM<T, N> {
     fn load_program() {
         todo!();
     }

@@ -15,6 +15,15 @@ pub(crate) struct StackRegister<T: MPCType>(Vec<T>);
 #[derive(Clone, Debug)]
 pub(crate) struct Memory<T: MPCType, const N: usize>([T; N]);
 
+#[derive(Clone, Debug, Default)]
+pub struct GlobalMemory<const N> {
+    secret_shared_int_memory: Memory<SecInt, N>,
+    secret_shared_gf2n_memory: Memory<SecGf2, N>,
+    public_int_memory: Memory<PubInt, N>,
+    public_gf2n_int_memory: Memory<PubGf2, N>
+
+}
+
 impl<T: MPCType> Register<T> {
 
     fn read(&self, i: usize) -> T {
@@ -83,3 +92,4 @@ impl<T: MPCType, const N: usize> Default for Memory<T, N> {
         Memory([T::default(); N])
     }
 }
+
