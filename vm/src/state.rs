@@ -1,19 +1,19 @@
 use types::numbers::secret_sharing::SecretSharing;
 use types::numbers::{
-    MPCType,
     fixed::{PubFixed, SecFixed},
     gf2::{PubGf2, SecGf2},
     int::{PubInt, SecInt},
+    MPCType,
 };
 
 #[derive(Clone, Debug, Default)]
-pub(crate) struct Register<T: MPCType>(Vec<T>);
+pub struct Register<T: MPCType>(Vec<T>);
 
 #[derive(Clone, Debug, Default)]
-pub(crate) struct StackRegister<T: MPCType>(Vec<T>);
+pub struct StackRegister<T: MPCType>(Vec<T>);
 
 #[derive(Clone, Debug)]
-pub(crate) struct Memory<T: MPCType, const N: usize>([T; N]);
+pub struct Memory<T: MPCType, const N: usize>([T; N]);
 
 #[derive(Clone, Debug, Default)]
 pub struct GlobalMemory<const N> {
@@ -25,7 +25,6 @@ pub struct GlobalMemory<const N> {
 }
 
 impl<T: MPCType> Register<T> {
-
     fn read(&self, i: usize) -> T {
         self.0[i]
     }
@@ -36,7 +35,6 @@ impl<T: MPCType> Register<T> {
 }
 
 impl<T: MPCType> StackRegister<T> {
-
     fn push(&mut self, element: T) {
         self.0.push(element);
     }
@@ -58,7 +56,6 @@ impl<T: MPCType> StackRegister<T> {
         }
         self.0[location] = element;
     }
-
 }
 
 impl<T: MPCType, const N: usize> Memory<T, N> {

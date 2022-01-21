@@ -8,5 +8,5 @@ edition = "2021"
 [dependencies]
 types = {path = "../types"}
 
-futures = { version = "0.3.*" }
-tokio = {version = "0.2.*", features = ["full"] }
+futures = { version = "0.3" }
+tokio = {version = "0.2", features = ["full"] }
