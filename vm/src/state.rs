@@ -1,11 +1,11 @@
-use types::numbers::secret_sharing::{SecretSharing, shamir::Shamir};
+use ark_ff::fields::{PrimeField, SquareRootField};
+use types::numbers::secret_sharing::{shamir::Shamir, SecretSharing};
 use types::numbers::{
     fixed::{PubFixed, SecFixed},
     gf2::{PubGf2, SecGf2},
     int::{PubInt, SecInt},
     MPCType,
 };
-use ark_ff::fields::{PrimeField, SquareRootField};
 
 #[derive(Clone, Debug, Default)]
 pub struct Register<T: MPCType>(Vec<T>);
@@ -17,11 +17,11 @@ pub struct StackRegister<T: MPCType>(Vec<T>);
 pub struct Memory<T: MPCType, const N: usize>([T; N]);
 
 #[derive(Clone, Debug, Default)]
-pub struct GlobalMemory<const N: usize, const M: usize, Fr: PrimeField + SquareRootField> {
+pub struct GlobalMemory<Fr: PrimeField + SquareRootField, const N: usize, const M: usize> {
     secret_shared_int_memory: Memory<SecInt<Shamir<Fr>>, N>,
     secret_shared_gf2n_memory: Memory<SecGf2<Shamir<Fr>>, N>,
     public_int_memory: Memory<PubInt, N>,
-    public_gf2n_int_memory: Memory<PubGf2<N>, N>,
+    public_gf2n_int_memory: Memory<PubGf2<M>, N>,
 }
 
 impl<T: MPCType> Register<T> {
@@ -90,7 +90,7 @@ impl<T: MPCType, const N: usize> Default for Memory<T, N> {
     }
 }
 
-impl GlobalMemory {
+impl<Fr: PrimeField + SquareRootField, const N: usize, const M: usize> GlobalMemory<Fr, N, M> {
     fn new() -> Self {
         todo!();
     }

@@ -1,17 +1,16 @@
 #![feature(associated_type_bounds)]
 use types::numbers::secret_sharing::SecretSharing;
 use types::numbers::{
-    MPCType,
     fixed::{PubFixed, SecFixed},
     gf2::{PubGf2, SecGf2},
     int::{PubInt, SecInt},
+    MPCType,
 };
 
-use super::processors::{Processor, arithmetic::ArithmeticProcessor, boolean::BooleanProcessor};
-use super::state::{Memory, Register, StackRegister, GlobalMemory};
+use super::processors::{arithmetic::ArithmeticProcessor, boolean::BooleanProcessor, Processor};
+use super::state::{GlobalMemory, Memory, Register, StackRegister};
 
 use ark_ff::fields::{PrimeField, SquareRootField};
-
 
 pub trait StoffelVM {
     fn load_program();
@@ -32,24 +31,36 @@ pub trait StoffelVM {
 enum VMMode {
     Normal,
     Debug,
-    Optimized
+    Optimized,
 }
 
-pub struct ArithmeticStoffelVM<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> {
+pub struct ArithmeticStoffelVM<
+    T: MPCType,
+    Fr: PrimeField + SquareRootField,
+    const N: usize,
+    const M: usize,
+> {
     processors: Vec<ArithmeticProcessor<T>>,
     program_counter: usize,
-    global_memory: GlobalMemory<N, M, Fr>,
+    global_memory: GlobalMemory<Fr, N, M>,
     mode: VMMode,
 }
 
-pub struct BooleanStoffelVM<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> {
+pub struct BooleanStoffelVM<
+    T: MPCType,
+    Fr: PrimeField + SquareRootField,
+    const N: usize,
+    const M: usize,
+> {
     processors: Vec<BooleanProcessor<T>>,
     program_counter: usize,
-    global_memory: GlobalMemory<N, M, Fr>,
+    global_memory: GlobalMemory<Fr, N, M>,
     mode: VMMode,
 }
 
-impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM for ArithmeticStoffelVM<T, N, M, Fr> {
+impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM
+    for ArithmeticStoffelVM<T, Fr, N, M>
+{
     fn load_program() {
         todo!();
     }
@@ -79,7 +90,9 @@ impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootFiel
     }
 }
 
-impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM for BooleanStoffelVM<T, N, M, Fr> {
+impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM
+    for BooleanStoffelVM<T, Fr, N, M>
+{
     fn load_program() {
         todo!();
     }
@@ -108,3 +121,4 @@ impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootFiel
         todo!();
     }
 }
+
