@@ -10,6 +10,8 @@ use types::numbers::{
 use super::processors::{Processor, arithmetic::ArithmeticProcessor, boolean::BooleanProcessor};
 use super::state::{Memory, Register, StackRegister, GlobalMemory};
 
+use ark_ff::fields::{PrimeField, SquareRootField};
+
 
 pub trait StoffelVM {
     fn load_program();
@@ -33,21 +35,21 @@ enum VMMode {
     Optimized
 }
 
-pub struct ArithmeticStoffelVM<T: MPCType, N: const usize> {
+pub struct ArithmeticStoffelVM<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> {
     processors: Vec<ArithmeticProcessor<T>>,
     program_counter: usize,
-    global_memory: GlobalMemory<N>
+    global_memory: GlobalMemory<N, M, Fr>,
     mode: VMMode,
 }
 
-pub struct BooleanStoffelVM<T: MPCType, N: const usize> {
+pub struct BooleanStoffelVM<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> {
     processors: Vec<BooleanProcessor<T>>,
     program_counter: usize,
-    global_memory: GlobalMemory<N>
+    global_memory: GlobalMemory<N, M, Fr>,
     mode: VMMode,
 }
 
-impl<T: MPCType, N: const usize> StoffelVM for ArithmeticStoffelVM<T, N> {
+impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM for ArithmeticStoffelVM<T, N, M, Fr> {
     fn load_program() {
         todo!();
     }
@@ -77,7 +79,7 @@ impl<T: MPCType, N: const usize> StoffelVM for ArithmeticStoffelVM<T, N> {
     }
 }
 
-impl<T: MPCType, N: const usize> StoffelVM for BooleanStoffelVM<T, N> {
+impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM for BooleanStoffelVM<T, N, M, Fr> {
     fn load_program() {
         todo!();
     }
