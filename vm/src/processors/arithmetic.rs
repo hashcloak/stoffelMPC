@@ -1,22 +1,22 @@
 use super::Processor;
 use crate::state::{Register, StackRegister};
-use types::numbers::MPCType;
+use types::numbers::{
+    int::{PubInt, SecInt},
+    secret_sharing::SecretSharing,
+    Number,
+};
 
-pub struct ArithmeticProcessor<T: MPCType> {
+pub struct ArithmeticProcessor<T: Number + SecretSharing> {
     // Registers
-    reg_cint_mod_p: Register<T>,
-    reg_register_int: Register<T>,
-    reg_sint_mod_p: Register<T>,
-    reg_sregister_int: Register<T>,
+    reg_pub_int: Register<PubInt>,
+    reg_sec_int: Register<SecInt<T>>,
 
     // Stacks
-    stack_cint_mod_p: StackRegister<T>,
-    stack_register_int: StackRegister<T>,
-    stack_sint_mod_p: StackRegister<T>,
-    stack_sregister_int: StackRegister<T>,
+    stack_pub_int: StackRegister<PubInt>,
+    stack_sec_int: StackRegister<SecInt<T>>,
 }
 
-impl<T: MPCType> Processor for ArithmeticProcessor<T> {
+impl<T: Number + SecretSharing> Processor for ArithmeticProcessor<T> {
     fn clear_registers() {
         todo!();
     }
@@ -58,5 +58,4 @@ impl<T: MPCType> Processor for ArithmeticProcessor<T> {
     }
 }
 
-impl<T: MPCType> ArithmeticProcessor<T> {}
-
+impl<T: Number + SecretSharing> ArithmeticProcessor<T> {}

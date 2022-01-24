@@ -4,7 +4,7 @@ use types::numbers::{
     fixed::{PubFixed, SecFixed},
     gf2::{PubGf2, SecGf2},
     int::{PubInt, SecInt},
-    MPCType,
+    Number,
 };
 
 use super::processors::{arithmetic::ArithmeticProcessor, boolean::BooleanProcessor, Processor};
@@ -35,7 +35,7 @@ enum VMMode {
 }
 
 pub struct ArithmeticStoffelVM<
-    T: MPCType,
+    T: Number,
     Fr: PrimeField + SquareRootField,
     const N: usize,
     const M: usize,
@@ -47,7 +47,7 @@ pub struct ArithmeticStoffelVM<
 }
 
 pub struct BooleanStoffelVM<
-    T: MPCType,
+    T: Number,
     Fr: PrimeField + SquareRootField,
     const N: usize,
     const M: usize,
@@ -58,7 +58,7 @@ pub struct BooleanStoffelVM<
     mode: VMMode,
 }
 
-impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM
+impl<T: Number, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM
     for ArithmeticStoffelVM<T, Fr, N, M>
 {
     fn load_program() {
@@ -90,7 +90,7 @@ impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootFiel
     }
 }
 
-impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM
+impl<T: Number, const N: usize, const M: usize, Fr: PrimeField + SquareRootField> StoffelVM
     for BooleanStoffelVM<T, Fr, N, M>
 {
     fn load_program() {
@@ -121,4 +121,3 @@ impl<T: MPCType, const N: usize, const M: usize, Fr: PrimeField + SquareRootFiel
         todo!();
     }
 }
-

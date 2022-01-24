@@ -4,17 +4,17 @@ use types::numbers::{
     fixed::{PubFixed, SecFixed},
     gf2::{PubGf2, SecGf2},
     int::{PubInt, SecInt},
-    MPCType,
+    Number,
 };
 
 #[derive(Clone, Debug, Default)]
-pub struct Register<T: MPCType>(Vec<T>);
+pub struct Register<T: Number>(Vec<T>);
 
 #[derive(Clone, Debug, Default)]
-pub struct StackRegister<T: MPCType>(Vec<T>);
+pub struct StackRegister<T: Number>(Vec<T>);
 
 #[derive(Clone, Debug)]
-pub struct Memory<T: MPCType, const N: usize>([T; N]);
+pub struct Memory<T: Number, const N: usize>([T; N]);
 
 #[derive(Clone, Debug, Default)]
 pub struct GlobalMemory<Fr: PrimeField + SquareRootField, const N: usize, const M: usize> {
@@ -24,7 +24,7 @@ pub struct GlobalMemory<Fr: PrimeField + SquareRootField, const N: usize, const 
     public_gf2n_int_memory: Memory<PubGf2<M>, N>,
 }
 
-impl<T: MPCType> Register<T> {
+impl<T: Number> Register<T> {
     fn read(&self, i: usize) -> T {
         self.0[i]
     }
@@ -34,7 +34,7 @@ impl<T: MPCType> Register<T> {
     }
 }
 
-impl<T: MPCType> StackRegister<T> {
+impl<T: Number> StackRegister<T> {
     fn push(&mut self, element: T) {
         self.0.push(element);
     }
@@ -58,7 +58,7 @@ impl<T: MPCType> StackRegister<T> {
     }
 }
 
-impl<T: MPCType, const N: usize> Memory<T, N> {
+impl<T: Number, const N: usize> Memory<T, N> {
     fn new() -> Self {
         todo!();
     }
@@ -84,7 +84,7 @@ impl<T: MPCType, const N: usize> Memory<T, N> {
     }
 }
 
-impl<T: MPCType, const N: usize> Default for Memory<T, N> {
+impl<T: Number, const N: usize> Default for Memory<T, N> {
     fn default() -> Self {
         Memory([T::default(); N])
     }

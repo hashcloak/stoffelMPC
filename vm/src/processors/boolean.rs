@@ -1,8 +1,8 @@
 use super::Processor;
 use crate::state::{Register, StackRegister};
-use types::numbers::MPCType;
+use types::numbers::{secret_sharing::SecretSharing, Number};
 
-pub struct BooleanProcessor<T: MPCType> {
+pub struct BooleanProcessor<T: Number + SecretSharing> {
     // Registers
     reg_cgf2: Register<T>,
     reg_sgf2: Register<T>,
@@ -16,7 +16,7 @@ pub struct BooleanProcessor<T: MPCType> {
     stack_sgf2n: StackRegister<T>,
 }
 
-impl<T: MPCType> Processor for BooleanProcessor<T> {
+impl<T: Number + SecretSharing> Processor for BooleanProcessor<T> {
     fn clear_registers() {
         todo!();
     }
@@ -58,4 +58,4 @@ impl<T: MPCType> Processor for BooleanProcessor<T> {
     }
 }
 
-impl<T: MPCType> BooleanProcessor<T> {}
+impl<T: Number + SecretSharing> BooleanProcessor<T> {}
