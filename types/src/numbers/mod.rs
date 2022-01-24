@@ -5,9 +5,6 @@ pub mod gf2;
 pub mod int;
 use std::ops::{Add, Mul};
 
-/// A supertrait for ergonomics
-pub trait MPCType: Number + SecretSharing {}
-
 /// This trait is a catch-all for a type that is used
 /// within MPC protocols.
 pub trait Number: Add<Output = Self> + Mul<Output = Self> + Copy + Default {
