@@ -40,6 +40,7 @@ pub trait Number:
         todo!();
     }
 }
+<<<<<<< HEAD
 
 /// An abstraction for communication
 /// in MPC protocols
@@ -54,3 +55,5 @@ pub trait SecretSharing {
         todo!();
     }
 }
+=======
+>>>>>>> main
