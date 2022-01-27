@@ -1,62 +1,65 @@
+use types::numbers::{Number, SecretSharing};
+
 use super::Processor;
-use crate::state::{Register, StackRegister};
-use types::numbers::MPCType;
+use crate::state::{GlobalMemory, Registers, StackRegisters};
 
-pub struct ArithmeticProcessor<T: MPCType> {
-    // Registers
-    reg_cint_mod_p: Register<T>,
-    reg_register_int: Register<T>,
-    reg_sint_mod_p: Register<T>,
-    reg_sregister_int: Register<T>,
-
-    // Stacks
-    stack_cint_mod_p: StackRegister<T>,
-    stack_register_int: StackRegister<T>,
-    stack_sint_mod_p: StackRegister<T>,
-    stack_sregister_int: StackRegister<T>,
+pub struct ArithmeticProcessor<T: Number + SecretSharing, U: Number, const N: usize> {
+    pub stack: StackRegisters<T, U>,
+    pub registers: Registers<T, U, N>,
 }
 
-impl<T: MPCType> Processor for ArithmeticProcessor<T> {
-    fn clear_registers() {
-        todo!();
+impl<T: Number + SecretSharing, U: Number, const N: usize> Processor
+    for ArithmeticProcessor<T, U, N>
+{
+    type Memory = GlobalMemory<T, U>;
+
+    fn clear_registers(&mut self) {
+        todo!()
     }
 
-    fn get_program_counter() -> usize {
-        todo!();
+    fn get_program_counter(&self) -> usize {
+        todo!()
     }
 
-    fn get_program_size() -> usize {
-        todo!();
+    fn get_program_size(&self) -> usize {
+        todo!()
     }
 
-    fn execute() {
-        todo!();
-    }
-    fn jump() {
-        todo!();
+    fn execute(&mut self) {
+        todo!()
     }
 
-    fn relative_jump() {
-        todo!();
+    fn jump(&mut self) {
+        todo!()
     }
 
-    fn increment_program_counter() {
-        todo!();
+    fn relative_jump(&mut self) {
+        todo!()
     }
 
-    fn read_tape() {
-        todo!();
+    fn increment_program_counter(&mut self) {
+        todo!()
     }
-    fn receive_tape() {
-        todo!();
+
+    fn read_tape(&self) {
+        todo!()
     }
-    fn receive_private_input(to_store_in_memory: bool) {
-        todo!();
+
+    fn receive_tape(&self) {
+        todo!()
     }
-    fn give_private_output(to_store_in_memory: bool) {
+
+    fn receive_private_input(&self, to_store_in_memory: bool) {
+        todo!()
+    }
+
+    fn give_private_output(&self, to_store_in_memory: bool) {
+        todo!()
+    }
+
+    fn memory(&self) -> Self::Memory {
         todo!()
     }
 }
 
-impl<T: MPCType> ArithmeticProcessor<T> {}
-
+impl<T: Number + SecretSharing, U: Number, const N: usize> ArithmeticProcessor<T, U, N> {}

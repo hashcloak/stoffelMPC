@@ -1,30 +1,76 @@
-use ark_ff::fields::{PrimeField, SquareRootField};
-use types::numbers::secret_sharing::{shamir::Shamir, SecretSharing};
 use types::numbers::{
+    bit::{PubBit, SecBit},
     fixed::{PubFixed, SecFixed},
+    float::{PubFloat, SecFloat},
     gf2::{PubGf2, SecGf2},
     int::{PubInt, SecInt},
-    MPCType,
+    Number, SecretSharing,
 };
 
-#[derive(Clone, Debug, Default)]
-pub struct Register<T: MPCType>(Vec<T>);
-
-#[derive(Clone, Debug, Default)]
-pub struct StackRegister<T: MPCType>(Vec<T>);
-
 #[derive(Clone, Debug)]
-pub struct Memory<T: MPCType, const N: usize>([T; N]);
+pub struct StackRegisters<T: Number + SecretSharing, U: Number> {
+    secret_int_memory: StackRegister<SecInt<T>>,
+    pub_int_memory: StackRegister<PubInt<U>>,
 
-#[derive(Clone, Debug, Default)]
-pub struct GlobalMemory<Fr: PrimeField + SquareRootField, const N: usize, const M: usize> {
-    secret_shared_int_memory: Memory<SecInt<Shamir<Fr>>, N>,
-    secret_shared_gf2n_memory: Memory<SecGf2<Shamir<Fr>>, N>,
-    public_int_memory: Memory<PubInt, N>,
-    public_gf2n_int_memory: Memory<PubGf2<M>, N>,
+    secret_fixed_memory: StackRegister<SecFixed<T>>,
+    pub_fixed_memory: StackRegister<PubFixed<U>>,
+
+    secret_float_memory: StackRegister<SecFloat<T>>,
+    pub_float_memory: StackRegister<PubFloat<U>>,
+
+    secret_bit_memory: StackRegister<SecBit<T>>,
+    pub_bit_memory: StackRegister<PubBit<U>>,
+
+    secret_gf2_memory: StackRegister<SecGf2<T>>,
+    public_gf2_memory: StackRegister<PubGf2<U, 128>>,
 }
 
-impl<T: MPCType> Register<T> {
+#[derive(Clone, Debug)]
+pub struct Registers<T: Number + SecretSharing, U: Number, const N: usize> {
+    secret_int_memory: Register<SecInt<T>, N>,
+    pub_int_memory: Register<PubInt<U>, N>,
+
+    secret_fixed_memory: Register<SecFixed<T>, N>,
+    pub_fixed_memory: Register<PubFixed<U>, N>,
+
+    secret_float_memory: Register<SecFloat<T>, N>,
+    pub_float_memory: Register<PubFloat<U>, N>,
+
+    secret_bit_memory: Register<SecBit<T>, N>,
+    pub_bit_memory: Register<PubBit<U>, N>,
+
+    secret_gf2_memory: Register<SecGf2<T>, N>,
+    public_gf2_memory: Register<PubGf2<U, 128>, N>,
+}
+
+#[derive(Clone, Debug)]
+pub struct GlobalMemory<T: Number + SecretSharing, U: Number> {
+    secret_int_memory: Memory<SecInt<T>>,
+    pub_int_memory: Memory<PubInt<U>>,
+
+    secret_fixed_memory: Memory<SecFixed<T>>,
+    pub_fixed_memory: Memory<PubFixed<U>>,
+
+    secret_float_memory: Memory<SecFloat<T>>,
+    pub_float_memory: Memory<PubFloat<U>>,
+
+    secret_bit_memory: Memory<SecBit<T>>,
+    pub_bit_memory: Memory<PubBit<U>>,
+
+    secret_gf2_memory: Memory<SecGf2<T>>,
+    public_gf2_memory: Memory<PubGf2<U, 128>>,
+}
+
+impl<T: Number + SecretSharing, U: Number> GlobalMemory<T, U> {
+    fn new() -> Self {
+        todo!();
+    }
+}
+
+#[derive(Clone, Debug)]
+struct Register<T: Number + Default, const N: usize>([T; N]);
+
+impl<T: Number, const N: usize> Register<T, N> {
     fn read(&self, i: usize) -> T {
         self.0[i]
     }
@@ -34,7 +80,10 @@ impl<T: MPCType> Register<T> {
     }
 }
 
-impl<T: MPCType> StackRegister<T> {
+#[derive(Clone, Debug)]
+struct StackRegister<T: Number>(Vec<T>);
+
+impl<T: Number> StackRegister<T> {
     fn push(&mut self, element: T) {
         self.0.push(element);
     }
@@ -43,11 +92,8 @@ impl<T: MPCType> StackRegister<T> {
         self.0.pop().unwrap()
     }
 
-    fn peek<'a>(&'a mut self, location: usize, mut element: &'a mut T) {
-        if location > self.0.len() {
-            panic!("location is out of range");
-        }
-        element = &mut self.0[location];
+    fn peek(&self, location: usize) -> Option<&T> {
+        self.0.get(location)
     }
 
     fn poke(&mut self, location: usize, element: T) {
@@ -58,7 +104,10 @@ impl<T: MPCType> StackRegister<T> {
     }
 }
 
-impl<T: MPCType, const N: usize> Memory<T, N> {
+#[derive(Clone, Debug)]
+struct Memory<T: Number>(Vec<T>);
+
+impl<T: Number> Memory<T> {
     fn new() -> Self {
         todo!();
     }
@@ -80,18 +129,6 @@ impl<T: MPCType, const N: usize> Memory<T, N> {
     }
 
     fn resize() {
-        todo!();
-    }
-}
-
-impl<T: MPCType, const N: usize> Default for Memory<T, N> {
-    fn default() -> Self {
-        Memory([T::default(); N])
-    }
-}
-
-impl<Fr: PrimeField + SquareRootField, const N: usize, const M: usize> GlobalMemory<Fr, N, M> {
-    fn new() -> Self {
         todo!();
     }
 }
