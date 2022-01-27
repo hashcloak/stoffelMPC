@@ -8,7 +8,7 @@ use types::numbers::{
 };
 
 #[derive(Clone, Debug)]
-pub struct StackRegisters<T: Number + SecretSharing, U: Number> {
+pub struct StackRegisters<T: Number + SecretSharing, U: Number, const M: usize> {
     secret_int_memory: StackRegister<SecInt<T>>,
     pub_int_memory: StackRegister<PubInt<U>>,
 
@@ -22,11 +22,11 @@ pub struct StackRegisters<T: Number + SecretSharing, U: Number> {
     pub_bit_memory: StackRegister<PubBit<U>>,
 
     secret_gf2_memory: StackRegister<SecGf2<T>>,
-    public_gf2_memory: StackRegister<PubGf2<U, 128>>,
+    public_gf2_memory: StackRegister<PubGf2<U, M>>,
 }
 
 #[derive(Clone, Debug)]
-pub struct Registers<T: Number + SecretSharing, U: Number, const N: usize> {
+pub struct Registers<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> {
     secret_int_memory: Register<SecInt<T>, N>,
     pub_int_memory: Register<PubInt<U>, N>,
 
@@ -40,11 +40,11 @@ pub struct Registers<T: Number + SecretSharing, U: Number, const N: usize> {
     pub_bit_memory: Register<PubBit<U>, N>,
 
     secret_gf2_memory: Register<SecGf2<T>, N>,
-    public_gf2_memory: Register<PubGf2<U, 128>, N>,
+    public_gf2_memory: Register<PubGf2<U, M>, N>,
 }
 
 #[derive(Clone, Debug)]
-pub struct GlobalMemory<T: Number + SecretSharing, U: Number> {
+pub struct GlobalMemory<T: Number + SecretSharing, U: Number, const M: usize> {
     secret_int_memory: Memory<SecInt<T>>,
     pub_int_memory: Memory<PubInt<U>>,
 
@@ -58,10 +58,10 @@ pub struct GlobalMemory<T: Number + SecretSharing, U: Number> {
     pub_bit_memory: Memory<PubBit<U>>,
 
     secret_gf2_memory: Memory<SecGf2<T>>,
-    public_gf2_memory: Memory<PubGf2<U, 128>>,
+    public_gf2_memory: Memory<PubGf2<U, M>>,
 }
 
-impl<T: Number + SecretSharing, U: Number> GlobalMemory<T, U> {
+impl<T: Number + SecretSharing, U: Number, const M: usize> GlobalMemory<T, U, M> {
     fn new() -> Self {
         todo!();
     }

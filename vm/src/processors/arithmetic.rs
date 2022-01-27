@@ -3,15 +3,16 @@ use types::numbers::{Number, SecretSharing};
 use super::Processor;
 use crate::state::{GlobalMemory, Registers, StackRegisters};
 
-pub struct ArithmeticProcessor<T: Number + SecretSharing, U: Number, const N: usize> {
-    pub stack: StackRegisters<T, U>,
-    pub registers: Registers<T, U, N>,
+pub struct ArithmeticProcessor<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>
+{
+    pub stack: StackRegisters<T, U, N>,
+    pub registers: Registers<T, U, M, N>,
 }
 
-impl<T: Number + SecretSharing, U: Number, const N: usize> Processor
-    for ArithmeticProcessor<T, U, N>
+impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Processor
+    for ArithmeticProcessor<T, U, M, N>
 {
-    type Memory = GlobalMemory<T, U>;
+    type Memory = GlobalMemory<T, U, N>;
 
     fn clear_registers(&mut self) {
         todo!()
@@ -62,4 +63,7 @@ impl<T: Number + SecretSharing, U: Number, const N: usize> Processor
     }
 }
 
-impl<T: Number + SecretSharing, U: Number, const N: usize> ArithmeticProcessor<T, U, N> {}
+impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>
+    ArithmeticProcessor<T, U, M, N>
+{
+}

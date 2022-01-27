@@ -11,14 +11,14 @@ enum VMMode {
     Optimized,
 }
 
-pub struct StoffelVM<T: SecretSharing + Number, U: Number> {
-    processors: Vec<Box<dyn Processor<Memory = GlobalMemory<T, U>>>>,
+pub struct StoffelVM<T: SecretSharing + Number, U: Number, const M: usize> {
+    processors: Vec<Box<dyn Processor<Memory = GlobalMemory<T, U, M>>>>,
     program_counter: usize,
-    global_memory: Arc<Mutex<GlobalMemory<T, U>>>,
+    global_memory: Arc<Mutex<GlobalMemory<T, U, M>>>,
     mode: VMMode,
 }
 
-impl<T: SecretSharing + Number, U: Number> StoffelVM<T, U> {
+impl<T: SecretSharing + Number, U: Number, const M: usize> StoffelVM<T, U, M> {
     fn load_program() {
         todo!();
     }
