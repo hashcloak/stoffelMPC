@@ -53,7 +53,6 @@ impl<T: Number> Mul for SecFloat<T> {
         todo!();
     }
 }
-<<<<<<< HEAD
 
 impl<T: Number + std::fmt::Display> std::fmt::Display for SecFloat<T> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -61,5 +60,3 @@ impl<T: Number + std::fmt::Display> std::fmt::Display for SecFloat<T> {
         write!(f, "{}", out.trim_start_matches('0'))
     }
 }
-=======
->>>>>>> main
