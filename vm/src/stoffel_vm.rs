@@ -36,7 +36,7 @@ impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> Stoff
     }
 
     pub fn load_byte_code(&mut self, bytes: impl AsRef<[u8]>) {
-        todo!();
+        self.code.parse_bytes(bytes.as_ref())
     }
 
     pub fn execute(&mut self) -> i32 {
