@@ -8,7 +8,7 @@ impl Program {
         Program(vec![])
     }
 
-    fn parse(&mut self, bytes: impl AsRef<[u8]>) {
+    pub fn parse_bytes(&mut self, bytes: impl AsRef<[u8]>) {
         todo!();
     }
 
