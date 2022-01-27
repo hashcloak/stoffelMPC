@@ -1,4 +1,5 @@
 use super::processors::{ArithmeticProcessor, BooleanProcessor, Processor};
+use super::program::Program;
 use super::state::GlobalMemory;
 use std::sync::{Arc, Mutex};
 use types::numbers::{Number, SecretSharing};
@@ -17,11 +18,11 @@ pub struct StoffelVM<T: SecretSharing + Number, U: Number, const M: usize, const
     program_counter: usize,
     global_memory: Arc<Mutex<GlobalMemory<T, U, N>>>,
     mode: VMMode,
-    byte_code: Vec<u8>,
+    code: Program,
 }
 
 impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> StoffelVM<T, U, M, N> {
-    pub fn new_debug() -> Self {
+    pub fn new() -> Self {
         Self {
             processors: vec![
                 Box::new(ArithmeticProcessor::<T, U, M, N>::default()),
@@ -30,12 +31,12 @@ impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> Stoff
             program_counter: 0,
             global_memory: Arc::new(Mutex::new(GlobalMemory::<T, U, N>::default())),
             mode: VMMode::default(),
-            byte_code: vec![],
+            code: Program::new(),
         }
     }
 
     pub fn load_byte_code(&mut self, bytes: impl AsRef<[u8]>) {
-        self.byte_code.extend_from_slice(bytes.as_ref())
+        todo!();
     }
 
     pub fn execute(&mut self) -> i32 {
