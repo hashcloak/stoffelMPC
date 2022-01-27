@@ -1,40 +1,15 @@
-use super::secret_sharing::SecretSharing;
-use super::MPCType;
+use super::{Number, SecretSharing};
 use std::ops::{Add, Mul};
 
 /// Public fixed point type
 ///
 /// This type is used for providing arithmetic for fixed point numbers
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy, Default)]
-pub struct PubFixed();
+pub struct PubFixed<T: Number>(T);
 
-impl MPCType for PubFixed {
-    fn square(self) -> Self {
-        todo!();
-    }
+impl<T: Number> Number for PubFixed<T> {}
 
-    fn pow(self, exp: usize) -> Self {
-        todo!();
-    }
-
-    fn min(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn max(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn if_else(self, a: Self, b: Self) -> Self {
-        todo!();
-    }
-
-    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
-        todo!();
-    }
-}
-
-impl Add for PubFixed {
+impl<T: Number> Add for PubFixed<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -42,7 +17,7 @@ impl Add for PubFixed {
     }
 }
 
-impl Mul for PubFixed {
+impl<T: Number> Mul for PubFixed<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
@@ -55,35 +30,15 @@ impl Mul for PubFixed {
 /// This type wraps different implementations for secret fixed point types
 /// in order to provide a stable API for every type it wraps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub struct SecFixed<T: SecretSharing>(T);
+pub struct SecFixed<T: Number>(T);
 
-impl<T: SecretSharing> MPCType for SecFixed<T> {
-    fn square(self) -> Self {
-        todo!();
-    }
+impl<T: Number> Number for SecFixed<T> {}
 
-    fn pow(self, exp: usize) -> Self {
-        todo!();
-    }
-
-    fn min(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn max(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn if_else(self, a: Self, b: Self) -> Self {
-        todo!();
-    }
-
-    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
-        todo!();
-    }
+impl<T: Number> SecretSharing for SecFixed<T> {
+    type Public = PubFixed<T>;
 }
 
-impl<T: SecretSharing> Add for SecFixed<T> {
+impl<T: Number> Add for SecFixed<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -91,10 +46,20 @@ impl<T: SecretSharing> Add for SecFixed<T> {
     }
 }
 
-impl<T: SecretSharing> Mul for SecFixed<T> {
+impl<T: Number> Mul for SecFixed<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
         todo!();
     }
 }
+<<<<<<< HEAD
+
+impl<T: Number + std::fmt::Display> std::fmt::Display for SecFixed<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let out = self.0.to_string();
+        write!(f, "{}", out.trim_start_matches('0'))
+    }
+}
+=======
+>>>>>>> main

@@ -1,40 +1,15 @@
-use super::secret_sharing::SecretSharing;
-use super::MPCType;
+use super::{Number, SecretSharing};
 use std::ops::{Add, Mul};
 
 /// Public bit type
 ///
 /// This type is used for providing arithmetic for bits
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy, Default)]
-pub struct PubBit(bool);
+pub struct PubBit<T: Number>(T);
 
-impl MPCType for PubBit {
-    fn square(self) -> Self {
-        todo!();
-    }
+impl<T: Number> Number for PubBit<T> {}
 
-    fn pow(self, exp: usize) -> Self {
-        todo!();
-    }
-
-    fn min(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn max(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn if_else(self, a: Self, b: Self) -> Self {
-        todo!();
-    }
-
-    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
-        todo!();
-    }
-}
-
-impl Add for PubBit {
+impl<T: Number> Add for PubBit<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -42,7 +17,7 @@ impl Add for PubBit {
     }
 }
 
-impl Mul for PubBit {
+impl<T: Number> Mul for PubBit<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
@@ -55,35 +30,15 @@ impl Mul for PubBit {
 /// This type wraps different implementations for secret bit types
 /// in order to provide a stable API for every type it wraps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub struct SecBit<T: SecretSharing>(T);
+pub struct SecBit<T: Number>(T);
 
-impl<T: SecretSharing> MPCType for SecBit<T> {
-    fn square(self) -> Self {
-        todo!();
-    }
+impl<T: Number> Number for SecBit<T> {}
 
-    fn pow(self, exp: usize) -> Self {
-        todo!();
-    }
-
-    fn min(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn max(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn if_else(self, a: Self, b: Self) -> Self {
-        todo!();
-    }
-
-    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
-        todo!();
-    }
+impl<T: Number> SecretSharing for SecBit<T> {
+    type Public = PubBit<T>;
 }
 
-impl<T: SecretSharing> Add for SecBit<T> {
+impl<T: Number> Add for SecBit<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -91,10 +46,20 @@ impl<T: SecretSharing> Add for SecBit<T> {
     }
 }
 
-impl<T: SecretSharing> Mul for SecBit<T> {
+impl<T: Number> Mul for SecBit<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
         todo!();
     }
 }
+<<<<<<< HEAD
+
+impl<T: Number + std::fmt::Display> std::fmt::Display for SecBit<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let out = self.0.to_string();
+        write!(f, "{}", out.trim_start_matches('0'))
+    }
+}
+=======
+>>>>>>> main

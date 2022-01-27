@@ -2,7 +2,8 @@
 /// These are the instructions for the StoffelMPC VM. These instructions are taken from the MP-SPDZ's VM instructions
 /// These instructions may be reduced or added to at a later time.
 
-pub enum Instructions {
+#[derive(Debug, Clone, Copy)]
+pub enum Opcodes {
     /// Emulation
     CISC = 0x00,
     /// Load/store

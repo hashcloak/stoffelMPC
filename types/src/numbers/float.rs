@@ -1,40 +1,15 @@
-use super::secret_sharing::SecretSharing;
-use super::MPCType;
+use super::{Number, SecretSharing};
 use std::ops::{Add, Mul};
 
 /// Public floating point type
 ///
 /// This type is used for providing arithmetic for floating point numbers
 #[derive(Debug, Clone, PartialEq, PartialOrd, Copy, Default)]
-pub struct PubFloat(f32);
+pub struct PubFloat<T: Number>(T);
 
-impl MPCType for PubFloat {
-    fn square(self) -> Self {
-        todo!();
-    }
+impl<T: Number> Number for PubFloat<T> {}
 
-    fn pow(self, exp: usize) -> Self {
-        todo!();
-    }
-
-    fn min(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn max(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn if_else(self, a: Self, b: Self) -> Self {
-        todo!();
-    }
-
-    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
-        todo!();
-    }
-}
-
-impl Add for PubFloat {
+impl<T: Number> Add for PubFloat<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -42,7 +17,7 @@ impl Add for PubFloat {
     }
 }
 
-impl Mul for PubFloat {
+impl<T: Number> Mul for PubFloat<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
@@ -55,35 +30,15 @@ impl Mul for PubFloat {
 /// This type wraps different implementations for secret floating point types
 /// in order to provide a stable API for every type it wraps.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Default)]
-pub struct SecFloat<T: SecretSharing>(T);
+pub struct SecFloat<T: Number>(T);
 
-impl<T: SecretSharing> MPCType for SecFloat<T> {
-    fn square(self) -> Self {
-        todo!();
-    }
+impl<T: Number> Number for SecFloat<T> {}
 
-    fn pow(self, exp: usize) -> Self {
-        todo!();
-    }
-
-    fn min(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn max(self, a: Self) -> Self {
-        todo!();
-    }
-
-    fn if_else(self, a: Self, b: Self) -> Self {
-        todo!();
-    }
-
-    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
-        todo!();
-    }
+impl<T: Number> SecretSharing for SecFloat<T> {
+    type Public = PubFloat<T>;
 }
 
-impl<T: SecretSharing> Add for SecFloat<T> {
+impl<T: Number> Add for SecFloat<T> {
     type Output = Self;
 
     fn add(self, rhs: Self) -> Self {
@@ -91,10 +46,20 @@ impl<T: SecretSharing> Add for SecFloat<T> {
     }
 }
 
-impl<T: SecretSharing> Mul for SecFloat<T> {
+impl<T: Number> Mul for SecFloat<T> {
     type Output = Self;
 
     fn mul(self, rhs: Self) -> Self {
         todo!();
     }
 }
+<<<<<<< HEAD
+
+impl<T: Number + std::fmt::Display> std::fmt::Display for SecFloat<T> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let out = self.0.to_string();
+        write!(f, "{}", out.trim_start_matches('0'))
+    }
+}
+=======
+>>>>>>> main
