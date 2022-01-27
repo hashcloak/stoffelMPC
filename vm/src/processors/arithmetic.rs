@@ -3,6 +3,7 @@ use types::numbers::{Number, SecretSharing};
 use super::Processor;
 use crate::state::{GlobalMemory, Registers, StackRegisters};
 
+#[derive(Debug, Clone, Default)]
 pub struct ArithmeticProcessor<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>
 {
     pub stack: StackRegisters<T, U, N>,

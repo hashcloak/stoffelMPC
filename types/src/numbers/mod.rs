@@ -7,7 +7,9 @@ use std::ops::{Add, Mul};
 
 /// This trait is a catch-all for a type that is used
 /// within MPC protocols.
-pub trait Number: Add<Output = Self> + Mul<Output = Self> + Copy + Default {
+pub trait Number:
+    Add<Output = Self> + Mul<Output = Self> + Copy + Default + std::fmt::Debug + 'static
+{
     /// Returns the square of an MPCType
     fn square(self) -> Self {
         todo!();

@@ -14,3 +14,19 @@ blockchains.
 The project is still at the very beginning. To compile the workspace and
 run the tests just run `cargo t`.
 
+## StoffelVM
+
+StoffelVM can be run as a standalone VM. Just pass some bytecode to it and start
+the execution.
+
+```rust
+use vm::StoffelVM;
+
+// Some fictious bytecode
+let mut bytecode: Vec<u8> = vec![0x01, 0x02, 0x03, 0x04];
+
+// Instantiate a new VM and run it
+let mut vm = StoffelVM::new();
+vm.load_byte_code(&byte_code);
+vm.execute();
+```

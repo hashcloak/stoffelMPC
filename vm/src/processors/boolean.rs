@@ -3,6 +3,7 @@ use types::numbers::{Number, SecretSharing};
 
 use super::Processor;
 
+#[derive(Debug, Clone, Default)]
 pub struct BooleanProcessor<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> {
     pub stack: StackRegisters<T, U, M>,
     pub registers: Registers<T, U, M, N>,
@@ -11,7 +12,7 @@ pub struct BooleanProcessor<T: Number + SecretSharing, U: Number, const M: usize
 impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Processor
     for BooleanProcessor<T, U, M, N>
 {
-    type Memory = GlobalMemory<T, U, M>;
+    type Memory = GlobalMemory<T, U, N>;
 
     fn clear_registers(&mut self) {
         todo!()

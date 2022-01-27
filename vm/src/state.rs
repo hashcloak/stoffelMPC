@@ -7,8 +7,8 @@ use types::numbers::{
     Number, SecretSharing,
 };
 
-#[derive(Clone, Debug)]
-pub struct StackRegisters<T: Number + SecretSharing, U: Number, const M: usize> {
+#[derive(Clone, Debug, Default)]
+pub struct StackRegisters<T: Number + SecretSharing, U: Number, const N: usize> {
     secret_int_memory: StackRegister<SecInt<T>>,
     pub_int_memory: StackRegister<PubInt<U>>,
 
@@ -22,10 +22,10 @@ pub struct StackRegisters<T: Number + SecretSharing, U: Number, const M: usize> 
     pub_bit_memory: StackRegister<PubBit<U>>,
 
     secret_gf2_memory: StackRegister<SecGf2<T>>,
-    public_gf2_memory: StackRegister<PubGf2<U, M>>,
+    public_gf2_memory: StackRegister<PubGf2<U, N>>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 pub struct Registers<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> {
     secret_int_memory: Register<SecInt<T>, N>,
     pub_int_memory: Register<PubInt<U>, N>,
@@ -43,8 +43,8 @@ pub struct Registers<T: Number + SecretSharing, U: Number, const M: usize, const
     public_gf2_memory: Register<PubGf2<U, M>, N>,
 }
 
-#[derive(Clone, Debug)]
-pub struct GlobalMemory<T: Number + SecretSharing, U: Number, const M: usize> {
+#[derive(Clone, Debug, Default)]
+pub struct GlobalMemory<T: Number + SecretSharing, U: Number, const N: usize> {
     secret_int_memory: Memory<SecInt<T>>,
     pub_int_memory: Memory<PubInt<U>>,
 
@@ -58,17 +58,17 @@ pub struct GlobalMemory<T: Number + SecretSharing, U: Number, const M: usize> {
     pub_bit_memory: Memory<PubBit<U>>,
 
     secret_gf2_memory: Memory<SecGf2<T>>,
-    public_gf2_memory: Memory<PubGf2<U, M>>,
-}
-
-impl<T: Number + SecretSharing, U: Number, const M: usize> GlobalMemory<T, U, M> {
-    fn new() -> Self {
-        todo!();
-    }
+    public_gf2_memory: Memory<PubGf2<U, N>>,
 }
 
 #[derive(Clone, Debug)]
-struct Register<T: Number + Default, const N: usize>([T; N]);
+struct Register<T: Number, const N: usize>([T; N]);
+
+impl<T: Number, const N: usize> Default for Register<T, N> {
+    fn default() -> Self {
+        Self([T::default(); N])
+    }
+}
 
 impl<T: Number, const N: usize> Register<T, N> {
     fn read(&self, i: usize) -> T {
@@ -80,7 +80,7 @@ impl<T: Number, const N: usize> Register<T, N> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 struct StackRegister<T: Number>(Vec<T>);
 
 impl<T: Number> StackRegister<T> {
@@ -104,7 +104,7 @@ impl<T: Number> StackRegister<T> {
     }
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Default)]
 struct Memory<T: Number>(Vec<T>);
 
 impl<T: Number> Memory<T> {

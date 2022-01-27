@@ -2,7 +2,10 @@
 pub mod arithmetic;
 pub mod boolean;
 
-pub trait Processor {
+pub use arithmetic::ArithmeticProcessor;
+pub use boolean::BooleanProcessor;
+
+pub trait Processor: std::fmt::Debug {
     type Memory;
 
     fn clear_registers(&mut self);
