@@ -1,3 +1,5 @@
+use crate::processors::Core;
+
 use super::processors::{ArithmeticProcessor, BooleanProcessor, Processor};
 use super::program::Program;
 use super::state::GlobalMemory;
@@ -67,10 +69,7 @@ impl<T: Number, U: Number, const M: usize, const N: usize> StoffelVM<T, U, M, N>
     }
 }
 
-struct NewStoffelVM<T: MPCProtocol<U>, U: Number> {
-    processor: Processor<T, U, T::Public>,
-    memory: Arc<Mutex<GlobalMemory<T, U, T::Public>>>,
-}
+struct NewStoffelVM<T: MPCProtocol<U>, U: Number> {}
 
 // Implement methods for ALL protocols over all possible numbers
 impl<T: MPCProtocol<U>, U: Number> NewStoffelVM<T, U> {}

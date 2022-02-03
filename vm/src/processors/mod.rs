@@ -4,6 +4,10 @@ pub mod boolean;
 
 pub use arithmetic::ArithmeticProcessor;
 pub use boolean::BooleanProcessor;
+use mpc::protocols::{hbmpc::HoneyBadgerMPC, MPCProtocol};
+use types::numbers::Number;
+
+use crate::state::StackRegister;
 
 pub trait Processor: std::fmt::Debug {
     type Memory;
@@ -20,4 +24,20 @@ pub trait Processor: std::fmt::Debug {
     fn receive_private_input(&self, to_store_in_memory: bool);
     fn give_private_output(&self, to_store_in_memory: bool);
     fn memory(&self) -> Self::Memory;
+}
+
+pub struct Core<T: MPCProtocol<U>, U: Number, V: Number = U> {
+    secret_stack: StackRegister<U>,
+    public_stack: StackRegister<T::Public<V>>,
+}
+
+impl<T: MPCProtocol<U>, U: Number, V: Number> Core<T, U, V> {
+    // opcodes applicable to all protocols and all types
+}
+
+impl<U: Number, V: Number> Core<HoneyBadgerMPC, U, V>
+where
+    HoneyBadgerMPC: MPCProtocol<U>,
+{
+    // opcodes applicable for all number types for which HoneybadgerMPC is defined
 }

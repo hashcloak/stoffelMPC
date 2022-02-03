@@ -81,7 +81,7 @@ impl<T: Number, const N: usize> Register<T, N> {
 }
 
 #[derive(Clone, Debug, Default)]
-struct StackRegister<T: Number>(Vec<T>);
+pub struct StackRegister<T: Number>(Vec<T>);
 
 impl<T: Number> StackRegister<T> {
     fn push(&mut self, element: T) {
