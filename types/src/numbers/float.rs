@@ -1,4 +1,4 @@
-use super::{Number, SecretSharing};
+use super::Number;
 use std::ops::{Add, Mul};
 
 /// Public floating point type
@@ -33,10 +33,6 @@ impl<T: Number> Mul for PubFloat<T> {
 pub struct SecFloat<T: Number>(T);
 
 impl<T: Number> Number for SecFloat<T> {}
-
-impl<T: Number> SecretSharing for SecFloat<T> {
-    type Public = PubFloat<T>;
-}
 
 impl<T: Number> Add for SecFloat<T> {
     type Output = Self;

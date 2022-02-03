@@ -1,15 +1,15 @@
 use crate::state::{GlobalMemory, Registers, StackRegisters};
-use types::numbers::{Number, SecretSharing};
+use types::numbers::Number;
 
 use super::Processor;
 
 #[derive(Debug, Clone, Default)]
-pub struct BooleanProcessor<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> {
+pub struct BooleanProcessor<T: Number, U: Number, const M: usize, const N: usize> {
     pub stack: StackRegisters<T, U, M>,
     pub registers: Registers<T, U, M, N>,
 }
 
-impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Processor
+impl<T: Number, U: Number, const M: usize, const N: usize> Processor
     for BooleanProcessor<T, U, M, N>
 {
     type Memory = GlobalMemory<T, U, N>;
@@ -63,7 +63,4 @@ impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Proce
     }
 }
 
-impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>
-    BooleanProcessor<T, U, M, N>
-{
-}
+impl<T: Number, U: Number, const M: usize, const N: usize> BooleanProcessor<T, U, M, N> {}

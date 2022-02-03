@@ -1,4 +1,4 @@
-use super::{Number, SecretSharing};
+use super::Number;
 use std::ops::{Add, Mul};
 
 /// Public bit type
@@ -33,10 +33,6 @@ impl<T: Number> Mul for PubBit<T> {
 pub struct SecBit<T: Number>(T);
 
 impl<T: Number> Number for SecBit<T> {}
-
-impl<T: Number> SecretSharing for SecBit<T> {
-    type Public = PubBit<T>;
-}
 
 impl<T: Number> Add for SecBit<T> {
     type Output = Self;

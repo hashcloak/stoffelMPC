@@ -1,11 +1,12 @@
 use super::MPCProtocol;
-use types::numbers::int::SecInt;
+use types::numbers::int::{PubInt, SecInt};
 use types::numbers::Number;
 
-pub struct HoneyBadgerMPC<T, U>;
+pub struct HoneyBadgerMPC;
 
 impl<T: Number> MPCProtocol<SecInt<T>> for HoneyBadgerMPC {
-    fn compute(number: SecInt<T>) {
+    type Public<U: Number> = PubInt<U>;
+    fn compute() {
         todo!()
     }
 

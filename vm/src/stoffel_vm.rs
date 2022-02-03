@@ -5,7 +5,7 @@ use mpc::protocols::hbmpc::HoneyBadgerMPC;
 use mpc::protocols::MPCProtocol;
 use std::sync::{Arc, Mutex};
 use types::numbers::int::SecInt;
-use types::numbers::{Number, SecretSharing};
+use types::numbers::Number;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum VMMode {
@@ -16,7 +16,7 @@ pub enum VMMode {
 }
 
 #[derive(Debug)]
-pub struct StoffelVM<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> {
+pub struct StoffelVM<T: Number, U: Number, const M: usize, const N: usize> {
     processors: Vec<Box<dyn Processor<Memory = GlobalMemory<T, U, N>>>>,
     program_counter: usize,
     global_memory: Arc<Mutex<GlobalMemory<T, U, N>>>,
@@ -24,7 +24,7 @@ pub struct StoffelVM<T: SecretSharing + Number, U: Number, const M: usize, const
     code: Program,
 }
 
-impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> StoffelVM<T, U, M, N> {
+impl<T: Number, U: Number, const M: usize, const N: usize> StoffelVM<T, U, M, N> {
     pub fn new() -> Self {
         Self {
             processors: vec![
@@ -67,15 +67,18 @@ impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> Stoff
     }
 }
 
-struct TestStoffel<T: MPCProtocol<U>, U: Number>(
-    std::marker::PhantomData<T>,
-    std::marker::PhantomData<U>,
-);
+struct NewStoffelVM<T: MPCProtocol<U>, U: Number> {
+    processor: Processor<T, U, T::Public>,
+    memory: Arc<Mutex<GlobalMemory<T, U, T::Public>>>,
+}
 
-impl<T: MPCProtocol<U>, U: Number> TestStoffel<T, U> {}
+// Implement methods for ALL protocols over all possible numbers
+impl<T: MPCProtocol<U>, U: Number> NewStoffelVM<T, U> {}
 
-impl<T: Number> TestStoffel<HoneyBadgerMPC, T> where HoneyBadgerMPC: MPCProtocol<T> {}
+// Implement methods for a single protocol and for all all numbers the protocol supports
+impl<T: Number> NewStoffelVM<HoneyBadgerMPC, T> where HoneyBadgerMPC: MPCProtocol<T> {}
 
-impl<T: Number> TestStoffel<HoneyBadgerMPC, SecInt<T>> {}
+// Implement methods for a single number type of a single protocol
+impl<T: Number> NewStoffelVM<HoneyBadgerMPC, SecInt<T>> {}
 
 // use processor to unify mpc_protocol and number and number

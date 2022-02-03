@@ -1,309 +1,275 @@
 use crate::stoffel_vm::StoffelVM;
-use types::numbers::{Number, SecretSharing};
+use types::numbers::Number;
 
 // Copy private input to secret bit register vectors
-pub fn inputb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn inputb<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy private input secret bit registers bit by bit
-pub fn inputbvec<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn inputbvec<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
-pub fn ldmsd<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn ldmsd<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
+    todo!();
+}
+
+pub fn stmsd<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
+    todo!();
+}
+
+pub fn ldmsdi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
-pub fn stmsd<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn stmsdi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
-pub fn ldmsdi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
-    todo!();
-}
-
-pub fn stmsdi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
-    todo!();
-}
-
-pub fn stmsdci<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn stmsdci<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Bitwise XOR of secret bit register
-pub fn xors<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn xors<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Bitwise XOR of two single clear bit registers
-pub fn xorcb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn xorcb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Bitwise XOR of single clear bit register and immediate
-pub fn xorcbi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn xorcbi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Bitwise NOT of secret register vector
-pub fn nots<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn nots<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Bitwise NOT of secret register vector
-pub fn notcb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn notcb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Constant-vector AND of secret bit registeers
-pub fn andrs<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn andrs<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Bitwise AND of secret bit register vector
-pub fn ands<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn ands<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Integer addition two single clear bit registers
-pub fn addcb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn addcb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Integer addition single clear bit register and immediate
-pub fn addcbi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn addcbi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Integer multiplication single clear bit register and immediate
-pub fn mulcbi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn mulcbi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Secret bit register decomposition
-pub fn bitdecs<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn bitdecs<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Secret bit register decomposition
-pub fn bitcoms<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn bitcoms<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Secret bit register decomposition
-pub fn bitdecc<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn bitdecc<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Right shift of clear bit register by immediate
-pub fn shrcbi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn shrcbi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Left shift of clear bit register by immediate
-pub fn shlcbi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn shlcbi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Store immediate in secret bit register
-pub fn ldbits<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn ldbits<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy secret bit memory cell with compile-time address to secret bit register
-pub fn ldmsb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn ldmsb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Copy secret bit register to secret bit memory cell with compile-time address
-pub fn stmsb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn stmsb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Copy secret bit memory cell with run-time address to secret bit register
-pub fn ldmsbi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn ldmsbi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy secret bit register to secret bit memory cell with run-time address
-pub fn stmsbi<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn stmsbi<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy clear bit memory cell with compile-time address to clear bit register
-pub fn ldmcb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn ldmcb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Copy clear bit register to cleare bit memory cell with compile-time address
-pub fn stmcb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn stmcb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
-pub fn movsb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn movsb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Secret bit register vector transpose
-pub fn trans<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn trans<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Copy fresh secret random bit to secret bit register
-pub fn bitb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn bitb<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Reveal secret bit register vectors and copy result to clear bit register vectors
-pub fn reveal<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn reveal<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Signed output of clear bit register
-pub fn printregsigned<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn printregsigned<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Debug output of clear bit register
-pub fn printregb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn printregb<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Output clear bit register
-pub fn printregplainb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn printregplainb<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Output floating-number from clear bit registers
-pub fn printfloatplainb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn printfloatplainb<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Conditionally output four bytes
-pub fn condprintstrb<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn condprintstrb<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Bitwise AND of single secret and clear bit registers
-pub fn andm<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn andm<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Copy clear integer register to secret bit register
-pub fn convsint<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn convsint<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy clear integer register to clear bit register
-pub fn convcint<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn convcint<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy clear register vector by bit to clear bit register vectors
-pub fn convcintvec<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn convcintvec<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy clear bit register to clear integer register
-pub fn convcbit<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn convcbit<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
-pub fn convcbitvec<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn convcbitvec<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Copy clear bit register vector to secret bit register vector
-pub fn convcbit2s<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn convcbit2s<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
@@ -311,30 +277,26 @@ pub fn convcbit2s<T: Number + SecretSharing, U: Number, const M: usize, const N:
 
 // Store fresh random daBits in secret register
 // @dev: Do we need to keep this?
-pub fn dabit<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn dabit<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }
 
 // Store frehs random loose edaBits in secret register
 // @dev: Do we need to keep this?
-pub fn edabit<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn edabit<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Store fresh random strict edaBits in secret register
-pub fn sedabit<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
+pub fn sedabit<T: Number, U: Number, const M: usize, const N: usize>(
     vm: &mut StoffelVM<T, U, M, N>,
 ) {
     todo!();
 }
 
 // Local share conversion
-pub fn split<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>(
-    vm: &mut StoffelVM<T, U, M, N>,
-) {
+pub fn split<T: Number, U: Number, const M: usize, const N: usize>(vm: &mut StoffelVM<T, U, M, N>) {
     todo!();
 }

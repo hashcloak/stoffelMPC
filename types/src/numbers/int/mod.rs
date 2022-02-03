@@ -1,4 +1,4 @@
-use super::{Number, SecretSharing};
+use super::Number;
 use ark_ff::PrimeField;
 use num_bigint::BigUint;
 use std::ops::{Add, Mul};
@@ -40,10 +40,6 @@ impl<T: Number> Mul for PubInt<T> {
 pub struct SecInt<T: Number>(T);
 
 impl<T: Number> Number for SecInt<T> {}
-
-impl<T: Number> SecretSharing for SecInt<T> {
-    type Public = PubInt;
-}
 
 impl<T: Number> Add for SecInt<T> {
     type Output = Self;

@@ -4,11 +4,11 @@ use types::numbers::{
     float::{PubFloat, SecFloat},
     gf2::{PubGf2, SecGf2},
     int::{PubInt, SecInt},
-    Number, SecretSharing,
+    Number,
 };
 
 #[derive(Clone, Debug, Default)]
-pub struct StackRegisters<T: Number + SecretSharing, U: Number, const N: usize> {
+pub struct StackRegisters<T: Number, U: Number, const N: usize> {
     secret_int_memory: StackRegister<SecInt<T>>,
     pub_int_memory: StackRegister<PubInt<U>>,
 
@@ -26,7 +26,7 @@ pub struct StackRegisters<T: Number + SecretSharing, U: Number, const N: usize> 
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct Registers<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> {
+pub struct Registers<T: Number, U: Number, const M: usize, const N: usize> {
     secret_int_memory: Register<SecInt<T>, N>,
     pub_int_memory: Register<PubInt<U>, N>,
 
@@ -44,7 +44,7 @@ pub struct Registers<T: Number + SecretSharing, U: Number, const M: usize, const
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct GlobalMemory<T: Number + SecretSharing, U: Number, const N: usize> {
+pub struct GlobalMemory<T: Number, U: Number, const N: usize> {
     secret_int_memory: Memory<SecInt<T>>,
     pub_int_memory: Memory<PubInt<U>>,
 

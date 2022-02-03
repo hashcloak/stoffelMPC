@@ -1,16 +1,15 @@
-use types::numbers::{Number, SecretSharing};
+use types::numbers::Number;
 
 use super::Processor;
 use crate::state::{GlobalMemory, Registers, StackRegisters};
 
 #[derive(Debug, Clone, Default)]
-pub struct ArithmeticProcessor<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>
-{
+pub struct ArithmeticProcessor<T: Number, U: Number, const M: usize, const N: usize> {
     pub stack: StackRegisters<T, U, N>,
     pub registers: Registers<T, U, M, N>,
 }
 
-impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Processor
+impl<T: Number, U: Number, const M: usize, const N: usize> Processor
     for ArithmeticProcessor<T, U, M, N>
 {
     type Memory = GlobalMemory<T, U, N>;
@@ -64,7 +63,4 @@ impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Proce
     }
 }
 
-impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>
-    ArithmeticProcessor<T, U, M, N>
-{
-}
+impl<T: Number, U: Number, const M: usize, const N: usize> ArithmeticProcessor<T, U, M, N> {}

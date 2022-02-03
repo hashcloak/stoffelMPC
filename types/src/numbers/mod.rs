@@ -40,17 +40,3 @@ pub trait Number:
         todo!();
     }
 }
-
-/// An abstraction for communication
-/// in MPC protocols
-pub trait SecretSharing {
-    type Public;
-
-    fn share(&self) {
-        todo!();
-    }
-
-    fn open(&self) -> Self::Public {
-        todo!();
-    }
-}
