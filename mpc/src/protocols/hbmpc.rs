@@ -1,29 +1,15 @@
 use super::MPCProtocol;
+use types::numbers::int::SecInt;
+use types::numbers::Number;
 
-pub struct HoneyBadgerMPC<N: Number> {
+pub struct HoneyBadgerMPC<T, U>;
 
-}
-
-pub struct HBMPCPreprocessingParameters<N: Number> {
-
-}
-
-impl<N: Number> MPCProtocol<N> for HoneyBadgerMPC<N> {
-    type Share = Number;
-
-    type Input = Number;
-
-    type Output = Number;
-
-    type Error = dyn std::error::Error;
-
-    type Parameters = HBMPCPreprocessingParameters<N>;
-
-    fn compute() -> Result<Box<dyn Self::Output>, Box<dyn Error>> {
-        todo!();
+impl<T: Number> MPCProtocol<SecInt<T>> for HoneyBadgerMPC {
+    fn compute(number: SecInt<T>) {
+        todo!()
     }
 
-    fn setup() -> Result<Self::Parameters, Self::Error> {
-        todo!();
+    fn setup() {
+        todo!()
     }
 }

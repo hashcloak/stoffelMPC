@@ -1,7 +1,10 @@
 use super::processors::{ArithmeticProcessor, BooleanProcessor, Processor};
 use super::program::Program;
 use super::state::GlobalMemory;
+use mpc::protocols::hbmpc::HoneyBadgerMPC;
+use mpc::protocols::MPCProtocol;
 use std::sync::{Arc, Mutex};
+use types::numbers::int::SecInt;
 use types::numbers::{Number, SecretSharing};
 
 #[derive(Debug, Clone, Copy, Default)]
@@ -63,3 +66,16 @@ impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> Stoff
         self.program_counter
     }
 }
+
+struct TestStoffel<T: MPCProtocol<U>, U: Number>(
+    std::marker::PhantomData<T>,
+    std::marker::PhantomData<U>,
+);
+
+impl<T: MPCProtocol<U>, U: Number> TestStoffel<T, U> {}
+
+impl<T: Number> TestStoffel<HoneyBadgerMPC, T> where HoneyBadgerMPC: MPCProtocol<T> {}
+
+impl<T: Number> TestStoffel<HoneyBadgerMPC, SecInt<T>> {}
+
+// use processor to unify mpc_protocol and number and number
