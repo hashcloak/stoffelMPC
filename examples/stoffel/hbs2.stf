@@ -24,7 +24,7 @@ program HoneyBadgerSwap {
     storage Map<int, UserData> userData;
     storage Map<int, LPData> lpData;
     
-    fn initialize_pool(assetAID: sint, amountA: sint, assetBID: sint, amountB: sint) {
+    fn constructor(assetAID: sint, amountA: sint, assetBID: sint, amountB: sint) {
         sint k = amountA * amountB;
         pool = Pool {assetAID: assetAID, amountA: amountA, assetBID:assetBID, amountB: amountB, k: k};
     }
