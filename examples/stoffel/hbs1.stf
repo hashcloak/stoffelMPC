@@ -33,7 +33,7 @@ program HoneyBadgerSwap {
     
     // 2 ways to go about implementing this
     // 1: inputs are negative to indicate trade direction
-    pub fn trade(userID: sint, assetA: sint, amountA: sint, assetB, amountB: sint) -> bool {
+    pub fn Trade(userID: sint, assetA: sint, amountA: sint, assetB, amountB: sint) -> bool {
         // Trade A for B
         if amountA < 0 {
             sint newAmountA = pools[0].amountA + amountA;
@@ -59,7 +59,7 @@ program HoneyBadgerSwap {
     // Clearly not so intuitive to implement and incur extra costs due to comparisons
     
     // 2 : Inputs are positive
-    pub fn trade(amountA: sint, amountB: sint) -> bool {
+    pub fn Trade(amountA: sint, amountB: sint) -> bool {
         // But since we don't have an unsigned type (yet), we need to do a check which is expensive
         if amountA < 0 or amount B < 0 {
             return false;
@@ -78,7 +78,7 @@ program HoneyBadgerSwap {
     
     // Obviously, needs way more input validation. Will be added when we have more details
     // about the language for a complete, realistic example.
-    pub fn addLiquidity(lpID: sint, amountA: sint, maxAmountB: sint) -> sint {
+    pub fn AddLiquidity(lpID: sint, amountA: sint, maxAmountB: sint) -> sint {
         sint tokenBAmount = (amountA * pool.amountB) / pool.amountA;
         sint sharesMinted = (amountA * totalShares) / pool.amountA;
 
@@ -94,7 +94,7 @@ program HoneyBadgerSwap {
     }
     
     // Again, missing some basic functionality but does what we need to do for basic ideation on syntax
-    pub fn removeLiquidity(lpID: sint, shares: sint) {
+    pub fn RemoveLiquidity(lpID: sint, shares: sint) {
         sint amountA = (shares * pool.amountA) / totalShares;
         sint amountB = (shares * pool.amountB) / totalShares;
 
