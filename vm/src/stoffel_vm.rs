@@ -3,6 +3,7 @@ use super::program::Program;
 use super::state::GlobalMemory;
 use mpc::protocols::hbmpc::HoneyBadgerMPC;
 use mpc::protocols::MPCProtocol;
+use std::marker::PhantomData;
 use std::sync::{Arc, Mutex};
 use types::numbers::int::SecInt;
 use types::numbers::Number;
@@ -67,15 +68,20 @@ impl<T: Number, U: Number, const M: usize, const N: usize> StoffelVM<T, U, M, N>
     }
 }
 
-struct NewStoffelVM<T: MPCProtocol<U>, U: Number> {}
+struct NewStoffelVM<T: MPCProtocol<U>, U: Number, V: Number> {
+    t: PhantomData<T>,
+    u: PhantomData<U>,
+    v: PhantomData<V>,
+}
 
-// Implement methods for ALL protocols over all possible numbers
-impl<T: MPCProtocol<U>, U: Number> NewStoffelVM<T, U> {}
+// Implement methods for ALL protocols over ALL possible number traits
+impl<T: MPCProtocol<U>, U: Number, V: Number> NewStoffelVM<T, U, V> {}
 
 // Implement methods for a single protocol and for all all numbers the protocol supports
-impl<T: Number> NewStoffelVM<HoneyBadgerMPC, T> where HoneyBadgerMPC: MPCProtocol<T> {}
+impl<U: Number, V: Number> NewStoffelVM<HoneyBadgerMPC, U, V> where HoneyBadgerMPC: MPCProtocol<U> {}
+
+// Implement methods for all protcols using a single secret number
+impl<T: MPCProtocol<SecInt<U>>, U: Number, V: Number> NewStoffelVM<T, SecInt<U>, V> {}
 
 // Implement methods for a single number type of a single protocol
-impl<T: Number> NewStoffelVM<HoneyBadgerMPC, SecInt<T>> {}
-
-// use processor to unify mpc_protocol and number and number
+impl<T: Number, V: Number> NewStoffelVM<HoneyBadgerMPC, SecInt<T>, V> {}
