@@ -1,5 +1,3 @@
-use crate::processors::Core;
-
 use super::processors::{ArithmeticProcessor, BooleanProcessor, Processor};
 use super::program::Program;
 use super::state::GlobalMemory;

@@ -2,12 +2,14 @@
 pub mod arithmetic;
 pub mod boolean;
 
+use std::sync::{Arc, Mutex};
+
 pub use arithmetic::ArithmeticProcessor;
 pub use boolean::BooleanProcessor;
 use mpc::protocols::{hbmpc::HoneyBadgerMPC, MPCProtocol};
-use types::numbers::Number;
+use types::numbers::{gf2::SecGf2, Number};
 
-use crate::state::StackRegister;
+use crate::state::{Memory, Register, StackRegister};
 
 pub trait Processor: std::fmt::Debug {
     type Memory;
@@ -26,16 +28,24 @@ pub trait Processor: std::fmt::Debug {
     fn memory(&self) -> Self::Memory;
 }
 
-pub struct Core<T: MPCProtocol<U>, U: Number, V: Number = U> {
+pub struct NewProcessor<T: MPCProtocol<U>, U: Number, V: Number> {
     secret_stack: StackRegister<U>,
     public_stack: StackRegister<T::Public<V>>,
+    secret_register: Register<U>,
+    public_register: Register<T::Public<V>>,
+    secret_memory: Arc<Mutex<Memory<U>>>,
+    public_memory: Arc<Mutex<Memory<T::Public<U>>>>,
 }
 
-impl<T: MPCProtocol<U>, U: Number, V: Number> Core<T, U, V> {
+impl<T: MPCProtocol<U>, U: Number, V: Number> NewProcessor<T, U, V> {
     // opcodes applicable to all protocols and all types
 }
 
-impl<U: Number, V: Number> Core<HoneyBadgerMPC, U, V>
+impl<T: MPCProtocol<SecGf2<V>>, V: Number> NewProcessor<T, SecGf2<V>, V> {
+    // opcodes applicable to all protocols which use SecGf2 as their secret type
+}
+
+impl<U: Number, V: Number> NewProcessor<HoneyBadgerMPC, U, V>
 where
     HoneyBadgerMPC: MPCProtocol<U>,
 {

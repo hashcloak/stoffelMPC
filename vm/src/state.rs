@@ -62,7 +62,7 @@ pub struct GlobalMemory<T: Number, U: Number, const N: usize> {
 }
 
 #[derive(Clone, Debug)]
-struct Register<T: Number, const N: usize>([T; N]);
+pub struct Register<T: Number, const N: usize = 8>([T; N]);
 
 impl<T: Number, const N: usize> Default for Register<T, N> {
     fn default() -> Self {
@@ -105,7 +105,7 @@ impl<T: Number> StackRegister<T> {
 }
 
 #[derive(Clone, Debug, Default)]
-struct Memory<T: Number>(Vec<T>);
+pub struct Memory<T: Number>(Vec<T>);
 
 impl<T: Number> Memory<T> {
     fn new() -> Self {
