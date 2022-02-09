@@ -1,7 +1,7 @@
 use crate::state::{Memory, Register, StackRegister};
-use mpc::protocols::{hbmpc::HoneyBadgerMPC, MPCProtocol};
+use mpc::protocols::{honey_badger::HoneyBadgerMPC, MPCProtocol};
 use std::sync::{Arc, Mutex};
-use types::numbers::{gf2::SecGf2, int::SecInt, Number};
+use types::numbers::Number;
 
 pub trait Processor: std::fmt::Debug {
     fn clear_registers(&mut self);
@@ -18,16 +18,16 @@ pub trait Processor: std::fmt::Debug {
 }
 
 #[derive(Debug, Clone, Default)]
-pub struct Core<T: MPCProtocol<U>, U: Number, V: Number> {
-    secret_stack: StackRegister<U>,
-    public_stack: StackRegister<T::Public<V>>,
-    secret_register: Register<U>,
-    public_register: Register<T::Public<V>>,
-    secret_memory: Arc<Mutex<Memory<U>>>,
-    public_memory: Arc<Mutex<Memory<T::Public<V>>>>,
+pub struct Core<T: MPCProtocol> {
+    secret_stack: StackRegister<T::Secret>,
+    public_stack: StackRegister<T::Public>,
+    secret_register: Register<T::Secret>,
+    public_register: Register<T::Public>,
+    secret_memory: Arc<Mutex<Memory<T::Secret>>>,
+    public_memory: Arc<Mutex<Memory<T::Public>>>,
 }
 
-impl<T: MPCProtocol<U>, U: Number, V: Number> Processor for Core<T, U, V> {
+impl<T: MPCProtocol> Processor for Core<T> {
     fn clear_registers(&mut self) {
         todo!()
     }
@@ -73,19 +73,10 @@ impl<T: MPCProtocol<U>, U: Number, V: Number> Processor for Core<T, U, V> {
     }
 }
 
-impl<T: MPCProtocol<U>, U: Number, V: Number> Core<T, U, V> {
+impl<T: MPCProtocol> Core<T> {
     // opcodes applicable to all protocols and all types
 }
 
-impl<T: MPCProtocol<SecGf2<U>>, U: Number, V: Number> Core<T, SecGf2<U>, V> {
-    // opcodes applicable to all protocols which use SecGf2 as their secret type
+impl<T: Number, U: Number> Core<HoneyBadgerMPC<T, U>> {
+    // opcodes applicable to Honeybadger protocol
 }
-
-impl<U: Number, V: Number> Core<HoneyBadgerMPC, U, V>
-where
-    HoneyBadgerMPC: MPCProtocol<U>,
-{
-    // opcodes applicable for all number types for which HoneybadgerMPC is defined
-}
-
-impl<T: MPCProtocol<SecInt<U>>, U: Number, V: Number> Core<T, SecInt<U>, V> {}

@@ -1,9 +1,11 @@
 use types::numbers::Number;
 
-pub mod hbmpc;
+pub mod honey_badger;
 
-pub trait MPCProtocol<T: Number>: std::fmt::Debug {
-    type Public<U: Number>: Number;
+pub trait MPCProtocol: std::fmt::Debug {
+    type Public: Number;
+    type Secret: Number;
+
     fn compute();
 
     fn setup();
