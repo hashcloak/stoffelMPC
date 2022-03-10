@@ -1,7 +1,3 @@
-use super::MPCProtocol;
-use types::numbers::int::{PubInt, SecInt};
-use types::numbers::Number;
-
 #[derive(Debug)]
 pub struct HoneyBadgerMPC;
 
@@ -9,12 +5,17 @@ pub struct HoneyBadgerMPC;
 //impl MPCProtocol for HoneyBadgerMPC {
 //    type Public = ;
 //    type Secret = ;
+//    type VmType = ;
 //
 //    fn compute() {
 //        todo!()
 //    }
 //
 //    fn setup() {
+//        todo!()
+//    }
+//
+//    fn into_vm_type(number: impl Number) -> Self::VmType {
 //        todo!()
 //    }
 //}
