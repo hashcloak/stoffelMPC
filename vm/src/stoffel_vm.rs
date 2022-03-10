@@ -10,14 +10,14 @@ pub enum VMMode {
 }
 
 #[derive(Debug)]
-pub struct StoffelVM {
-    processors: Vec<Box<dyn Processor>>,
+pub struct StoffelVM<T: Processor> {
+    processors: Vec<T>,
     program_counter: usize,
     mode: VMMode,
     code: Program,
 }
 
-impl StoffelVM {
+impl<T: Processor> StoffelVM<T> {
     pub fn new() -> Self {
         Self {
             processors: vec![],
