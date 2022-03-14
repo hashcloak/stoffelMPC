@@ -14,4 +14,6 @@ pub trait MPCProtocol: Debug {
     fn setup();
 
     fn into_vm_type(number: impl Number) -> Self::VmType;
+
+    fn send(value: &Self::VmType, recipient: Box<dyn std::io::Write>);
 }
