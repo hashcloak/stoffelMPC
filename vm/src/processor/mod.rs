@@ -1,19 +1,7 @@
-use crate::state::{GlobalMemory, Registers, StackRegisters};
-use types::numbers::{Number, SecretSharing};
+pub mod arithmetic;
+pub mod boolean;
 
-use super::Processor;
-
-#[derive(Debug, Clone, Default)]
-pub struct BooleanProcessor<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> {
-    pub stack: StackRegisters<T, U, M>,
-    pub registers: Registers<T, U, M, N>,
-}
-
-impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Processor
-    for BooleanProcessor<T, U, M, N>
-{
-    type Memory = GlobalMemory<T, U, N>;
-
+pub trait Processor: std::fmt::Debug {
     fn clear_registers(&mut self) {
         todo!()
     }
@@ -57,13 +45,4 @@ impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize> Proce
     fn give_private_output(&self, to_store_in_memory: bool) {
         todo!()
     }
-
-    fn memory(&self) -> Self::Memory {
-        todo!()
-    }
-}
-
-impl<T: Number + SecretSharing, U: Number, const M: usize, const N: usize>
-    BooleanProcessor<T, U, M, N>
-{
 }

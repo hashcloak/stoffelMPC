@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 types = {path = "../types"}
-
+mpc = {path = "../mpc"}
 futures = { version = "0.3" }
 tokio = {version = "0.2", features = ["full"] }
 ark-ff = "0.3"

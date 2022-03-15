@@ -1,21 +1,19 @@
-pub mod hbmpc;
+use std::fmt::Debug;
+use types::numbers::Number;
+use types::vm::Integer;
 
-use ark_ff::{PrimeField, ToBytes};
-use types::numbers::{Number};
-use super::utils::Ring;
+pub mod honey_badger;
 
-pub trait MPCProtocol<N: Number> {
-    type Share;
+pub trait MPCProtocol: Debug {
+    type Public: Number;
+    type Secret: Number;
+    type VmType: Integer + Debug;
 
-    type Input;
+    fn compute();
 
-    type Output;
+    fn setup();
 
-    type Error;
+    fn into_vm_type(number: impl Number) -> Self::VmType;
 
-    type Parameters;
-
-    fn compute() -> Result<Self::Output, Self::Error>;
-
-    fn setup() -> Result<Self::Parameters, Self::Error>;
+    fn send(value: &Self::VmType, recipient: Box<dyn std::io::Write>);
 }

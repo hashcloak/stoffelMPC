@@ -5,7 +5,7 @@ use std::ops::{Add, Mul};
 ///
 /// This type is used for providing finite field arithmetic over two elements
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Copy)]
-pub struct PubGf2<T: Number + Default, const N: usize>([T; N]);
+pub struct PubGf2<T: Number + Default, const N: usize = 8>([T; N]);
 
 impl<T: Number, const N: usize> Number for PubGf2<T, N> {}
 

@@ -1,4 +1,4 @@
-use super::{Number, SecretSharing};
+use super::Number;
 use std::ops::{Add, Mul};
 
 /// Public fixed point type
@@ -33,10 +33,6 @@ impl<T: Number> Mul for PubFixed<T> {
 pub struct SecFixed<T: Number>(T);
 
 impl<T: Number> Number for SecFixed<T> {}
-
-impl<T: Number> SecretSharing for SecFixed<T> {
-    type Public = PubFixed<T>;
-}
 
 impl<T: Number> Add for SecFixed<T> {
     type Output = Self;
