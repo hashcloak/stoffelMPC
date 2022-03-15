@@ -1,8 +1,37 @@
-/// The integer type which will be used in the vm
+use std::ops::{Add, Mul};
 
-pub trait Integer: Default + Copy {
-    type Representation;
+/// This trait is a catch-all for a type that is used
+/// within MPC protocols.
+pub trait Number:
+    Add<Output = Self> + Mul<Output = Self> + Copy + Default + std::fmt::Debug + 'static
+{
+    /// Returns the square of an MPCType
+    fn square(self) -> Self {
+        todo!();
+    }
 
-    fn serialize(&self) -> Vec<u8>;
-    fn deserialize(bytes: Vec<u8>) -> Self;
+    /// Returns the power of itself to an exponent
+    fn pow(self, exp: usize) -> Self {
+        todo!();
+    }
+
+    /// Returns the minimum between itself and another MPCType
+    fn min(self, a: Self) -> Self {
+        todo!();
+    }
+
+    /// Returns the maximum between itself and another MPCType
+    fn max(self, b: Self) -> Self {
+        todo!();
+    }
+
+    /// Returns a if self == 1 and b if self == 0
+    fn if_else(self, a: Self, b: Self) -> Self {
+        todo!();
+    }
+
+    /// Returns (a, b) if self == 0 and (b, a) if self == 1
+    fn cond_swap(self, a: Self, b: Self) -> (Self, Self) {
+        todo!();
+    }
 }

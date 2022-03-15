@@ -78,7 +78,7 @@ impl<T: Number + std::fmt::Display> std::fmt::Display for SecInt<T> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::numbers::Number;
+    use crate::compiler::Number;
     use ark_bls12_381::Fr;
 
     impl Number for Fr {}

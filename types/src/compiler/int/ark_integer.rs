@@ -1,4 +1,4 @@
-use crate::numbers::Number;
+use crate::compiler::Number;
 use ark_ff::BigInteger256;
 use num_bigint::BigUint;
 use std::ops::{Add, Mul};
