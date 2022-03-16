@@ -1,11 +1,12 @@
 use std::fmt::Debug;
-use types::compiler::Skeleton;
+use types::compiler::SkeletonType;
+use types::vm::Number;
 
 pub mod honey_badger;
 
 pub trait MPCProtocol: Debug {
-    type Public: Skeleton;
-    type Secret: Skeleton;
+    type Public: SkeletonType;
+    type Secret: SkeletonType;
     type VmType: Number + Debug;
 
     fn compute();

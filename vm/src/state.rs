@@ -1,15 +1,15 @@
-use types::vm::Integer;
+use types::vm::Number;
 
 #[derive(Clone, Debug)]
-pub struct Register<T: Integer, const N: usize = 8>([T; N]);
+pub struct Register<T: Number, const N: usize = 8>([T; N]);
 
-impl<T: Integer, const N: usize> Default for Register<T, N> {
+impl<T: Number, const N: usize> Default for Register<T, N> {
     fn default() -> Self {
         Self([T::default(); N])
     }
 }
 
-impl<T: Integer, const N: usize> Register<T, N> {
+impl<T: Number, const N: usize> Register<T, N> {
     fn read(&self, i: usize) -> T {
         self.0[i]
     }
@@ -20,9 +20,9 @@ impl<T: Integer, const N: usize> Register<T, N> {
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct StackRegister<T: Integer>(Vec<T>);
+pub struct StackRegister<T: Number>(Vec<T>);
 
-impl<T: Integer> StackRegister<T> {
+impl<T: Number> StackRegister<T> {
     fn push(&mut self, element: T) {
         self.0.push(element);
     }
@@ -44,9 +44,9 @@ impl<T: Integer> StackRegister<T> {
 }
 
 #[derive(Clone, Debug, Default)]
-pub struct Memory<T: Integer>(Vec<T>);
+pub struct Memory<T: Number>(Vec<T>);
 
-impl<T: Integer> Memory<T> {
+impl<T: Number> Memory<T> {
     fn new() -> Self {
         todo!();
     }
