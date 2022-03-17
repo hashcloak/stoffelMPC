@@ -1,15 +1,26 @@
-pub mod bit;
-pub mod fixed;
-pub mod float;
-pub mod gf2;
-pub mod int;
 use std::ops::{Add, Mul};
 
+pub mod ark;
+
 /// This trait is a catch-all for a type that is used
-/// within MPC protocols.
+/// within the virtual machine
 pub trait Number:
-    Add<Output = Self> + Mul<Output = Self> + Copy + Default + std::fmt::Debug + 'static
+    Add<Output = Self> + Mul<Output = Self> + Copy + Default + std::fmt::Debug + Sized + 'static
 {
+    /// Add two numbers
+    ///
+    /// Use the implementation provided by the implementor
+    fn add(self, b: Self) -> Self {
+        Add::add(self, b)
+    }
+
+    /// Multiply two numbers
+    ///
+    /// Use the implementation provided by the implementor
+    fn mul(self, b: Self) -> Self {
+        Mul::mul(self, b)
+    }
+
     /// Returns the square of an MPCType
     fn square(self) -> Self {
         todo!();
