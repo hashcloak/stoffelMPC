@@ -1,0 +1,15 @@
+alpha = {'a'..'z' | 'A'..'Z'}
+digit = {'0'..'9'}
+ident = { (alpha | digit)+ }
+storage_var = {"storage" ~ " " ~ (types | container_types) ~ " " ~ (!digit ~ ident)+ ~ ";"}
+types = { "sint" }
+container_types = { "Map" ~ "<" ~ (types | ident) ~ "," ~ (types | ident) ~ ">"}
+
+program_def = { "program" ~ " " ~ (!digit ~ ident)+ ~ " " ~ program_block}
+program_block = { "{" ~ "}" }
+
+struct_def = { "struct" ~ " " ~ (!digit ~ ident)+ ~ " " ~ struct_block }
+struct_block = { "{" ~ "}" }
+
+function_def = { "fn" ~ " " ~ (!digit ~ ident)+ ~ " " ~ function_block }
+function_block = { "{" ~ "}" }
