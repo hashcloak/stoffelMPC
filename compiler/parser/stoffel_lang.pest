@@ -1,15 +1,37 @@
+WHITESPACE = _{ " " }
 alpha = {'a'..'z' | 'A'..'Z'}
 digit = {'0'..'9'}
+number = {digit+}
 ident = { (alpha | digit)+ }
-storage_var = {"storage" ~ " " ~ (types | container_types) ~ " " ~ (!digit ~ ident)+ ~ ";"}
-types = { "sint" }
-container_types = { "Map" ~ "<" ~ (types | ident) ~ "," ~ (types | ident) ~ ">"}
 
-program_def = { "program" ~ " " ~ (!digit ~ ident)+ ~ " " ~ program_block}
-program_block = { "{" ~ "}" }
+// base types
+base_types = { "sint" | "int" | "uint" | "sfix" | "fix" | "sfloat" |"float" | "regint" | "sgf2n" | "gf2n"}
 
-struct_def = { "struct" ~ " " ~ (!digit ~ ident)+ ~ " " ~ struct_block }
-struct_block = { "{" ~ "}" }
 
-function_def = { "fn" ~ " " ~ (!digit ~ ident)+ ~ " " ~ function_block }
-function_block = { "{" ~ "}" }
+// Arrays
+array_length = { number+ }
+array_dec = { "[" ~ (base_types) ~ ";" ~ (array_length) ~ "]" }
+
+// Maps
+map_keyword = {"Map"}
+map_component = {"<" ~ (base_types) ~ "," ~ (base_types | array_dec) ~ ">"}
+map_dec = {map_keyword ~ map_component}
+
+
+// Structs
+struct_name = @{(!digit ~ ident)+}
+struct_keyword = {"struct"}
+struct_component_name = @{(!digit ~ ident)+}
+struct_component = {struct_component_name ~ ":" ~ (base_types | array_dec) ~ ";"}
+struct_block = { "{" ~ " " ~ struct_component+ ~ " " ~ "}"}
+struct_dec = {struct_keyword ~ " "  ~ struct_name ~ " " ~ struct_block}
+
+composed_types = {array_dec | map_dec | struct_dec}
+
+// Variables
+variable_name = @{(!digit ~ ident)+}
+variable_let_keyword = {"let"}
+variable_storage_keyword = {"storage"}
+variable_dec = {variable_let_keyword ~ variable_storage_keyword? ~ variable_name ~ ":" ~ (base_types | composed_types) ~ ";"}
+
+program = _{ SOI ~ EOI}
