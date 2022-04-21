@@ -30,3 +30,6 @@ let mut vm = StoffelVM::new();
 vm.load_byte_code(&byte_code);
 vm.execute();
 ```
+
+# Acknowledgements
+Special thanks to the [Decentralized Systems Lab at UIUC](https://decentralize.ece.illinois.edu/) for doing all the real work behind this project and building the prototypes that led to StoffelMPC!
