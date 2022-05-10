@@ -55,3 +55,15 @@ impl<T: Processor> StoffelVM<T> {
         self.program_counter
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::processor::arithmetic::ArithmeticCore;
+    use mpc::protocols::honey_badger::HoneyBadgerMPC;
+
+    #[test]
+    fn test_vm_new() {
+        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>>::new();
+    }
+}

@@ -51,3 +51,5 @@ pub trait Number:
         todo!();
     }
 }
+
+impl Number for u32 {}
