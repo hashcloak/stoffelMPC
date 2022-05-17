@@ -23,7 +23,6 @@ program HoneyBadgerSwap {
     storage sint totalShares;
     storage Pool pool;
     
-    storage Map<sint, UserData> userData;
     storage Map<sint, LPData> lpData;
     
     fn constructor(assetAID: sint, amountA: sint, assetBID: sint, amountB: sint) {
