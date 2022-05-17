@@ -1,8 +1,5 @@
-use super::processors::{ArithmeticProcessor, BooleanProcessor, Processor};
+use super::processor::Processor;
 use super::program::Program;
-use super::state::GlobalMemory;
-use std::sync::{Arc, Mutex};
-use types::numbers::{Number, SecretSharing};
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum VMMode {
@@ -13,23 +10,18 @@ pub enum VMMode {
 }
 
 #[derive(Debug)]
-pub struct StoffelVM<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> {
-    processors: Vec<Box<dyn Processor<Memory = GlobalMemory<T, U, N>>>>,
+pub struct StoffelVM<T: Processor> {
+    processors: Vec<T>,
     program_counter: usize,
-    global_memory: Arc<Mutex<GlobalMemory<T, U, N>>>,
     mode: VMMode,
     code: Program,
 }
 
-impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> StoffelVM<T, U, M, N> {
+impl<T: Processor> StoffelVM<T> {
     pub fn new() -> Self {
         Self {
-            processors: vec![
-                Box::new(ArithmeticProcessor::<T, U, M, N>::default()),
-                Box::new(BooleanProcessor::<T, U, M, N>::default()),
-            ],
+            processors: vec![],
             program_counter: 0,
-            global_memory: Arc::new(Mutex::new(GlobalMemory::<T, U, N>::default())),
             mode: VMMode::default(),
             code: Program::new(),
         }
@@ -61,5 +53,17 @@ impl<T: SecretSharing + Number, U: Number, const M: usize, const N: usize> Stoff
 
     pub fn get_current_program_counter(&self) -> usize {
         self.program_counter
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::processor::arithmetic::ArithmeticCore;
+    use mpc::protocols::honey_badger::HoneyBadgerMPC;
+
+    #[test]
+    fn test_vm_new() {
+        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>>::new();
     }
 }
