@@ -1,3 +1,5 @@
+use super::instructions::opcodes::Opcodes;
+use super::instructions::{arithmetic, boolean, common};
 use super::processor::Processor;
 use super::program::Program;
 
@@ -32,7 +34,13 @@ impl<T: Processor> StoffelVM<T> {
     }
 
     pub fn execute(&mut self) -> i32 {
-        todo!();
+        for opcode in self.code.0.iter() {
+            match opcode {
+                Opcodes::LDI => arithmetic::ldi(()),
+                _ => return 1,
+            }
+        }
+        0
     }
 
     pub fn load_schedule() {

@@ -1,7 +1,7 @@
 use super::instructions::opcodes::Opcodes;
 
 #[derive(Debug)]
-pub struct Program(Vec<Opcodes>);
+pub struct Program(pub Vec<Opcodes>);
 
 impl Program {
     pub fn new() -> Self {
