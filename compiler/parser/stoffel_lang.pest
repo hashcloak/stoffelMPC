@@ -109,7 +109,7 @@ for_loop = {for_keyword ~ "(" ~ variable_dec? ~ ";" ~ condition ~ ";" ~ (expr ~ 
 control_flow = {condition | if_exp | while_loop | for_loop}
 
 // Declarations
-non_variable_declarations = {function_dec}
+non_variable_declarations = {function_dec | struct_dec}
 variable_declarations = {variable_dec}
 var_reassignment = {variable_name ~ "=" ~ expr ~ ";"}
 struct_field_reassignment = {struct_component_access ~ "=" ~ expr ~ ";"}
@@ -117,5 +117,5 @@ reassignment = {var_reassignment | struct_field_reassignment}
 declarations = {non_variable_declarations | variable_declarations | reassignment}
 
 program_dec = {"program" ~ ident ~ program_block}
-program_block = { "{" ~ expr ~ "}" }
+program_block = { "{" ~ non_variable_declarations* ~ "}" }
 program = { SOI ~ program_dec ~ EOI}
