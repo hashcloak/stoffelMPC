@@ -1,8 +1,10 @@
-WHITESPACE = _{ " " }
+WHITESPACE = _{(" "|"\t"|"\r"|"\n")+}
 alpha = {'a'..'z' | 'A'..'Z'}
 digit = {'0'..'9'}
 number = {digit+}
 ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC|"_")* }
+block_comment  = @{block_comment_open ~ (!block_comment_close ~ ANY)* ~ block_comment_close}
+line_comment   = @{line_comment_open ~ (!("\r"|"\n") ~ ANY)*}
 
 // Keywords
 for_keyword = {"for"}
@@ -59,7 +61,7 @@ boolean_values = {true_keyword | false_keyword}
 
 literal_value = {number | boolean_values}
 
-expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index}
+expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_dec}
 
 expr = {expr_inner ~ (ops ~ expr_inner)*}
 
@@ -77,13 +79,13 @@ array_index = {call_item ~ "[" ~ expr ~"]" ~ ("[" ~ expr ~ "]")*}
 struct_name = {ident}
 struct_component_name = @{(!digit ~ ident)+}
 struct_component = {(struct_component_name ~ ":" ~ types ~ ("," ~ struct_component_name ~ ":" ~ types)* ~ ","?)?}
-struct_block = { "{" ~ " " ~ struct_component? ~ " " ~ "}"}
-struct_dec = {struct_keyword ~ struct_name ~ " " ~ struct_block}
+struct_block = { "{" ~ struct_component? ~ "}"}
+struct_dec = {struct_keyword ~ struct_name ~ struct_block}
 struct_component_access = {subfield_path}
 subfield_path = {(sub_subfield_path ~ ".")+ ~ call_item}
 sub_subfield_path = {array_index|call_item}
 
-composed_types = {array_type| map_dec | struct_dec}
+composed_types = {array_type| struct_dec}
 
 types = {base_types | composed_types }
 
@@ -116,4 +118,4 @@ declarations = {non_variable_declarations | variable_declarations | reassignment
 
 program_dec = {"program" ~ ident ~ program_block}
 program_block = { "{" ~ expr ~ "}" }
-program = _{ SOI ~ program_dec ~ EOI}
+program = { SOI ~ program_dec ~ EOI}
