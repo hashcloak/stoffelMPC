@@ -99,7 +99,7 @@ storage_fields    =  {storage_field ~ ("," ~ storage_field)* ~ ","?}
 storage_field     =  {ident ~ ":" ~ types}
 
 // functions
-function_name = {("constructor") | ident}
+function_name = {ident}
 function_param_name = {ident}
 function_args = { ((function_param_name ~ ":" ~ types) ~ ("," ~ (function_param_name ~ ":" ~ types))*)? }
 function_signature = { function_keyword ~ function_name ~ "(" ~ function_args? ~ ")" ~ (function_returns ~ types)? }
