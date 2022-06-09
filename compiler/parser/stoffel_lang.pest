@@ -61,7 +61,7 @@ boolean_values = {true_keyword | false_keyword}
 
 literal_value = {number | boolean_values}
 
-expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_dec}
+expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_dec | variable_name}
 
 expr = {expr_inner ~ (ops ~ expr_inner)*}
 
@@ -91,7 +91,7 @@ types = {base_types | composed_types }
 
 // Variables
 variable_name = {ident}
-variable_dec = {variable_let_keyword ~ variable_storage_keyword? ~ variable_name ~ ":" ~ (base_types | composed_types) ~ ( "=" ~ expr)?~ ";"}
+variable_dec = {variable_let_keyword ~ variable_name ~ ":" ~ types ~ ( "=" ~ expr)?~ ";"}
 
 // Storage
 storage_dec      =  {variable_storage_keyword ~ "{" ~ storage_fields ~ "}"}
