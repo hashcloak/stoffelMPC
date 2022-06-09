@@ -1,7 +1,7 @@
 WHITESPACE = _{(" "|"\t"|"\r"|"\n")+}
 alpha = {'a'..'z' | 'A'..'Z'}
 digit = {'0'..'9'}
-number = {digit+}
+number = {ASCII_DIGIT+}
 ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC|"_")* }
 block_comment  = @{block_comment_open ~ (!block_comment_close ~ ANY)* ~ block_comment_close}
 line_comment   = @{line_comment_open ~ (!("\r"|"\n") ~ ANY)*}
@@ -43,7 +43,6 @@ block_comment_close  =  {"*/"}
 arith_ops = {"/" | "*" | "+" | "-" | "**"}
 comp_ops = {"==" | ">=" | "<=" | "!=" | ">" | "<"}
 logical_ops = {"||" | "&&"}
-inc_dec_ops = {"++" | "--"}
 unary_ops = {"!"}
 ops = {arith_ops | comp_ops | logical_ops | unary_ops}
 
@@ -61,9 +60,10 @@ boolean_values = {true_keyword | false_keyword}
 
 literal_value = {number | boolean_values}
 
-expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_expression | variable_name}
+expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_expression | variable_name | unary_op_expr}
 
 expr = {expr_inner ~ (ops ~ expr_inner)*}
+unary_op_expr = { unary_ops ~ expr_inner }
 
 call_item = {ident | "(" ~ expr ~ ")"}
 
@@ -114,16 +114,15 @@ function_dec = {function_signature ~ code_block}
 
 
 // control flow
-condition = {expr ~ (comp_ops | logical_ops) ~ expr}
 if_exp = {if_keyword ~ expr ~ code_block ~ (else_keyword ~ (code_block|if_exp))?}
 while_loop = {while_keyword ~ expr ~ code_block}
-for_loop = {for_keyword ~ "(" ~ variable_dec? ~ ";" ~ condition ~ ";" ~ (expr ~ inc_dec_ops) ~ ")" ~ code_block}
-control_flow = {condition | if_exp | while_loop | for_loop}
+for_loop = {for_keyword ~ "(" ~ (variable_dec | var_reassignment)? ~ ";"? ~ expr ~ ";" ~ var_reassignment ~ ")" ~ code_block}
+control_flow = {if_exp | while_loop | for_loop}
 
 // Declarations
 non_variable_declarations = {function_dec | struct_dec | storage_dec}
 variable_declarations = {variable_dec}
-var_reassignment = {variable_name ~ "=" ~ expr ~ ";"}
+var_reassignment = {variable_name ~ "=" ~ expr ~ ";"?}
 struct_field_reassignment = {struct_component_access ~ "=" ~ expr ~ ";"}
 storage_reassignment = {variable_storage_keyword ~ "." ~ ident ~ ("." ~ ident)* ~ "=" ~ expr ~ ";"}
 reassignment = {var_reassignment | struct_field_reassignment | storage_reassignment}
