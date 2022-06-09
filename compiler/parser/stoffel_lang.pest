@@ -61,11 +61,16 @@ boolean_values = {true_keyword | false_keyword}
 
 literal_value = {number | boolean_values}
 
-expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_dec | variable_name}
+expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_expression | variable_name}
 
 expr = {expr_inner ~ (ops ~ expr_inner)*}
 
 call_item = {ident | "(" ~ expr ~ ")"}
+
+// call path
+call_path           =  {relative_call_path|absolute_call_path}
+relative_call_path  =  {ident ~ (path_separator ~ ident)*}
+absolute_call_path  =  {path_separator ~ ident ~ (path_separator ~ ident)*}
 
 // Arrays
 array_length = { number+ }
@@ -84,6 +89,8 @@ struct_dec = {struct_keyword ~ struct_name ~ struct_block}
 struct_component_access = {subfield_path}
 subfield_path = {(sub_subfield_path ~ ".")+ ~ call_item}
 sub_subfield_path = {array_index|call_item}
+struct_expression  =  {call_path ~ "{" ~ struct_expr_component ~ "}"}
+struct_expr_component =  {(struct_component_name ~ ":" ~ expr ~ ("," ~ struct_component_name ~ ":" ~ expr)* ~ ","?)?}
 
 composed_types = {array_type| struct_name}
 
@@ -118,7 +125,8 @@ non_variable_declarations = {function_dec | struct_dec | storage_dec}
 variable_declarations = {variable_dec}
 var_reassignment = {variable_name ~ "=" ~ expr ~ ";"}
 struct_field_reassignment = {struct_component_access ~ "=" ~ expr ~ ";"}
-reassignment = {var_reassignment | struct_field_reassignment}
+storage_reassignment = {variable_storage_keyword ~ "." ~ ident ~ ("." ~ ident)* ~ "=" ~ expr ~ ";"}
+reassignment = {var_reassignment | struct_field_reassignment | storage_reassignment}
 declarations = {non_variable_declarations | variable_declarations | reassignment}
 
 program_dec = {"program" ~ ident ~ program_block}
