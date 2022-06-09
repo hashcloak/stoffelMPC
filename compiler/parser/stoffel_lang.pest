@@ -71,7 +71,7 @@ call_item = {ident | "(" ~ expr ~ ")"}
 array_length = { number+ }
 array_expression = {"[" ~ array_elements ~ "]"}
 array_elements = {literal_value ~ ("," ~ array_elements)*}
-array_type = {"[" ~ base_types ~ ";" ~ number ~ "]"}
+array_type = {"[" ~ types ~ ";" ~ array_length ~ "]"}
 array_index = {call_item ~ "[" ~ expr ~"]" ~ ("[" ~ expr ~ "]")*}
 
 
@@ -85,13 +85,18 @@ struct_component_access = {subfield_path}
 subfield_path = {(sub_subfield_path ~ ".")+ ~ call_item}
 sub_subfield_path = {array_index|call_item}
 
-composed_types = {array_type| struct_dec}
+composed_types = {array_type| struct_name}
 
 types = {base_types | composed_types }
 
 // Variables
 variable_name = {ident}
 variable_dec = {variable_let_keyword ~ variable_storage_keyword? ~ variable_name ~ ":" ~ (base_types | composed_types) ~ ( "=" ~ expr)?~ ";"}
+
+// Storage
+storage_dec      =  {variable_storage_keyword ~ "{" ~ storage_fields ~ "}"}
+storage_fields    =  {storage_field ~ ("," ~ storage_field)* ~ ","?}
+storage_field     =  {ident ~ ":" ~ types}
 
 // functions
 function_name = {("constructor") | ident}
@@ -109,7 +114,7 @@ for_loop = {for_keyword ~ "(" ~ variable_dec? ~ ";" ~ condition ~ ";" ~ (expr ~ 
 control_flow = {condition | if_exp | while_loop | for_loop}
 
 // Declarations
-non_variable_declarations = {function_dec | struct_dec}
+non_variable_declarations = {function_dec | struct_dec | storage_dec}
 variable_declarations = {variable_dec}
 var_reassignment = {variable_name ~ "=" ~ expr ~ ";"}
 struct_field_reassignment = {struct_component_access ~ "=" ~ expr ~ ";"}
