@@ -48,6 +48,7 @@ unary_ops = {"!"}
 ops = {arith_ops | comp_ops | logical_ops | unary_ops}
 
 code_block = {"{" ~ (declarations | control_flow)* ~ "}"}
+parenthesized_expr = {"(" ~ expr ~ ")"}
 
 // base types
 base_types = { type_fix_keyword | type_float_keyword | 
@@ -61,7 +62,7 @@ boolean_values = {true_keyword | false_keyword}
 
 literal_value = {number | boolean_values}
 
-expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_expression | variable_name | unary_op_expr}
+expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_expression | variable_name | unary_op_expr | parenthesized_expr}
 
 expr = {expr_inner ~ (ops ~ expr_inner)*}
 unary_op_expr = { unary_ops ~ expr_inner }
