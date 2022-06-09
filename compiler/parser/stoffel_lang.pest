@@ -42,6 +42,7 @@ block_comment_close  =  {"*/"}
 
 arith_ops = {"/" | "*" | "+" | "-" | "**"}
 comp_ops = {"==" | ">=" | "<=" | "!=" | ">" | "<"}
+arith_assign_ops = { "+=" | "-=" | "/=" | "*=" }
 logical_ops = {"||" | "&&"}
 unary_ops = {"!"}
 ops = {arith_ops | comp_ops | logical_ops | unary_ops}
@@ -114,17 +115,18 @@ function_dec = {function_signature ~ code_block}
 
 
 // control flow
+condition = {expr ~ (comp_ops | logical_ops) ~ expr}
 if_exp = {if_keyword ~ expr ~ code_block ~ (else_keyword ~ (code_block|if_exp))?}
 while_loop = {while_keyword ~ expr ~ code_block}
 for_loop = {for_keyword ~ "(" ~ (variable_dec | var_reassignment)? ~ ";"? ~ expr ~ ";" ~ var_reassignment ~ ")" ~ code_block}
-control_flow = {if_exp | while_loop | for_loop}
+control_flow = {condition | if_exp | while_loop | for_loop}
 
 // Declarations
 non_variable_declarations = {function_dec | struct_dec | storage_dec}
 variable_declarations = {variable_dec}
-var_reassignment = {variable_name ~ "=" ~ expr ~ ";"?}
-struct_field_reassignment = {struct_component_access ~ "=" ~ expr ~ ";"}
-storage_reassignment = {variable_storage_keyword ~ "." ~ ident ~ ("." ~ ident)* ~ "=" ~ expr ~ ";"}
+var_reassignment = {variable_name ~ ("=" | arith_assign_ops) ~ expr ~ ";"?}
+struct_field_reassignment = {struct_component_access ~ ("=" | arith_assign_ops) ~ expr ~ ";"}
+storage_reassignment = {variable_storage_keyword ~ "." ~ ident ~ ("." ~ ident)* ~ ("=" | arith_assign_ops) ~ expr ~ ";"}
 reassignment = {var_reassignment | struct_field_reassignment | storage_reassignment}
 declarations = {non_variable_declarations | variable_declarations | reassignment}
 
