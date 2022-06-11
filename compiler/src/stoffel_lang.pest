@@ -1,0 +1,137 @@
+WHITESPACE = _{(" "|"\t"|"\r"|"\n")+}
+alpha = {'a'..'z' | 'A'..'Z'}
+digit = {'0'..'9'}
+number = {ASCII_DIGIT+}
+ident = @{ ASCII_ALPHA ~ (ASCII_ALPHANUMERIC|"_")* }
+block_comment  = @{block_comment_open ~ (!block_comment_close ~ ANY)* ~ block_comment_close}
+line_comment   = @{line_comment_open ~ (!("\r"|"\n") ~ ANY)*}
+
+// Keywords
+for_keyword = {"for"}
+while_keyword = {"while"}
+if_keyword = {"if"}
+else_keyword = {"else"}
+struct_keyword = {"struct"}
+variable_let_keyword = {"let"}
+variable_storage_keyword = {"storage"}
+constructor_keyword = {"constructor"}
+function_keyword = {"fn"}
+fn_returns =  {"->"}
+path_separator       =  {"::"}
+use_keyword = {"use"}
+true_keyword = {"true"}
+false_keyword = {"false"}
+function_returns = {"->"}
+mpc_keyword = {"mpc"}
+// types
+type_sint_keyword = {"sint"}
+type_int_keyword = {"int"}
+type_uint_keyword = {"uint"}
+type_sfix_keyword = {"sfix"}
+type_fix_keyword = {"fix"}
+type_sfloat_keyword = {"sfloat"}
+type_float_keyword = {"float"}
+type_regint_keyword = {"regint"}
+type_sgf2n_keyword = {"sgf2n"}
+type_gf2n_keyword = {"gf2n"}
+type_bool_keyword = {"bool"}
+
+// Comments
+line_comment_open    =  {"//"}
+block_comment_open   =  {"/*"}
+block_comment_close  =  {"*/"}
+
+arith_ops = {"/" | "*" | "+" | "-" | "**"}
+comp_ops = {"==" | ">=" | "<=" | "!=" | ">" | "<"}
+arith_assign_ops = { "+=" | "-=" | "/=" | "*=" }
+logical_ops = {"||" | "&&"}
+unary_ops = {"!"}
+ops = {arith_ops | comp_ops | logical_ops | unary_ops}
+
+code_block = {"{" ~ (declarations | control_flow)* ~ "}"}
+parenthesized_expr = {"(" ~ expr ~ ")"}
+
+// base types
+base_types = { type_fix_keyword | type_float_keyword | 
+               type_gf2n_keyword | type_int_keyword | 
+               type_regint_keyword | type_sfix_keyword |
+               type_sfloat_keyword | type_sgf2n_keyword | 
+               type_sint_keyword | type_uint_keyword |
+               type_bool_keyword}
+
+boolean_values = {true_keyword | false_keyword}
+
+literal_value = {number | boolean_values}
+
+expr_inner = { if_exp | code_block | literal_value | struct_component_access | array_index | struct_expression | variable_name | unary_op_expr | parenthesized_expr}
+
+expr = {expr_inner ~ (ops ~ expr_inner)*}
+unary_op_expr = { unary_ops ~ expr_inner }
+
+call_item = {ident | "(" ~ expr ~ ")"}
+
+// call path
+call_path           =  {relative_call_path|absolute_call_path}
+relative_call_path  =  {ident ~ (path_separator ~ ident)*}
+absolute_call_path  =  {path_separator ~ ident ~ (path_separator ~ ident)*}
+
+// Arrays
+array_length = { number+ }
+array_expression = {"[" ~ array_elements ~ "]"}
+array_elements = {literal_value ~ ("," ~ array_elements)*}
+array_type = {"[" ~ types ~ ";" ~ array_length ~ "]"}
+array_index = {call_item ~ "[" ~ expr ~"]" ~ ("[" ~ expr ~ "]")*}
+
+
+// Structs
+struct_name = {ident}
+struct_component_name = @{(!digit ~ ident)+}
+struct_component = {(struct_component_name ~ ":" ~ types ~ ("," ~ struct_component_name ~ ":" ~ types)* ~ ","?)?}
+struct_block = { "{" ~ struct_component? ~ "}"}
+struct_dec = {struct_keyword ~ struct_name ~ struct_block}
+struct_component_access = {subfield_path}
+subfield_path = {(sub_subfield_path ~ ".")+ ~ call_item}
+sub_subfield_path = {array_index|call_item}
+struct_expression  =  {call_path ~ "{" ~ struct_expr_component ~ "}"}
+struct_expr_component =  {(struct_component_name ~ ":" ~ expr ~ ("," ~ struct_component_name ~ ":" ~ expr)* ~ ","?)?}
+
+composed_types = {array_type| struct_name}
+
+types = {base_types | composed_types }
+
+// Variables
+variable_name = {ident}
+variable_dec = {variable_let_keyword ~ variable_name ~ ":" ~ types ~ ( "=" ~ expr)?~ ";"}
+
+// Storage
+storage_dec      =  {variable_storage_keyword ~ "{" ~ storage_fields ~ "}"}
+storage_fields    =  {storage_field ~ ("," ~ storage_field)* ~ ","?}
+storage_field     =  {ident ~ ":" ~ types}
+
+// functions
+function_name = {ident}
+function_param_name = {ident}
+function_args = { ((function_param_name ~ ":" ~ types) ~ ("," ~ (function_param_name ~ ":" ~ types))*)? }
+function_signature = { function_keyword ~ mpc_keyword? ~ function_name ~ "(" ~ function_args? ~ ")" ~ (function_returns ~ types)? }
+function_dec = {function_signature ~ code_block}
+
+
+// control flow
+condition = {expr ~ (comp_ops | logical_ops) ~ expr}
+if_exp = {if_keyword ~ expr ~ code_block ~ (else_keyword ~ (code_block|if_exp))?}
+while_loop = {while_keyword ~ expr ~ code_block}
+for_loop = {for_keyword ~ "(" ~ (variable_dec | var_reassignment)? ~ ";"? ~ expr ~ ";" ~ var_reassignment ~ ")" ~ code_block}
+control_flow = {condition | if_exp | while_loop | for_loop}
+
+// Declarations
+non_variable_declarations = {function_dec | struct_dec | storage_dec}
+variable_declarations = {variable_dec}
+var_reassignment = {variable_name ~ ("=" | arith_assign_ops) ~ expr ~ ";"?}
+struct_field_reassignment = {struct_component_access ~ ("=" | arith_assign_ops) ~ expr ~ ";"}
+storage_reassignment = {variable_storage_keyword ~ "." ~ ident ~ ("." ~ ident)* ~ ("=" | arith_assign_ops) ~ expr ~ ";"}
+reassignment = {var_reassignment | struct_field_reassignment | storage_reassignment}
+declarations = {non_variable_declarations | variable_declarations | reassignment}
+
+program_dec = {"program" ~ ident ~ program_block}
+program_block = { "{" ~ non_variable_declarations* ~ "}" }
+program = { SOI ~ program_dec ~ EOI}

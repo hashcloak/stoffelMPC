@@ -1,0 +1,88 @@
+program HoneyBadgerSwap {
+  struct Pool {
+     amountA: sfloat,
+     amountB: sfloat,
+   }
+
+   struct UserData {
+        userID: sint,
+        balanceA: sfloat,
+        balanceB: sfloat,
+        shares: sint
+    }
+
+   storage {
+      traders: [UserData; 3],
+      liquidity_providers: [UserData; 3],
+      pool: Pool,
+      total_shares: sint
+   }
+
+   fn addLiquidity(max_amountA: sfloat, amountB: sfloat, lpID: sint) {
+       let total_liquidity: sint = storage.total_shares;
+        if total_liquidity > 0 {
+           let tokenB_reserve: sfloat = storage.balanceB - amountB;
+           let tokenA_reserve: sfloat = storage.balanceA;
+           let new_amountA: sfloat = amountB * tokenA_reserve / tokenB_reserve + 1;
+           let liquidity_minted: sint = amountB * total_liquidity / tokenB_reserve;
+           storage.liquidity_providers[lpID].shares += liquidity_minted;
+           storage.total_shares += liquidity_minted;
+           storage.pool.amountB += amountB;
+           storage.pool.amountA += new_amountA;
+           storage.liquidity_providers[lpID].amountB -= amountB;
+           storage.liquidity_providers[lpID].amountA -= new_amountA;
+        }
+        else {
+           let new_amountA: sfloat = max_amountA;
+           let initial_liquidity: sint = amountB;
+           storage.total_shares = initial_liquidity;
+           storage.liquidity_providers[lpID].shares = initial_liquidity;
+           storage.liquidity_providers[lpID].amountA -= max_amountA;
+           storage.liquidity_providers[lpID].amountB -= amountB;
+           storage.pool.amountA += new_amountA;
+           storage.pool.amountB += amountB;
+        }
+    
+   }
+
+   fn removeLiquidity(shares: sint, min_amountA: sfloat, min_amountB: sfloat, lpID: sint) {
+       let total_liquidity: sint = storage.total_shares;
+       let tokenB_reserve: sfloat = storage.pool.amountB;
+       let tokenA_amount: sfloat = shares * storage.pool.amountA / total_liquidity;
+       let tokenB_amount: sfloat = shares * tokenB_reserve / total_liquidity;
+       storage.liquidity_providers[lpID].shares -= shares;
+       storage.total_shares -= shares;
+       storage.liquidity_providers[lpID].amountA += tokenA_amount;
+       storage.liquidity_providers[lpID].amountB += tokenB_amount;
+   }
+
+   fn deposit(amountA: sfloat, amountB: sfloat, userID: sint, is_lp: bool) {
+       if is_lp == true {
+           storage.liquidity_providers[userID].amountA += amountA;
+           storage.liquidity_providers[userID].amountB += amountB;
+       } else {
+           storage.traders[userID].amountA += amountA;
+           storage.traders[userID].amountB += amountB;
+       }
+   }
+
+   fn withdraw(amountA: sfloat, amountB: sfloat, userID: sint, is_lp: bool) {
+       if is_lp == true {
+           storage.liquidity_providers[userID].amountA -= amountA;
+           storage.liquidity_providers[userID].amountB -= amountB;
+       } else {
+           storage.traders[userID].amountA -= amountA;
+           storage.traders[userID].amountB -= amountB;
+       }
+   }
+
+   fn mpc trade(tokenA_sold: sfloat, min_tokenB: sfloat, traderID: sint) {
+       let tokenB_reserve: sfloat = storage.pool.amountB;
+       let tokenA_sold_with_fee: sfloat = tokenA_sold * 997;
+       let numerator: sfloat = tokenA_sold_with_fee * tokenB_reserve;
+       let denominator: sfloat = (storage.pool.amountA * 1000) + tokenA_sold_with_fee;
+       let tokenB_bought: sfloat = numerator / denominator;
+       storage.traders[traderID].amountA -= tokenA_sold;
+       storage.traders[traderID].amountB += tokenB_bought;
+   }
+}
