@@ -22,6 +22,7 @@ use_keyword = {"use"}
 true_keyword = {"true"}
 false_keyword = {"false"}
 function_returns = {"->"}
+mpc_keyword = {"mpc"}
 // types
 type_sint_keyword = {"sint"}
 type_int_keyword = {"int"}
@@ -111,7 +112,7 @@ storage_field     =  {ident ~ ":" ~ types}
 function_name = {ident}
 function_param_name = {ident}
 function_args = { ((function_param_name ~ ":" ~ types) ~ ("," ~ (function_param_name ~ ":" ~ types))*)? }
-function_signature = { function_keyword ~ function_name ~ "(" ~ function_args? ~ ")" ~ (function_returns ~ types)? }
+function_signature = { function_keyword ~ mpc_keyword? ~ function_name ~ "(" ~ function_args? ~ ")" ~ (function_returns ~ types)? }
 function_dec = {function_signature ~ code_block}
 
 

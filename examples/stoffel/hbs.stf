@@ -76,7 +76,7 @@ program HoneyBadgerSwap {
        }
    }
 
-   fn trade(tokenA_sold: sfloat, min_tokenB: sfloat, traderID: sint) {
+   fn mpc trade(tokenA_sold: sfloat, min_tokenB: sfloat, traderID: sint) {
        let tokenB_reserve: sfloat = storage.pool.amountB;
        let tokenA_sold_with_fee: sfloat = tokenA_sold * 997;
        let numerator: sfloat = tokenA_sold_with_fee * tokenB_reserve;
