@@ -1,8 +1,8 @@
 extern crate pest;
 
-use std::{fs, path::Path};    
+use std::{path::Path};    
 use pest::{Parser, iterators::Pairs, error::Error, Span};   
-use from_pest::FromPest;   
+   
 use pest_ast::FromPest;
 
 pub mod errors;
@@ -94,11 +94,11 @@ pub fn span_into_string(span: Span) -> String {
 
 impl StoffelLangParser {
     /// Reads file into string.
-    pub fn load_file(file_path: &Path) -> Result<String, ProgramParserError> {
+    pub fn load_file(_file_path: &Path) -> Result<String, ProgramParserError> {
         todo!();
     }
 
-    pub fn parse_file(input_file: &str) -> Result<String, ProgramParserError> {
+    pub fn parse_file(_input_file: &str) -> Result<String, ProgramParserError> {
         todo!();
     }
 }
