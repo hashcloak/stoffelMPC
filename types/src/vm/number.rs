@@ -1,9 +1,5 @@
 use std::ops::{Add, Mul};
 
-pub mod ark;
-
-pub mod number;
-
 /// This trait is a catch-all for a type that is used
 /// within the virtual machine
 pub trait Number:
