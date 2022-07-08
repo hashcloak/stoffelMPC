@@ -1,4 +1,4 @@
-use super::instructions::opcodes::Opcodes;
+use super::instructions::opcodes::Opcode;
 use super::instructions::{arithmetic, boolean, common};
 use super::processor::Processor;
 use super::program::Program;
@@ -16,7 +16,7 @@ pub struct StoffelVM<T: Processor> {
     processors: Vec<T>,
     program_counter: usize,
     mode: VMMode,
-    code: Program,
+    code: Program<T>,
 }
 
 impl<T: Processor> StoffelVM<T> {
@@ -33,14 +33,12 @@ impl<T: Processor> StoffelVM<T> {
         self.code.parse_bytes(bytes.as_ref())
     }
 
+    pub fn run() -> Result<(), Box<dyn std::error::Error>>{
+        todo!();
+    }
+
     pub fn execute(&mut self) -> i32 {
-        for opcode in self.code.0.iter() {
-            match opcode {
-                Opcodes::LDI => arithmetic::ldi(()),
-                _ => return 1,
-            }
-        }
-        0
+        todo!();
     }
 
     pub fn load_schedule() {

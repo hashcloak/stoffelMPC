@@ -1,9 +1,10 @@
-use super::instructions::opcodes::Opcodes;
+use super::instructions::Instruction;
+use super::processor::Processor;
 
 #[derive(Debug)]
-pub struct Program(pub Vec<Opcodes>);
+pub struct Program<P: Processor>(pub Vec<Instruction<P>>);
 
-impl Program {
+impl<P: Processor> Program<P> {
     pub fn new() -> Self {
         Program(vec![])
     }
@@ -12,7 +13,7 @@ impl Program {
         todo!();
     }
 
-    fn execute() {
+    fn execute(processor: P, instr_index: usize) {
         todo!();
     }
 }
