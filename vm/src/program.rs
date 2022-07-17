@@ -1,7 +1,7 @@
 use super::instructions::Instruction;
 use super::processor::Processor;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct Program<P: Processor>(pub Vec<Instruction<P>>);
 
 impl<P: Processor> Program<P> {
