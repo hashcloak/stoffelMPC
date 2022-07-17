@@ -2,6 +2,8 @@ use mpc::protocols::{honey_badger::HoneyBadgerMPC, MPCProtocol};
 use vm::processor::arithmetic::ArithmeticCore;
 use vm::processor::Processor;
 use vm::StoffelVM;
+use vm::Program;
+use tokio::net::{TcpListener, TcpStream};
 
 pub struct Player<T: MPCProtocol, U: Processor> {
     id: String,
@@ -21,6 +23,10 @@ impl<T: MPCProtocol, U: Processor> Player<T, U> {
     }
 
     fn broadcast_and_receive() -> Result<(), Box<dyn std::error::Error>> {
+        todo!();
+    }
+
+    pub async fn run(program: Program<U>, listener: TcpListener) -> Result<(), Box<dyn std::error::Error>> {
         todo!();
     }
 }

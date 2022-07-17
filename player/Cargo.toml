@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 mpc = {path = "../mpc"}
 vm = {path = "../vm"}
+tokio = {version = "0.2", features = ["full"] }
