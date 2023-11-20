@@ -1,15 +1,17 @@
-use types::vm::Number;
+use types::vm::MpcType;
 
+// TODO: Define the correct type for the type T. A register can contain a
+// Share<Domain> or a Domain.
 #[derive(Clone, Debug)]
-pub struct Register<T: Number, const N: usize = 8>([T; N]);
+pub struct Register<T: MpcType, const N: usize = 8>([T; N]);
 
-impl<T: Number, const N: usize> Default for Register<T, N> {
+impl<T: MpcType, const N: usize> Default for Register<T, N> {
     fn default() -> Self {
         Self([T::default(); N])
     }
 }
 
-impl<T: Number, const N: usize> Register<T, N> {
+impl<T: MpcType, const N: usize> Register<T, N> {
     pub fn read(&self, i: usize) -> T {
         self.0[i]
     }
@@ -19,10 +21,12 @@ impl<T: Number, const N: usize> Register<T, N> {
     }
 }
 
+// TODO: Define the correct type for the stack register, it can be Share<Domain>
+// or Domain.
 #[derive(Clone, Debug, Default)]
-pub struct StackRegister<T: Number>(Vec<T>);
+pub struct StackRegister<T: MpcType>(Vec<T>);
 
-impl<T: Number> StackRegister<T> {
+impl<T: MpcType> StackRegister<T> {
     pub fn push(&mut self, element: T) {
         self.0.push(element);
     }
@@ -43,12 +47,14 @@ impl<T: Number> StackRegister<T> {
     }
 }
 
+// TODO: Define the correct type for T. It can be a Share<Domain> or Domain.
 #[derive(Clone, Debug, Default)]
-pub struct Memory<T: Number>(Vec<T>);
+pub struct Memory<T: MpcType>(Vec<T>);
 
-impl<T: Number> Memory<T> {
-    fn new() -> Self {
-        todo!();
+// TODO: Define the correct type for T
+impl<T: MpcType> Memory<T> {
+    pub fn new() -> Self {
+        Self(Vec::new())
     }
 
     pub fn read() -> T {

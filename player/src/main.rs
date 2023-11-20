@@ -1,13 +1,13 @@
 use mpc::protocols::{honey_badger::HoneyBadgerMPC, MPCProtocol};
+use tokio::net::TcpListener;
 use vm::processor::arithmetic::ArithmeticCore;
 use vm::processor::Processor;
-use vm::StoffelVM;
 use vm::Program;
-use tokio::net::{TcpListener, TcpStream};
+use vm::StoffelVM;
 
 pub struct Player<T: MPCProtocol, U: Processor> {
     id: String,
-    vm: StoffelVM<U>,
+    vm: StoffelVM<U, T>,
     recipients: Vec<std::io::BufWriter<Box<dyn std::io::Write>>>,
     reader: std::io::BufReader<Box<dyn std::io::Read>>,
     protocol: std::marker::PhantomData<T>,
@@ -26,7 +26,10 @@ impl<T: MPCProtocol, U: Processor> Player<T, U> {
         todo!();
     }
 
-    pub async fn run(program: Program<U>, listener: TcpListener) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn run(
+        program: Program<U>,
+        listener: TcpListener,
+    ) -> Result<(), Box<dyn std::error::Error>> {
         todo!();
     }
 }

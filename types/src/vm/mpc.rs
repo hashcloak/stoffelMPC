@@ -2,7 +2,7 @@ use std::ops::{Add, Mul};
 
 /// This trait is a catch-all for a type that is used
 /// within the virtual machine
-pub trait Number:
+pub trait MpcType:
     Add<Output = Self> + Mul<Output = Self> + Copy + Default + std::fmt::Debug + Sized + 'static
 {
     /// Add two numbers
@@ -50,4 +50,4 @@ pub trait Number:
     }
 }
 
-impl Number for u32 {}
+impl MpcType for u32 {}

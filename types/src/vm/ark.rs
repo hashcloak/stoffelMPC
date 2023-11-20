@@ -1,13 +1,10 @@
-use super::Number;
+use super::MpcType;
 use ark_bls12_381::Fr;
 
-impl Number for Fr {}
+impl MpcType for Fr {}
 
-#[cfg(test)]
-mod tests {
-    use ark_ff::PrimeField;
-
-    use super::*;
+mod test {
+    use ark_bls12_381::Fr;
 
     #[test]
     fn sec_int_new() {
@@ -24,18 +21,15 @@ mod tests {
 
     #[test]
     fn sec_int_multiply() {
-        let secret_int_1 = Fr::from_repr(42_u64.into()).unwrap();
-        let secret_int_2 = Fr::from_repr(2_u64.into()).unwrap();
+        let secret_int_1 = Fr::from(42_u64);
+        let secret_int_2 = Fr::from(2_u64);
 
-        assert_eq!(
-            (secret_int_1 * secret_int_2),
-            Fr::from_repr(84_u64.into()).unwrap()
-        );
+        assert_eq!((secret_int_1 * secret_int_2), Fr::from(84_u64));
     }
 
     #[test]
     fn sec_int_display() {
-        let secret_int = Fr::from_repr(42_u64.into()).unwrap();
+        let secret_int = Fr::from(42_u64);
 
         assert_eq!(
             secret_int.to_string(),

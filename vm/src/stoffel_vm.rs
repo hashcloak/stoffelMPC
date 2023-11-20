@@ -1,7 +1,12 @@
-use super::instructions::opcodes::Opcode;
-use super::instructions::{arithmetic, boolean, common};
+use std::sync::Arc;
+
+use futures::lock::Mutex;
+use mpc::protocols::MPCProtocol;
+
 use super::processor::Processor;
 use super::program::Program;
+use super::state::Memory;
+use mpc::share::Share;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum VMMode {
@@ -12,20 +17,33 @@ pub enum VMMode {
 }
 
 #[derive(Debug)]
-pub struct StoffelVM<T: Processor> {
+pub struct StoffelVM<T: Processor, U: MPCProtocol> {
+    /// Processors in the virtual machine.
     processors: Vec<T>,
+    /// Program counter of the virtual machine.
     program_counter: usize,
+    /// Mode of execution of the virtual machine.
     mode: VMMode,
+    /// Program that will be executed by the virtual machine.
     code: Program<T>,
+    /// Global memory for secret arithmetic values.
+    arith_sec_memory: Arc<Mutex<Memory<Share<U::Domain>>>>,
+    /// Global memory for public arithmetic values.
+    arith_pub_memory: Arc<Mutex<Memory<U::Domain>>>,
+    /// Global memory for public register integers.
+    arith_reg_memory: Arc<Mutex<Memory<U::Domain>>>,
 }
 
-impl<T: Processor> StoffelVM<T> {
+impl<T: Processor, U: MPCProtocol> StoffelVM<T, U> {
     pub fn new() -> Self {
         Self {
             processors: vec![],
             program_counter: 0,
             mode: VMMode::default(),
             code: Program::new(),
+            arith_pub_memory: Arc::new(Mutex::new(Memory::new())),
+            arith_sec_memory: Arc::new(Mutex::new(Memory::new())),
+            arith_reg_memory: Arc::new(Mutex::new(Memory::new())),
         }
     }
 
@@ -33,7 +51,7 @@ impl<T: Processor> StoffelVM<T> {
         self.code.parse_bytes(bytes.as_ref())
     }
 
-    pub fn run() -> Result<(), Box<dyn std::error::Error>>{
+    pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         todo!();
     }
 
@@ -70,6 +88,6 @@ mod tests {
 
     #[test]
     fn test_vm_new() {
-        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>>::new();
+        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>, HoneyBadgerMPC>::new();
     }
 }

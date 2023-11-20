@@ -1,19 +1,18 @@
 use super::Processor;
-use crate::state::{Memory, Register, StackRegister};
+use crate::state::{Register, StackRegister};
 use mpc::protocols::MPCProtocol;
-use std::sync::{Arc, Mutex};
+use mpc::share::Share;
+use types::vm::MpcType;
 
 #[derive(Debug, Clone, Default)]
 pub struct ArithmeticCore<T: MPCProtocol> {
-    pub secret_stack: StackRegister<T::VmType>,
-    pub public_stack: StackRegister<T::VmType>,
-    pub secret_register: Register<T::VmType>,
-    pub public_register: Register<T::VmType>,
-    pub secret_memory: Arc<Mutex<Memory<T::VmType>>>,
-    pub public_memory: Arc<Mutex<Memory<T::VmType>>>,
+    pub secret_stack: StackRegister<Share<T::Domain>>,
+    pub public_stack: StackRegister<T::Domain>,
+    pub secret_register: Register<Share<T::Domain>>,
+    pub public_register: Register<T::Domain>,
 }
 
-impl<T: MPCProtocol> ArithmeticCore<T> {}
+impl<T: MPCProtocol> ArithmeticCore<T> where T::Domain: MpcType {}
 
 impl<T: MPCProtocol> Processor for ArithmeticCore<T> {
     fn clear_registers(&mut self) {

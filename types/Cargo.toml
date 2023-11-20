@@ -7,8 +7,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ark-ff = "0.3"
-ark-poly = "0.3"
-ark-bls12-381 = "0.3"
+ark-ff = "0.4.2"
+ark-poly = "0.4.2"
+ark-bls12-381 = "0.4.0"
 thiserror = "1"
 num-bigint = "0.4"

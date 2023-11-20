@@ -1,5 +1,3 @@
-#![feature(derive_default_enum)]
-
 /// A module to collect all the different instruction sets
 mod instructions;
 /// A processor is component of the stoffelVM that handles the core processing within the MPC VM

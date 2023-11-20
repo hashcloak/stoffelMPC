@@ -3,9 +3,9 @@ pub mod boolean;
 pub mod common;
 pub mod opcodes;
 
-use opcodes::{Opcode, InstructionOpcode};
-use types::vm::{RegisterAddr, ImmediateValue};
 use super::processor::Processor;
+use opcodes::{InstructionOpcode, Opcode};
+use types::vm::{ImmediateValue, RegisterAddr};
 
 #[derive(Debug)]
 pub struct Instruction<P: Processor> {
@@ -19,7 +19,7 @@ pub struct Instruction<P: Processor> {
     instruction_register4: RegisterAddr,
     possible_immediate_value: ImmediateValue,
     // TODO: Change u64 to appropriate mpc type
-    variable_params: Vec<u64>
+    variable_params: Vec<u64>,
 }
 
 impl<P: Processor> Instruction<P> {
@@ -27,7 +27,7 @@ impl<P: Processor> Instruction<P> {
         todo!();
     }
 
-    pub fn parse(&mut self) -> Result<(),Box<dyn std::error::Error>>{
+    pub fn parse(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         todo!();
     }
 

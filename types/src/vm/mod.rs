@@ -1,8 +1,8 @@
 pub mod ark;
-pub mod number;
+pub mod mpc;
 
 pub use ark::*;
-pub use number::*;
+pub use mpc::*;
 
 /// Register address type for indicating which register to use
 pub type RegisterAddr = usize;
