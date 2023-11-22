@@ -20,7 +20,7 @@ pub struct StoffelVM<T: Processor, U: MPCProtocol> {
     program_counter: usize,
     /// Mode of execution of the virtual machine.
     mode: VMMode,
-    /// Schedule for current execution. It contains the programs that will be 
+    /// Schedule for current execution. It contains the programs that will be
     /// executed during the session.
     scheduler: Schedule,
     /// Global memory of the VM.
