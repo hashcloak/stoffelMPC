@@ -1,12 +1,8 @@
-use std::sync::Arc;
-
-use futures::lock::Mutex;
 use mpc::protocols::MPCProtocol;
 
 use super::processor::Processor;
-use super::program::Program;
+use super::schedule::Schedule;
 use super::state::Memory;
-use mpc::share::Share;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum VMMode {
@@ -24,31 +20,28 @@ pub struct StoffelVM<T: Processor, U: MPCProtocol> {
     program_counter: usize,
     /// Mode of execution of the virtual machine.
     mode: VMMode,
-    /// Program that will be executed by the virtual machine.
-    code: Program<T>,
-    /// Global memory for secret arithmetic values.
-    arith_sec_memory: Arc<Mutex<Memory<Share<U::Domain>>>>,
-    /// Global memory for public arithmetic values.
-    arith_pub_memory: Arc<Mutex<Memory<U::Domain>>>,
-    /// Global memory for public register integers.
-    arith_reg_memory: Arc<Mutex<Memory<U::Domain>>>,
+    /// Schedule for current execution. It contains the programs that will be 
+    /// executed during the session.
+    scheduler: Schedule,
+    /// Global memory of the VM.
+    memory: Memory<U>,
 }
 
 impl<T: Processor, U: MPCProtocol> StoffelVM<T, U> {
+    /// Creates a new virual machine.
     pub fn new() -> Self {
         Self {
             processors: vec![],
             program_counter: 0,
             mode: VMMode::default(),
-            code: Program::new(),
-            arith_pub_memory: Arc::new(Mutex::new(Memory::new())),
-            arith_sec_memory: Arc::new(Mutex::new(Memory::new())),
-            arith_reg_memory: Arc::new(Mutex::new(Memory::new())),
+            scheduler: Schedule::new(),
+            memory: Memory::new(),
         }
     }
 
+    /// Loads and parses bytecode.
     pub fn load_byte_code(&mut self, bytes: impl AsRef<[u8]>) {
-        self.code.parse_bytes(bytes.as_ref())
+        todo!();
     }
 
     pub fn run() -> Result<(), Box<dyn std::error::Error>> {

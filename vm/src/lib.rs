@@ -4,6 +4,8 @@ mod instructions;
 pub mod processor;
 /// A module for handling StoffelMPC programs
 pub mod program;
+/// A scheduler that specifies which take (program) is being executed
+pub mod schedule;
 
 pub use program::Program;
 /// Collects structs to manage state like registers and so on

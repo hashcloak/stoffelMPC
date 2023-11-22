@@ -1,3 +1,5 @@
+use crate::Program;
+
 pub mod arithmetic;
 pub mod boolean;
 
@@ -14,11 +16,11 @@ pub trait Processor: std::fmt::Debug {
         todo!()
     }
 
-    fn execute(&mut self) {
+    fn execute(&mut self, program: Program) {
         todo!()
     }
 
-    fn jump(&mut self) {
+    fn jump(&mut self, new_program_counter: usize) {
         todo!()
     }
 

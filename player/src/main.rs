@@ -27,7 +27,7 @@ impl<T: MPCProtocol, U: Processor> Player<T, U> {
     }
 
     pub async fn run(
-        program: Program<U>,
+        program: Program,
         listener: TcpListener,
     ) -> Result<(), Box<dyn std::error::Error>> {
         todo!();

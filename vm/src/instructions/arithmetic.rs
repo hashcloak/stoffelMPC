@@ -1,23 +1,25 @@
-use crate::processor::arithmetic::ArithmeticCore;
+use crate::state::Memory;
+use crate::{processor::arithmetic::ArithmeticCore, state::MemoryArray};
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
+use types::vm::{MemoryAddr, RegisterAddr};
 
 /// Assign immediate value to clear register
 pub fn ldi<T: MPCProtocol, U: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
-    register_pos: usize,
+    register_pos: RegisterAddr,
     immediate_value: T::Domain,
 ) {
     // TODO: Add error handling and a return type for successful execution
     processor
-        .public_register
+        .clear_register
         .write(register_pos, immediate_value);
 }
 
 /// Assign immeidate value to secret register
 pub fn ldsi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
-    register_pos: usize,
+    register_pos: RegisterAddr,
     immediate_value: Share<T::Domain>,
 ) {
     processor
@@ -26,18 +28,35 @@ pub fn ldsi<T: MPCProtocol>(
 }
 
 /// Assign clear register to clear memory value(s) by immediate address
-pub fn stmc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn stmc<T: MPCProtocol>(
+    processor: &ArithmeticCore<T>,
+    clear_memory: &mut MemoryArray<T::Domain>,
+    reg_addr: RegisterAddr,
+    mem_addr: MemoryAddr,
+) {
+    clear_memory.write(mem_addr, processor.clear_register.read(reg_addr));
 }
 
 // Assign secret register to secret memory value(s) by immediate address
-pub fn stms<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn stms<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    secret_memory: &mut MemoryArray<Share<T::Domain>>,
+    reg_addr: RegisterAddr,
+    mem_addr: MemoryAddr,
+) {
+    secret_memory.write(mem_addr, processor.secret_register.read(reg_addr));
 }
 
 // Assign clear memory value(s) to clear register by register address
-pub fn ldmci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn ldmci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    memory: MemoryArray<T::Domain>,
+    reg_addr: RegisterAddr,
+    mem_addr: MemoryAddr,
+) {
+    processor
+        .clear_register
+        .write(reg_addr, memory.read(mem_addr));
 }
 
 // Assign secret memory value(s) to secret register by register address

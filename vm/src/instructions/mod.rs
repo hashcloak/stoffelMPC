@@ -3,15 +3,19 @@ pub mod boolean;
 pub mod common;
 pub mod opcodes;
 
+use crate::state::Memory;
+
 use super::processor::Processor;
+use mpc::protocols::MPCProtocol;
 use opcodes::{InstructionOpcode, Opcode};
-use types::vm::{ImmediateValue, RegisterAddr};
+use types::vm::{ImmediateValue, MpcType, RegisterAddr};
 
 #[derive(Debug)]
-pub struct Instruction<P: Processor> {
+pub struct Instruction {
+    /// Opcode of the instruction
     opcode: Opcode,
+    /// Name of the opcode
     opcode_name: InstructionOpcode,
-    processor: P,
     vector_size: usize,
     instruction_register1: RegisterAddr,
     instruction_register2: RegisterAddr,
@@ -22,16 +26,26 @@ pub struct Instruction<P: Processor> {
     variable_params: Vec<u64>,
 }
 
-impl<P: Processor> Instruction<P> {
+impl Instruction {
+    /// Creates a new instruction
     pub fn new() -> Self {
         todo!();
     }
 
-    pub fn parse(&mut self) -> Result<(), Box<dyn std::error::Error>> {
+    /// Parses the instruction from a bytecode.
+    pub fn parse(&mut self, bytes: impl AsRef<[u8]>) -> Result<(), Box<dyn std::error::Error>> {
         todo!();
     }
 
-    pub fn execute() -> Result<(), Box<dyn std::error::Error>> {
+    /// Executes an instruction using a processor and a given memory.
+    pub fn execute<P, T>(
+        processor: &mut P,
+        memory: &mut Memory<T>,
+    ) -> Result<(), Box<dyn std::error::Error>>
+    where
+        P: Processor,
+        T: MPCProtocol,
+    {
         todo!();
     }
 }
