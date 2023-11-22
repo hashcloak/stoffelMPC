@@ -491,6 +491,7 @@ impl Instruction {
 
     /// Executes an instruction using a processor and a given memory.
     pub fn execute<P, T>(
+        &self,
         processor: &mut P,
         memory: &mut Memory<T>,
     ) -> Result<(), Box<dyn std::error::Error>>
