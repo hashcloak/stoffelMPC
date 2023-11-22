@@ -479,13 +479,8 @@ pub enum Instruction {
 }
 
 impl Instruction {
-    /// Creates a new instruction
-    pub fn new() -> Self {
-        todo!();
-    }
-
     /// Parses the instruction from a bytecode.
-    pub fn parse(&mut self, bytes: impl AsRef<[u8]>) -> Result<(), Box<dyn std::error::Error>> {
+    pub fn from_bytes(bytes: impl AsRef<[u8]>) -> Self {
         todo!();
     }
 

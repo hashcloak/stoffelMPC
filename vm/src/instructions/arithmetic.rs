@@ -1,4 +1,3 @@
-use crate::state::Memory;
 use crate::{processor::arithmetic::ArithmeticCore, state::MemoryArray};
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
