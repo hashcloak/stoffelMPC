@@ -3,7 +3,7 @@ use std::ops::{Add, Mul};
 use types::vm::MpcType;
 
 /// Representation of a share in a Shamir secret-sharing scheme.
-#[derive(Debug, Default, Clone, Copy)]
+#[derive(Debug, Default, Clone, Copy, PartialEq)]
 pub struct Share<T: Field> {
     /// Share held by a party.
     value: T,
@@ -11,7 +11,7 @@ pub struct Share<T: Field> {
 
 impl<T: Field> Share<T> {
     /// Creates a new share from a given value.
-    fn new(value: T) -> Self {
+    pub fn new(value: T) -> Self {
         Self { value }
     }
 }

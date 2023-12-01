@@ -1,71 +1,88 @@
-use crate::{processor::arithmetic::ArithmeticCore, state::MemoryArray};
+use std::sync::Arc;
+
+use crate::{
+    processor::arithmetic::ArithmeticCore,
+    state::{Memory, MemoryArray},
+};
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
+use std::sync::Mutex;
 use types::vm::{MemoryAddr, RegisterAddr};
 
 /// Assign immediate value to clear register
-pub fn ldi<T: MPCProtocol, U: MPCProtocol>(
+pub fn ldi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     register_pos: RegisterAddr,
     immediate_value: T::Domain,
 ) {
     // TODO: Add error handling and a return type for successful execution
     processor
-        .clear_register
+        .clear_register_mut()
         .write(register_pos, immediate_value);
 }
 
-/// Assign immeidate value to secret register
+/// Assign immediate value to secret register
 pub fn ldsi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     register_pos: RegisterAddr,
     immediate_value: Share<T::Domain>,
 ) {
     processor
-        .secret_register
+        .secret_register_mut()
         .write(register_pos, immediate_value);
 }
 
 /// Assign clear register to clear memory value(s) by immediate address
 pub fn stmc<T: MPCProtocol>(
     processor: &ArithmeticCore<T>,
-    clear_memory: &mut MemoryArray<T::Domain>,
+    clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
     reg_addr: RegisterAddr,
     mem_addr: MemoryAddr,
 ) {
-    clear_memory.write(mem_addr, processor.clear_register.read(reg_addr));
+    let value = processor.clear_register().read(reg_addr);
+    clear_memory.lock().unwrap().write(mem_addr, value);
 }
 
-// Assign secret register to secret memory value(s) by immediate address
+/// Assign secret register to secret memory value(s) by immediate address
 pub fn stms<T: MPCProtocol>(
-    processor: &mut ArithmeticCore<T>,
-    secret_memory: &mut MemoryArray<Share<T::Domain>>,
+    processor: &ArithmeticCore<T>,
+    secret_memory: Arc<Mutex<MemoryArray<Share<T::Domain>>>>,
     reg_addr: RegisterAddr,
     mem_addr: MemoryAddr,
 ) {
-    secret_memory.write(mem_addr, processor.secret_register.read(reg_addr));
+    let value = processor.secret_register().read(reg_addr);
+    secret_memory.lock().unwrap().write(mem_addr, value);
 }
 
-// Assign clear memory value(s) to clear register by register address
+/// Assign clear memory value(s) to clear register by register address
 pub fn ldmci<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
-    memory: MemoryArray<T::Domain>,
+    clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
     reg_addr: RegisterAddr,
     mem_addr: MemoryAddr,
 ) {
-    processor
-        .clear_register
-        .write(reg_addr, memory.read(mem_addr));
+    let value = clear_memory.lock().unwrap().read(mem_addr);
+    processor.clear_register_mut().write(reg_addr, value);
 }
 
-// Assign secret memory value(s) to secret register by register address
-pub fn ldmsi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Assign secret memory value(s) to secret register by register address
+pub fn ldmsi<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    secret_memory: Arc<Mutex<MemoryArray<Share<T::Domain>>>>,
+    reg_addr: RegisterAddr,
+    mem_addr: MemoryAddr,
+) {
+    let value = secret_memory.lock().unwrap().read(mem_addr);
+    processor.secret_register_mut().write(reg_addr, value);
 }
 
 // Assign clear register to clear memory value(s) by register address
-pub fn stmci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn stmci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
+    reg_addr: RegisterAddr,
+    mem_addr: MemoryAddr,
+) {
 }
 
 // Assign secret register to secret memory value(s) by register address
@@ -84,7 +101,7 @@ pub fn movs<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
 }
 
 // Store number of current thread in clear integer register
-pub fn ldtn<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
+pub fn ldtn<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, thread_n: usize) {
     todo!();
 }
 
@@ -610,4 +627,119 @@ pub fn gbit<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
 
 pub fn gconvint<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
     todo!();
+}
+
+#[cfg(test)]
+mod test {
+    use crate::{processor::arithmetic::ArithmeticCore, state::Memory};
+    use ark_bls12_381::Fr;
+    use mpc::protocols::honey_badger::HoneyBadgerMPC;
+    use types::vm::RegisterAddr;
+
+    use super::*;
+
+    #[test]
+    fn test_ldi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let reg_addr: RegisterAddr = 4;
+        let value = Fr::new(12_u64.into());
+
+        ldi(&mut processor, reg_addr, value);
+
+        assert_eq!(processor.clear_register().read(reg_addr), value);
+    }
+
+    #[test]
+    fn test_ldsi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let reg_addr: RegisterAddr = 3;
+        let value = Fr::new(12_u64.into());
+        let share = Share::new(value);
+
+        ldsi(&mut processor, reg_addr, share);
+
+        assert_eq!(processor.secret_register().read(reg_addr), share);
+    }
+
+    #[test]
+    fn test_stms() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let reg_addr: RegisterAddr = 3;
+
+        let value = Fr::new(12_u64.into());
+        let share = Share::new(value);
+        processor.secret_register_mut().write(reg_addr, share);
+
+        let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
+        let mem_addr: MemoryAddr = 5;
+        let secret_memory = Arc::clone(memory.sec_memory());
+
+        stms(&processor, secret_memory, reg_addr, mem_addr);
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr),
+            memory.sec_memory().lock().unwrap().read(mem_addr)
+        );
+    }
+
+    #[test]
+    fn test_stmc() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let reg_addr: RegisterAddr = 3;
+
+        let value = Fr::new(12_u64.into());
+        processor.clear_register_mut().write(reg_addr, value);
+
+        let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
+        let mem_addr: MemoryAddr = 5;
+        let public_memory = Arc::clone(memory.pub_memory());
+
+        stmc(&processor, public_memory, reg_addr, mem_addr);
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr),
+            memory.pub_memory().lock().unwrap().read(mem_addr)
+        );
+    }
+
+    #[test]
+    fn test_ldmci() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let reg_addr: RegisterAddr = 3;
+
+        let value = Fr::new(12_u64.into());
+        processor.clear_register_mut().write(reg_addr, value);
+
+        let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
+        let mem_addr: MemoryAddr = 5;
+        let public_memory = Arc::clone(memory.pub_memory());
+
+        ldmci(&mut processor, public_memory, reg_addr, mem_addr);
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr),
+            memory.pub_memory().lock().unwrap().read(mem_addr)
+        );
+    }
+
+    #[test]
+    fn test_ldmsi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let reg_addr: RegisterAddr = 3;
+
+        let value = Fr::new(12_u64.into());
+        let share = Share::new(value);
+        processor.secret_register_mut().write(reg_addr, share);
+
+        let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
+        let mem_addr: MemoryAddr = 5;
+        let secret_memory = Arc::clone(memory.sec_memory());
+
+        ldmsi(&mut processor, secret_memory, reg_addr, mem_addr);
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr),
+            memory.sec_memory().lock().unwrap().read(mem_addr)
+        );
+    }
 }

@@ -3,6 +3,7 @@ use ark_bls12_381::Fr;
 
 impl MpcType for Fr {}
 
+#[cfg(test)]
 mod test {
     use ark_bls12_381::Fr;
 

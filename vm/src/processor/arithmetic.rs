@@ -7,20 +7,47 @@ use mpc::share::Share;
 #[derive(Debug, Clone, Default)]
 pub struct ArithmeticCore<T: MPCProtocol> {
     /// Stack for the secret values.
-    pub secret_stack: StackRegister<Share<T::Domain>>,
+    secret_stack: StackRegister<Share<T::Domain>>,
     /// Stack for the clear values.
-    pub clear_stack: StackRegister<T::Domain>,
+    clear_stack: StackRegister<T::Domain>,
 
     /// Register for secret values.
-    pub secret_register: Register<Share<T::Domain>>,
+    secret_register: Register<Share<T::Domain>>,
     /// Register for clear values.
-    pub clear_register: Register<T::Domain>,
+    clear_register: Register<T::Domain>,
 
     /// Program counter for the core.
-    pub program_counter: usize,
+    program_counter: usize,
 }
 
-impl<T: MPCProtocol> ArithmeticCore<T> {}
+impl<T: MPCProtocol> ArithmeticCore<T> {
+    /// Creates an arithmetic processor with program counter in zero.
+    pub fn new() -> ArithmeticCore<T> {
+        ArithmeticCore {
+            secret_stack: StackRegister::new(),
+            clear_stack: StackRegister::new(),
+            secret_register: Register::new(),
+            clear_register: Register::new(),
+            program_counter: 0,
+        }
+    }
+
+    pub fn clear_register_mut(&mut self) -> &mut Register<T::Domain> {
+        &mut self.clear_register
+    }
+
+    pub fn clear_register(&self) -> &Register<T::Domain> {
+        &self.clear_register
+    }
+
+    pub fn secret_register_mut(&mut self) -> &mut Register<Share<T::Domain>> {
+        &mut self.secret_register
+    }
+
+    pub fn secret_register(&self) -> &Register<Share<T::Domain>> {
+        &self.secret_register
+    }
+}
 
 impl<T: MPCProtocol> Processor for ArithmeticCore<T> {
     /// Cleans both the clear and secret registers.

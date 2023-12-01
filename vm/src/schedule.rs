@@ -1,4 +1,4 @@
-use crate::Program;
+use crate::{program, Program};
 
 /// Shedule for the execution.
 #[derive(Debug)]
@@ -23,5 +23,15 @@ impl Schedule {
     /// Creates the schedule for the execution.
     pub fn load_schedule(&mut self) {
         todo!()
+    }
+
+    /// Obtains the programs of a schedule.
+    pub fn programs(&self) -> &Vec<Program> {
+        &self.programs
+    }
+
+    /// Obtains the actual schedule.
+    pub fn schedule(&self) -> &Vec<Vec<Vec<usize>>> {
+        &self.schedule
     }
 }

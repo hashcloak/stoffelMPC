@@ -29,13 +29,13 @@ pub struct StoffelVM<T: Processor, U: MPCProtocol> {
 
 impl<T: Processor, U: MPCProtocol> StoffelVM<T, U> {
     /// Creates a new virual machine.
-    pub fn new() -> Self {
+    pub fn new(memory_size: usize) -> Self {
         Self {
             processors: vec![],
             program_counter: 0,
             mode: VMMode::default(),
             scheduler: Schedule::new(),
-            memory: Memory::new(),
+            memory: Memory::new(memory_size),
         }
     }
 
@@ -68,8 +68,32 @@ impl<T: Processor, U: MPCProtocol> StoffelVM<T, U> {
         todo!();
     }
 
-    pub fn get_current_program_counter(&self) -> usize {
+    pub fn program_counter(&self) -> usize {
         self.program_counter
+    }
+
+    pub fn processors(&self) -> &Vec<T> {
+        &self.processors
+    }
+
+    pub fn mode(&self) -> &VMMode {
+        &self.mode
+    }
+
+    pub fn scheduler(&self) -> &Schedule {
+        &self.scheduler
+    }
+
+    pub fn memory(&self) -> &Memory<U> {
+        &self.memory
+    }
+
+    pub fn memory_mut(&mut self) -> &mut Memory<U> {
+        &mut self.memory
+    }
+
+    pub fn processors_mut(&mut self) -> &mut Vec<T> {
+        &mut self.processors
     }
 }
 
@@ -81,6 +105,7 @@ mod tests {
 
     #[test]
     fn test_vm_new() {
-        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>, HoneyBadgerMPC>::new();
+        let memory_size = 10;
+        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>, HoneyBadgerMPC>::new(memory_size);
     }
 }

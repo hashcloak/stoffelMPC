@@ -5,7 +5,7 @@ use mpc::protocols::MPCProtocol;
 
 /// Represents a program as a vector of instructions.
 #[derive(Debug, Default)]
-pub struct Program(pub Vec<Instruction>);
+pub struct Program(Vec<Instruction>);
 
 impl Program {
     /// Creates a new empty program.
@@ -32,5 +32,10 @@ impl Program {
         T: MPCProtocol,
     {
         todo!();
+    }
+
+    /// Returns the instructions in the program.
+    fn instructions(&self) -> &Vec<Instruction> {
+        &self.0
     }
 }
