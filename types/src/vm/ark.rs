@@ -6,6 +6,9 @@ impl MpcType for Fr {}
 #[cfg(test)]
 mod test {
     use ark_bls12_381::Fr;
+    use ark_ff::BigInt;
+    use ark_ff::Field;
+    use ark_ff::PrimeField;
 
     #[test]
     fn sec_int_new() {
@@ -18,6 +21,13 @@ mod test {
         let secret_int_2 = Fr::new(2_u64.into());
 
         assert_eq!(secret_int_1 + secret_int_2, Fr::new(44_u64.into()));
+    }
+
+    #[test]
+    fn field_inverse() {
+        let value1 = Fr::new(32_u64.into());
+        let inv = value1.inverse().unwrap();
+        assert_eq!(value1 * inv, Fr::ONE);
     }
 
     #[test]

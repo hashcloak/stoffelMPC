@@ -13,4 +13,16 @@ pub struct BooleanCore<T: MPCProtocol> {
 
 impl<T: MPCProtocol> BooleanCore<T> {}
 
-impl<T: MPCProtocol> Processor for BooleanCore<T> {}
+impl<T: MPCProtocol> Processor for BooleanCore<T> {
+    fn jump(&mut self, new_program_counter: usize) {
+        todo!()
+    }
+
+    fn relative_jump(&mut self, n_positions: usize) {
+        todo!()
+    }
+
+    fn increment_program_counter(&mut self) {
+        todo!()
+    }
+}

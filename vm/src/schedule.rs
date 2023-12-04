@@ -12,7 +12,10 @@ pub struct Schedule {
 impl Schedule {
     /// Creates a new schedule.
     pub fn new() -> Self {
-        todo!()
+        Self {
+            programs: vec![],
+            schedule: vec![],
+        }
     }
 
     /// Loads the programs from a stream of bytes.

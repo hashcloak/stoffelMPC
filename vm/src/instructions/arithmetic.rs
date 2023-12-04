@@ -1,3 +1,5 @@
+use ark_ff::Field;
+
 use std::sync::Arc;
 
 use crate::{
@@ -78,31 +80,57 @@ pub fn ldmsi<T: MPCProtocol>(
 
 // Assign clear register to clear memory value(s) by register address
 pub fn stmci<T: MPCProtocol>(
-    processor: &mut ArithmeticCore<T>,
+    processor: &ArithmeticCore<T>,
     clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
-    reg_addr: RegisterAddr,
-    mem_addr: MemoryAddr,
+    reg_addr_origin: RegisterAddr,
+    reg_add_destiny: RegisterAddr,
 ) {
+    let moved_value = processor.clear_register().read(reg_addr_origin);
+    let index = processor.reg_addr_register().read(reg_add_destiny);
+    clear_memory.lock().unwrap().write(index, moved_value);
 }
 
 // Assign secret register to secret memory value(s) by register address
-pub fn stmsi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn stmsi<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    secret_memory: Arc<Mutex<MemoryArray<Share<T::Domain>>>>,
+    reg_addr_origin: RegisterAddr,
+    reg_add_destiny: RegisterAddr,
+) {
+    let moved_share = processor.secret_register().read(reg_addr_origin);
+    let index = processor.reg_addr_register().read(reg_add_destiny);
+    secret_memory.lock().unwrap().write(index, moved_share);
 }
 
 // Copy clear register
-pub fn movc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn movc<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_origin: RegisterAddr,
+    reg_add_destiny: RegisterAddr,
+) {
+    let value = processor.clear_register().read(reg_addr_origin);
+    processor.clear_register_mut().write(reg_add_destiny, value);
 }
 
 // Copy secret register
-pub fn movs<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn movs<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_origin: RegisterAddr,
+    reg_add_destiny: RegisterAddr,
+) {
+    let value = processor.secret_register().read(reg_addr_origin);
+    processor
+        .secret_register_mut()
+        .write(reg_add_destiny, value);
 }
 
 // Store number of current thread in clear integer register
-pub fn ldtn<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, thread_n: usize) {
-    todo!();
+pub fn ldtn<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr: RegisterAddr,
+    thread_n: usize,
+) {
+    processor.reg_addr_register_mut().write(reg_addr, thread_n);
 }
 
 // Require on computation modulus
@@ -121,99 +149,275 @@ pub fn use_matmul<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
     todo!();
 }
 
-// Clear addition
-pub fn addc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Clear addition between two values in the clear register given two register
+/// addresses.
+pub fn addc<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let value1 = processor.clear_register().read(reg_addr1);
+    let value2 = processor.clear_register().read(reg_addr2);
+    let result = value1 + value2;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
-// Secret addition
-pub fn adds<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Secret addition of two values in the secret register given two register
+/// addresses.
+pub fn adds<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let share1 = processor.secret_register().read(reg_addr1);
+    let share2 = processor.secret_register().read(reg_addr2);
+    let share_result = share1 + share2;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, share_result);
 }
 
 // Mixed addition
-pub fn addm<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn addm<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    sec_reg_addr: RegisterAddr,
+    clear_reg_addr: RegisterAddr,
+    sec_reg_result: RegisterAddr,
+) {
+    let sec_value = processor.secret_register().read(sec_reg_addr);
+    let cle_value = processor.clear_register().read(clear_reg_addr);
+    let sum = sec_value + cle_value;
+    processor.secret_register_mut().write(sec_reg_result, sum);
 }
 
 // Addition of clear register and immediate value
-pub fn addci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn addci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr: RegisterAddr,
+    imm_value: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.clear_register().read(reg_addr);
+    let sum = stored_value + imm_value;
+    processor.clear_register_mut().write(reg_addr_result, sum);
 }
 
 // Addition of secret register and immediate value
-pub fn addsi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn addsi<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr: RegisterAddr,
+    imm_value: Share<T::Domain>,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.secret_register().read(reg_addr);
+    let sum = stored_value + imm_value;
+    processor.secret_register_mut().write(reg_addr_result, sum);
 }
 
-// Clear subtraction
-pub fn subc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Clear subtraction of two values in the clear register given two register
+/// addresses.
+pub fn subc<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let value1 = processor.clear_register().read(reg_addr1);
+    let value2 = processor.clear_register().read(reg_addr2);
+    let result = value1 - value2;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
-// Secret subtraction
-pub fn subs<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Secret subtraction of two values in the secret register given two register
+/// addresses.
+pub fn subs<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let share1 = processor.secret_register().read(reg_addr1);
+    let share2 = processor.secret_register().read(reg_addr2);
+    let share_result = share1 - share2;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, share_result);
 }
 
-// Subtract clear from secret value
-pub fn subml<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Subtract clear from secret value
+pub fn subml<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    sec_reg_addr: RegisterAddr,
+    clear_reg_addr: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let share = processor.secret_register().read(sec_reg_addr);
+    let clear = processor.clear_register().read(clear_reg_addr);
+    let result = share - clear;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Subtract secret from clear value
-pub fn submr<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn submr<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    sec_reg_addr: RegisterAddr,
+    clear_reg_addr: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let share = processor.secret_register().read(sec_reg_addr);
+    let clear = processor.clear_register().read(clear_reg_addr);
+    let result = (-share) + clear;
 }
 
 // Subtraction immediate value from clear register
-pub fn subci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn subci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_stored: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.clear_register().read(reg_addr_stored);
+    let result = stored_value - immediate_val;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Subtraction immediate value from secret register
-pub fn subsi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn subsi<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_stored: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.secret_register().read(reg_addr_stored);
+    let result = stored_value - immediate_val;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Subtraction of clear register from immediate value
-pub fn subcfi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn subcfi<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_stored: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.clear_register().read(reg_addr_stored);
+    let result = immediate_val - stored_value;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Subtraction of secret register from immediate value
-pub fn subsfi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn subsfi<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_stored: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.secret_register().read(reg_addr_stored);
+    let result = (-stored_value) + immediate_val;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Clear multiplcation
-pub fn mulc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn mulc<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let value1 = processor.clear_register().read(reg_addr1);
+    let value2 = processor.clear_register().read(reg_addr2);
+    let result = value1 * value2;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Multiply secret and clear value
-pub fn mulm<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn mulm<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    secret_reg_addr: RegisterAddr,
+    clear_reg_addr: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let clear_value = processor.clear_register().read(clear_reg_addr);
+    let share_value = processor.secret_register().read(secret_reg_addr);
+    let mult_share = share_value * clear_value;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, mult_share);
 }
 
-// Multipleication of clear register and immediate value
-pub fn mulci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+// Multiplication of clear register and immediate value
+pub fn mulci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_value: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.clear_register().read(reg_addr_value);
+    let result = stored_value * immediate_val;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Multiplication of secret register and immediate value
-pub fn mulsi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+pub fn mulsi<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_value: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let secret_value = processor.secret_register().read(reg_addr_value);
+    let result = secret_value * immediate_val;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, result);
 }
 
-// Clear division
-pub fn divc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Clear division
+pub fn divc<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    let value1 = processor.clear_register().read(reg_addr1);
+    let value2 = processor.clear_register().read(reg_addr2);
+    let result = value1 / value2;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
-// Division of secret register and immediate value
-pub fn divci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Division of secret register and immediate value
+pub fn divci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_value: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    let stored_value = processor.clear_register().read(reg_addr_value);
+    let result = stored_value / immediate_val;
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, result);
 }
 
 // Clear modular reduction
@@ -741,5 +945,95 @@ mod test {
             processor.secret_register().read(reg_addr),
             memory.sec_memory().lock().unwrap().read(mem_addr)
         );
+    }
+
+    #[test]
+    fn test_addc() {
+        // Register addresses
+        let reg_addr1 = 2;
+        let reg_addr2 = 5;
+        let reg_addr_result = 7;
+
+        // Values
+        let value1 = Fr::new(12_u64.into());
+        let value2 = Fr::new(24_u64.into());
+        let sum = value1 + value2;
+
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.clear_register_mut().write(reg_addr1, value1);
+        processor.clear_register_mut().write(reg_addr2, value2);
+
+        addc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+
+        assert_eq!(processor.clear_register().read(reg_addr_result), sum);
+    }
+
+    #[test]
+    fn test_adds() {
+        // Register addresses
+        let reg_addr1 = 2;
+        let reg_addr2 = 5;
+        let reg_addr_result = 7;
+
+        // Values
+        let value1 = Fr::new(12_u64.into());
+        let share1 = Share::new(value1);
+        let value2 = Fr::new(24_u64.into());
+        let share2 = Share::new(value2);
+        let sum = value1 + value2;
+        let share_sum = Share::new(sum);
+
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.secret_register_mut().write(reg_addr1, share1);
+        processor.secret_register_mut().write(reg_addr2, share2);
+
+        adds(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+
+        assert_eq!(processor.secret_register().read(reg_addr_result), share_sum);
+    }
+
+    #[test]
+    fn test_subc() {
+        // Register addresses
+        let reg_addr1 = 2;
+        let reg_addr2 = 5;
+        let reg_addr_result = 7;
+
+        // Values
+        let value1 = Fr::new(12_u64.into());
+        let value2 = Fr::new(24_u64.into());
+        let sub = value1 - value2;
+
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.clear_register_mut().write(reg_addr1, value1);
+        processor.clear_register_mut().write(reg_addr2, value2);
+
+        subc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+
+        assert_eq!(processor.clear_register().read(reg_addr_result), sub);
+    }
+
+    #[test]
+    fn test_subs() {
+        // Register addresses
+        let reg_addr1 = 2;
+        let reg_addr2 = 5;
+        let reg_addr_result = 7;
+
+        // Values
+        let value1 = Fr::new(12_u64.into());
+        let share1 = Share::new(value1);
+        let value2 = Fr::new(24_u64.into());
+        let share2 = Share::new(value2);
+        let sub = value1 - value2;
+        let share_sub = Share::new(sub);
+
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.secret_register_mut().write(reg_addr1, share1);
+        processor.secret_register_mut().write(reg_addr2, share2);
+
+        subs(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+
+        assert_eq!(processor.secret_register().read(reg_addr_result), share_sub);
     }
 }

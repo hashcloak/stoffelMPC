@@ -3,6 +3,7 @@ use crate::state::{Register, StackRegister};
 use crate::{program, Program};
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
+use types::vm::RegisterAddr;
 
 #[derive(Debug, Clone, Default)]
 pub struct ArithmeticCore<T: MPCProtocol> {
@@ -10,11 +11,15 @@ pub struct ArithmeticCore<T: MPCProtocol> {
     secret_stack: StackRegister<Share<T::Domain>>,
     /// Stack for the clear values.
     clear_stack: StackRegister<T::Domain>,
+    /// Stack for register addresses.
+    reg_addr_stack: StackRegister<RegisterAddr>,
 
     /// Register for secret values.
     secret_register: Register<Share<T::Domain>>,
     /// Register for clear values.
     clear_register: Register<T::Domain>,
+    /// Register for register addresses.
+    reg_addr_register: Register<RegisterAddr>,
 
     /// Program counter for the core.
     program_counter: usize,
@@ -24,10 +29,16 @@ impl<T: MPCProtocol> ArithmeticCore<T> {
     /// Creates an arithmetic processor with program counter in zero.
     pub fn new() -> ArithmeticCore<T> {
         ArithmeticCore {
+            // Construction of stacks
             secret_stack: StackRegister::new(),
             clear_stack: StackRegister::new(),
+            reg_addr_stack: StackRegister::new(),
+
+            /// Construction of registers
             secret_register: Register::new(),
             clear_register: Register::new(),
+            reg_addr_register: Register::new(),
+
             program_counter: 0,
         }
     }
@@ -46,6 +57,14 @@ impl<T: MPCProtocol> ArithmeticCore<T> {
 
     pub fn secret_register(&self) -> &Register<Share<T::Domain>> {
         &self.secret_register
+    }
+
+    pub fn reg_addr_register(&self) -> &Register<RegisterAddr> {
+        &self.reg_addr_register
+    }
+
+    pub fn reg_addr_register_mut(&mut self) -> &mut Register<RegisterAddr> {
+        &mut self.reg_addr_register
     }
 }
 
@@ -70,8 +89,8 @@ impl<T: MPCProtocol> Processor for ArithmeticCore<T> {
         self.program_counter = new_program_counter;
     }
 
-    fn relative_jump(&mut self) {
-        todo!()
+    fn relative_jump(&mut self, n_positions: usize) {
+        self.program_counter += n_positions;
     }
 
     /// Increments program counter
