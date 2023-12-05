@@ -1,4 +1,4 @@
-use ark_ff::Field;
+use ark_ff::{BigInteger, PrimeField, Field, LegendreSymbol};
 
 use std::sync::Arc;
 
@@ -9,7 +9,19 @@ use crate::{
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
 use std::sync::Mutex;
-use types::vm::{MemoryAddr, RegisterAddr};
+use types::vm::{ImmediateValue, MemoryAddr, RegisterAddr};
+
+use num_bigint::BigUint;
+
+fn from_domain_to_bigint<T: MPCProtocol>(value: T::Domain) -> BigUint {
+    let value_bytes = value.into_bigint().to_bytes_le();
+    BigUint::from_bytes_le(&value_bytes)
+}
+
+fn from_bigint_to_domain<T: MPCProtocol>(value: BigUint) -> T::Domain {
+    let value_bytes = value.to_bytes_le();
+    T::Domain::from_le_bytes_mod_order(&value_bytes)
+}
 
 /// Assign immediate value to clear register
 pub fn ldi<T: MPCProtocol>(
@@ -265,7 +277,7 @@ pub fn subml<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Subtract secret from clear value
+/// Subtract secret from clear value
 pub fn submr<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     sec_reg_addr: RegisterAddr,
@@ -275,9 +287,12 @@ pub fn submr<T: MPCProtocol>(
     let share = processor.secret_register().read(sec_reg_addr);
     let clear = processor.clear_register().read(clear_reg_addr);
     let result = (-share) + clear;
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, result);
 }
 
-// Subtraction immediate value from clear register
+/// Subtraction immediate value from clear register
 pub fn subci<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_stored: RegisterAddr,
@@ -291,7 +306,7 @@ pub fn subci<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Subtraction immediate value from secret register
+/// Subtraction immediate value from secret register
 pub fn subsi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_stored: RegisterAddr,
@@ -305,7 +320,7 @@ pub fn subsi<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Subtraction of clear register from immediate value
+/// Subtraction of clear register from immediate value
 pub fn subcfi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_stored: RegisterAddr,
@@ -319,7 +334,7 @@ pub fn subcfi<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Subtraction of secret register from immediate value
+/// Subtraction of secret register from immediate value
 pub fn subsfi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_stored: RegisterAddr,
@@ -333,7 +348,7 @@ pub fn subsfi<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Clear multiplcation
+/// Clear multiplcation
 pub fn mulc<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr1: RegisterAddr,
@@ -348,7 +363,7 @@ pub fn mulc<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Multiply secret and clear value
+/// Multiply secret and clear value
 pub fn mulm<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     secret_reg_addr: RegisterAddr,
@@ -363,7 +378,7 @@ pub fn mulm<T: MPCProtocol>(
         .write(reg_addr_result, mult_share);
 }
 
-// Multiplication of clear register and immediate value
+/// Multiplication of clear register and immediate value
 pub fn mulci<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_value: RegisterAddr,
@@ -377,7 +392,7 @@ pub fn mulci<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Multiplication of secret register and immediate value
+/// Multiplication of secret register and immediate value
 pub fn mulsi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_value: RegisterAddr,
@@ -420,19 +435,65 @@ pub fn divci<T: MPCProtocol>(
         .write(reg_addr_result, result);
 }
 
-// Clear modular reduction
-pub fn modc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Clear modular reduction
+pub fn modc<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
+    // Read values from the clear register.
+    let value1 = processor.clear_register().read(reg_addr1);
+    let value2 = processor.clear_register().read(reg_addr2);
+
+    // support for arithmetic operations.
+    let value1_bigint = from_domain_to_bigint::<T>(value1);
+    let value2_bigint = from_domain_to_bigint::<T>(value2);
+
+    let modulus = value1_bigint % value2_bigint;
+
+    // Converts the resulting modulus into the corresponding domain of the
+    // protocol.
+    let modulus_field = from_bigint_to_domain::<T>(modulus);
+
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, modulus_field);
 }
 
-// Modular reduction of clear register and immediate value
-pub fn modci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Modular reduction of clear register and immediate value
+pub fn modci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_value: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) {
+    // Converts the stored value into a BigUint value given that this library
+    // has better support for arithmetic computation.
+    let stored_value = processor.clear_register().read(reg_addr_value);
+    let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
+
+    // Converts the immediate value into a BigUint
+    let immediate_value_bigint = from_domain_to_bigint::<T>(immediate_val);
+
+    // Computes the modulus and transforms it in afield element.
+    let modulus = stored_value_bigint % immediate_value_bigint;
+    let modulus_field = from_bigint_to_domain::<T>(modulus);
+
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, modulus_field);
 }
 
-// Clear legendre symbol computation over prime p
-pub fn legendrec<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Clear legendre symbol computation over prime p
+pub fn legendrec<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr_value: RegisterAddr, reg_addr_result: RegisterAddr) {
+    let value = processor.clear_register().read(reg_addr_value);
+    let legendre_symbol = match value.legendre() {
+        LegendreSymbol::Zero => T::Domain::ZERO,
+        LegendreSymbol::QuadraticNonResidue => -T::Domain::ONE,
+        LegendreSymbol::QuadraticResidue => T::Domain::ONE,
+    };
+    processor.clear_register_mut().write(reg_addr_result, legendre_symbol);
 }
 
 // Clear truncated hash computation

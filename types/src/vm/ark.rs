@@ -6,9 +6,7 @@ impl MpcType for Fr {}
 #[cfg(test)]
 mod test {
     use ark_bls12_381::Fr;
-    use ark_ff::BigInt;
     use ark_ff::Field;
-    use ark_ff::PrimeField;
 
     #[test]
     fn sec_int_new() {
