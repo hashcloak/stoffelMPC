@@ -1,6 +1,6 @@
 use super::Processor;
 use crate::state::{Register, StackRegister};
-use crate::{program, Program};
+use crate::Program;
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
 use types::vm::RegisterAddr;
@@ -66,13 +66,25 @@ impl<T: MPCProtocol> ArithmeticCore<T> {
     pub fn reg_addr_register_mut(&mut self) -> &mut Register<RegisterAddr> {
         &mut self.reg_addr_register
     }
+
+    pub fn secret_stack(&self) -> &StackRegister<Share<T::Domain>> {
+        &self.secret_stack
+    }
+
+    pub fn clear_stack(&self) -> &StackRegister<T::Domain> {
+        &self.clear_stack
+    }
+
+    pub fn reg_addr_stack(&self) -> &StackRegister<RegisterAddr> {
+        &self.reg_addr_stack
+    }
 }
 
 impl<T: MPCProtocol> Processor for ArithmeticCore<T> {
     /// Cleans both the clear and secret registers.
-    fn clear_registers(&mut self) {
-        self.clear_register.clear();
-        self.secret_register.clear();
+    fn clean_registers(&mut self) {
+        self.clear_register.clean();
+        self.secret_register.clean();
     }
 
     /// Returns the program size.

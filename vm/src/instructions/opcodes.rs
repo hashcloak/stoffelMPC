@@ -1,7 +1,8 @@
 #![allow(non_camel_case_types)]
-/// These are the instructions for the StoffelMPC VM. These instructions are taken from the MP-SPDZ's VM instructions
+/// These are the instructions for the StoffelMPC VM. These instructions are taken
+/// from the MP-SPDZ's VM instructions.
+///
 /// These instructions may be reduced or added to at a later time.
-use types::vm::{ImmediateValue, RegisterAddr};
 
 /// Not needed yet ;) #[derive(Debug, Clone, Copy)]
 pub type InstructionOpcode = u16;

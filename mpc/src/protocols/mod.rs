@@ -1,5 +1,4 @@
 use ark_ff::PrimeField;
-use num_bigint::BigUint;
 use std::fmt::Debug;
 use types::vm::MpcType;
 

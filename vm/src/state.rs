@@ -28,8 +28,8 @@ impl<T: MpcType, const N: usize> Register<T, N> {
         self.0[i] = element;
     }
 
-    /// Clears the register.
-    pub fn clear(&mut self) {
+    /// Cleans the register.
+    pub fn clean(&mut self) {
         self.0 = [T::default(); N]
     }
 }

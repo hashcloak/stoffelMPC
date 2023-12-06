@@ -1,10 +1,12 @@
-use crate::Program;
+use mpc::protocols::MPCProtocol;
+
+use crate::{state::Register, Program};
 
 pub mod arithmetic;
 pub mod boolean;
 
 pub trait Processor: std::fmt::Debug {
-    fn clear_registers(&mut self) {
+    fn clean_registers(&mut self) {
         todo!()
     }
 

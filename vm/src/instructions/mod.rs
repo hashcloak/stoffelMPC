@@ -1,3 +1,5 @@
+#![allow(non_camel_case_types)]
+
 pub mod arithmetic;
 pub mod boolean;
 pub mod common;

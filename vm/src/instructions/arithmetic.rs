@@ -1,26 +1,23 @@
-use ark_ff::{BigInteger, PrimeField, Field, LegendreSymbol};
+use ark_ff::{BigInteger, Field, LegendreSymbol, PrimeField};
 
 use std::sync::Arc;
 
-use crate::{
-    processor::arithmetic::ArithmeticCore,
-    state::{Memory, MemoryArray},
-};
+use crate::{processor::arithmetic::ArithmeticCore, state::MemoryArray};
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
 use std::sync::Mutex;
-use types::vm::{ImmediateValue, MemoryAddr, RegisterAddr};
+use types::vm::{MemoryAddr, RegisterAddr};
 
 use num_bigint::BigUint;
 
 fn from_domain_to_bigint<T: MPCProtocol>(value: T::Domain) -> BigUint {
-    let value_bytes = value.into_bigint().to_bytes_le();
-    BigUint::from_bytes_le(&value_bytes)
+    let value_bytes = value.into_bigint().to_bytes_be();
+    BigUint::from_bytes_be(&value_bytes)
 }
 
 fn from_bigint_to_domain<T: MPCProtocol>(value: BigUint) -> T::Domain {
-    let value_bytes = value.to_bytes_le();
-    T::Domain::from_le_bytes_mod_order(&value_bytes)
+    let value_bytes = value.to_bytes_be();
+    T::Domain::from_be_bytes_mod_order(&value_bytes)
 }
 
 /// Assign immediate value to clear register
@@ -95,16 +92,16 @@ pub fn stmci<T: MPCProtocol>(
     processor: &ArithmeticCore<T>,
     clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
     reg_addr_origin: RegisterAddr,
-    reg_add_destiny: RegisterAddr,
+    reg_addr_destiny: RegisterAddr,
 ) {
     let moved_value = processor.clear_register().read(reg_addr_origin);
-    let index = processor.reg_addr_register().read(reg_add_destiny);
+    let index = processor.reg_addr_register().read(reg_addr_destiny);
     clear_memory.lock().unwrap().write(index, moved_value);
 }
 
 // Assign secret register to secret memory value(s) by register address
 pub fn stmsi<T: MPCProtocol>(
-    processor: &mut ArithmeticCore<T>,
+    processor: &ArithmeticCore<T>,
     secret_memory: Arc<Mutex<MemoryArray<Share<T::Domain>>>>,
     reg_addr_origin: RegisterAddr,
     reg_add_destiny: RegisterAddr,
@@ -118,22 +115,22 @@ pub fn stmsi<T: MPCProtocol>(
 pub fn movc<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_origin: RegisterAddr,
-    reg_add_destiny: RegisterAddr,
+    reg_addr_destiny: RegisterAddr,
 ) {
     let value = processor.clear_register().read(reg_addr_origin);
-    processor.clear_register_mut().write(reg_add_destiny, value);
+    processor.clear_register_mut().write(reg_addr_destiny, value);
 }
 
 // Copy secret register
 pub fn movs<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_origin: RegisterAddr,
-    reg_add_destiny: RegisterAddr,
+    reg_addr_destiny: RegisterAddr,
 ) {
     let value = processor.secret_register().read(reg_addr_origin);
     processor
         .secret_register_mut()
-        .write(reg_add_destiny, value);
+        .write(reg_addr_destiny, value);
 }
 
 // Store number of current thread in clear integer register
@@ -222,7 +219,7 @@ pub fn addci<T: MPCProtocol>(
 pub fn addsi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr: RegisterAddr,
-    imm_value: Share<T::Domain>,
+    imm_value: T::Domain,
     reg_addr_result: RegisterAddr,
 ) {
     let stored_value = processor.secret_register().read(reg_addr);
@@ -486,14 +483,20 @@ pub fn modci<T: MPCProtocol>(
 }
 
 /// Clear legendre symbol computation over prime p
-pub fn legendrec<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr_value: RegisterAddr, reg_addr_result: RegisterAddr) {
+pub fn legendrec<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr_value: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) {
     let value = processor.clear_register().read(reg_addr_value);
     let legendre_symbol = match value.legendre() {
         LegendreSymbol::Zero => T::Domain::ZERO,
         LegendreSymbol::QuadraticNonResidue => -T::Domain::ONE,
         LegendreSymbol::QuadraticResidue => T::Domain::ONE,
     };
-    processor.clear_register_mut().write(reg_addr_result, legendre_symbol);
+    processor
+        .clear_register_mut()
+        .write(reg_addr_result, legendre_symbol);
 }
 
 // Clear truncated hash computation
@@ -896,10 +899,16 @@ pub fn gconvint<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
 
 #[cfg(test)]
 mod test {
-    use crate::{processor::arithmetic::ArithmeticCore, state::Memory};
+    use std::result;
+
+    use crate::{
+        processor::{self, arithmetic::ArithmeticCore},
+        state::Memory,
+    };
     use ark_bls12_381::Fr;
     use mpc::protocols::honey_badger::HoneyBadgerMPC;
     use types::vm::RegisterAddr;
+    use ark_ff::{PrimeField, BigInteger};
 
     use super::*;
 
@@ -1096,5 +1105,606 @@ mod test {
         subs(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
 
         assert_eq!(processor.secret_register().read(reg_addr_result), share_sub);
+    }
+
+    #[test]
+    fn test_subml() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let share = Share::new(Fr::new(12_u64.into()));
+        let value = Fr::new(8_u64.into());
+
+        let reg_addr_clear = 4;
+        processor.clear_register_mut().write(reg_addr_clear, value);
+        let reg_addr_sec = 5;
+        processor.secret_register_mut().write(reg_addr_sec, share);
+
+        let reg_addr_result = 1;
+
+        subml(
+            &mut processor,
+            reg_addr_sec,
+            reg_addr_clear,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            share - value
+        );
+    }
+
+    #[test]
+    fn test_submr() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let share = Share::new(Fr::new(12_u64.into()));
+        let value = Fr::new(8_u64.into());
+
+        let reg_addr_clear = 4;
+        processor.clear_register_mut().write(reg_addr_clear, value);
+        let reg_addr_sec = 5;
+        processor.secret_register_mut().write(reg_addr_sec, share);
+
+        let reg_addr_result = 1;
+
+        submr(
+            &mut processor,
+            reg_addr_sec,
+            reg_addr_clear,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            -share + value
+        );
+    }
+
+    #[test]
+    fn test_subci() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_clear = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Fr::new(8_u64.into());
+        let immediate_value = Fr::new(2_u64.into());
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, stored_value);
+
+        subci(
+            &mut processor,
+            reg_addr_clear,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            stored_value - immediate_value
+        )
+    }
+
+    #[test]
+    fn test_subsi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_secret = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Share::new(Fr::new(8_u64.into()));
+        let immediate_value = Fr::new(2_u64.into());
+        processor
+            .secret_register_mut()
+            .write(reg_addr_secret, stored_value);
+
+        subsi(
+            &mut processor,
+            reg_addr_secret,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            stored_value - immediate_value
+        )
+    }
+
+    #[test]
+    fn test_subcfi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_clear = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Fr::new(8_u64.into());
+        let immediate_value = Fr::new(2_u64.into());
+
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, stored_value);
+
+        subcfi(
+            &mut processor,
+            reg_addr_clear,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            immediate_value - stored_value
+        )
+    }
+
+    #[test]
+    fn test_subsfi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_secret = 4;
+        let reg_addr_result = 1;
+
+        let stored_share = Share::new(Fr::new(8_u64.into()));
+        let immediate_value = Fr::new(2_u64.into());
+
+        processor
+            .secret_register_mut()
+            .write(reg_addr_secret, stored_share);
+
+        subsfi(
+            &mut processor,
+            reg_addr_secret,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            (-stored_share) + immediate_value
+        )
+    }
+
+    #[test]
+    fn test_mulc() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr1 = 1;
+        let reg_addr2 = 3;
+        let reg_addr_result = 2;
+
+        let value1 = Fr::from(8_u64);
+        let value2 = Fr::from(10_u64);
+
+        processor.clear_register_mut().write(reg_addr1, value1);
+        processor.clear_register_mut().write(reg_addr2, value2);
+
+        mulc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            value1 * value2
+        );
+    }
+
+    #[test]
+    fn test_mulm() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_secret = 1;
+        let reg_addr_clear = 3;
+        let reg_addr_result = 2;
+
+        let value_clear = Fr::from(8_u64);
+        let value_secret = Share::new(Fr::from(10_u64));
+
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, value_clear);
+        processor
+            .secret_register_mut()
+            .write(reg_addr_secret, value_secret);
+
+        mulm(
+            &mut processor,
+            reg_addr_secret,
+            reg_addr_clear,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            value_secret * value_clear
+        );
+    }
+
+    #[test]
+    fn test_mulci() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_clear = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Fr::new(8_u64.into());
+        let immediate_value = Fr::new(2_u64.into());
+
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, stored_value);
+
+        mulci(
+            &mut processor,
+            reg_addr_clear,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            stored_value * immediate_value
+        );
+    }
+
+    #[test]
+    fn test_divc() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr1 = 1;
+        let reg_addr2 = 3;
+        let reg_addr_result = 2;
+
+        let value1 = Fr::from(8_u64);
+        let value2 = Fr::from(10_u64);
+
+        processor.clear_register_mut().write(reg_addr1, value1);
+        processor.clear_register_mut().write(reg_addr2, value2);
+
+        divc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            value1 / value2
+        );
+    }
+
+    #[test]
+    fn test_divci() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_clear = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Fr::new(8_u64.into());
+        let immediate_value = Fr::new(2_u64.into());
+
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, stored_value);
+
+        divci(
+            &mut processor,
+            reg_addr_clear,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            stored_value / immediate_value
+        );
+    }
+
+    #[test]
+    fn test_modc() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr1 = 1;
+        let reg_addr2 = 3;
+        let reg_addr_result = 2;
+
+        let value1 = Fr::from(8_u64);
+        let value2 = Fr::from(10_u64);
+
+        processor.clear_register_mut().write(reg_addr1, value1);
+        processor.clear_register_mut().write(reg_addr2, value2);
+
+        modc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+
+        let value1_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(value1);
+        let value2_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(value2);
+
+        let modulus = value1_bigint % value2_bigint;
+
+        let modulus_in_domain = from_bigint_to_domain::<HoneyBadgerMPC>(modulus);
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            modulus_in_domain
+        );
+    }
+
+    #[test]
+    fn test_modci() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_clear = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Fr::new(8_u64.into());
+        let immediate_value = Fr::new(2_u64.into());
+
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, stored_value);
+
+        modci(
+            &mut processor,
+            reg_addr_clear,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        let stored_value_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(stored_value);
+        let immediate_value_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(immediate_value);
+
+        let modulus_bigint = stored_value_bigint % immediate_value_bigint;
+
+        let modulus_in_domain = from_bigint_to_domain::<HoneyBadgerMPC>(modulus_bigint);
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            modulus_in_domain
+        )
+    }
+
+    #[test]
+    fn test_stmci() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let clear_memory = Arc::new(Mutex::new(MemoryArray::new(10)));
+
+        let reg_addr_origin = 4;
+        let reg_addr_destiny = 3;
+        let index = 6;
+
+        let value = Fr::from(5_u64);
+
+        processor
+            .reg_addr_register_mut()
+            .write(reg_addr_destiny, index);
+        processor.clear_register_mut().write(reg_addr_origin, value);
+
+        stmci(
+            &processor,
+            Arc::clone(&clear_memory),
+            reg_addr_origin,
+            reg_addr_destiny,
+        );
+
+        assert_eq!(clear_memory.lock().unwrap().read(index), value);
+    }
+
+    #[test]
+    fn test_stmsi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let secret_memory = Arc::new(Mutex::new(MemoryArray::new(10)));
+
+        let reg_addr_origin = 4;
+        let reg_addr_destiny = 3;
+        let index = 6;
+
+        let value = Share::new(Fr::from(5_u64));
+
+        processor
+            .reg_addr_register_mut()
+            .write(reg_addr_destiny, index);
+        processor.secret_register_mut().write(reg_addr_origin, value);
+
+        stmsi(
+            &processor,
+            Arc::clone(&secret_memory),
+            reg_addr_origin,
+            reg_addr_destiny,
+        );
+
+        assert_eq!(secret_memory.lock().unwrap().read(index), value);
+    }
+
+    #[test]
+    fn test_movc() {
+        let reg_addr_origin = 3;
+        let reg_addr_destiny = 2;
+
+        let value = Fr::from(13_u64);
+        
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.clear_register_mut().write(reg_addr_origin, value);
+
+        movc(&mut processor, reg_addr_origin, reg_addr_destiny);
+
+        assert_eq!(processor.clear_register().read(reg_addr_destiny), value);
+    }
+
+    #[test]
+    fn test_movs() {
+        let reg_addr_origin = 3;
+        let reg_addr_destiny = 2;
+
+        let value = Share::new(Fr::from(13_u64));
+        
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.secret_register_mut().write(reg_addr_origin, value);
+
+        movs(&mut processor, reg_addr_origin, reg_addr_destiny);
+
+        assert_eq!(processor.secret_register().read(reg_addr_destiny), value);
+    }
+
+    #[test]
+    fn test_ldtn() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        let reg_addr = 3;
+        let thread_n = 4;
+
+        ldtn(&mut processor, reg_addr, thread_n);
+
+        assert_eq!(processor.reg_addr_register().read(reg_addr), thread_n);
+    }
+
+    #[test]
+    fn test_addm() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_secret = 1;
+        let reg_addr_clear = 3;
+        let reg_addr_result = 2;
+
+        let value_clear = Fr::from(8_u64);
+        let value_secret = Share::new(Fr::from(10_u64));
+
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, value_clear);
+        processor
+            .secret_register_mut()
+            .write(reg_addr_secret, value_secret);
+
+        addm(
+            &mut processor,
+            reg_addr_secret,
+            reg_addr_clear,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            value_secret + value_clear
+        );
+    }
+
+    #[test]
+    fn test_addci() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_clear = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Fr::new(8_u64.into());
+        let immediate_value = Fr::new(2_u64.into());
+
+        processor
+            .clear_register_mut()
+            .write(reg_addr_clear, stored_value);
+
+        addci(
+            &mut processor,
+            reg_addr_clear,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result),
+            stored_value + immediate_value
+        );
+    }
+
+    #[test]
+    fn test_addsi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_secret = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Share::new(Fr::new(8_u64.into()));
+        let immediate_value = Fr::new(2_u64.into());
+        processor
+            .secret_register_mut()
+            .write(reg_addr_secret, stored_value);
+
+        addsi(
+            &mut processor,
+            reg_addr_secret,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            stored_value + immediate_value
+        )
+    }
+
+    #[test]
+    fn test_mulsi() {
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+
+        let reg_addr_secret = 4;
+        let reg_addr_result = 1;
+
+        let stored_value = Share::new(Fr::new(8_u64.into()));
+        let immediate_value = Fr::new(2_u64.into());
+        processor
+            .secret_register_mut()
+            .write(reg_addr_secret, stored_value);
+
+        mulsi(
+            &mut processor,
+            reg_addr_secret,
+            immediate_value,
+            reg_addr_result,
+        );
+
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result),
+            stored_value * immediate_value
+        )
+    }
+
+    #[test]
+    fn test_legendre_is_quad() {
+        let value = Fr::from(43525_u64);
+        let quad = value * value;
+
+        let reg_addr = 4;
+        let reg_result = 3;
+
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.clear_register_mut().write(reg_addr, quad);
+
+        legendrec(&mut processor, reg_addr, reg_result);
+
+        assert_eq!(processor.clear_register().read(reg_result), Fr::ONE);
+    }
+    
+    #[test]
+    fn test_legendre_is_zero() {
+        let modulus = Fr::MODULUS;
+
+        let modulus_domain = Fr::from_be_bytes_mod_order(&modulus.to_bytes_be());
+        
+        let reg_addr = 4;
+        let reg_result = 3;
+
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.clear_register_mut().write(reg_addr, modulus_domain);
+
+        legendrec(&mut processor, reg_addr, reg_result);
+
+        assert_eq!(processor.clear_register().read(reg_result), Fr::ZERO);
+    }
+
+    #[test]
+    fn test_legendre_is_non_quad() {
+        let value = Fr::from(5_u64);
+
+        let reg_addr = 4;
+        let reg_result = 3;
+
+        let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
+        processor.clear_register_mut().write(reg_addr, value);
+
+        legendrec(&mut processor, reg_addr, reg_result);
+
+        assert_eq!(processor.clear_register().read(reg_result), -Fr::ONE);
     }
 }
