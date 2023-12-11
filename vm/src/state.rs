@@ -1,6 +1,11 @@
 use mpc::{protocols::MPCProtocol, share::Share};
-use std::sync::{Arc, Mutex};
+use std::{
+    error::Error,
+    sync::{Arc, Mutex},
+};
 use types::vm::{MpcType, RegisterAddr};
+
+use crate::error::VmError;
 
 /// Register of the virtual machine that is inside of the processors.
 #[derive(Clone, Debug)]
@@ -19,13 +24,22 @@ impl<T: MpcType, const N: usize> Register<T, N> {
     }
 
     /// Read a given position of the register
-    pub fn read(&self, i: RegisterAddr) -> T {
-        self.0[i]
+    pub fn read(&self, i: RegisterAddr) -> Result<T, VmError> {
+        if i < self.0.len() {
+            Ok(self.0[i])
+        } else {
+            Err(VmError::IndexOutOfBound(i, self.0.len()))
+        }
     }
 
     /// Writes a given content in the given address.
-    pub fn write(&mut self, i: RegisterAddr, element: T) {
-        self.0[i] = element;
+    pub fn write(&mut self, i: RegisterAddr, element: T) -> Result<(), VmError> {
+        if i < self.0.len() {
+            self.0[i] = element;
+            Ok(())
+        } else {
+            Err(VmError::IndexOutOfBound(i, self.0.len()))
+        }
     }
 
     /// Cleans the register.
@@ -60,11 +74,13 @@ impl<T: MpcType> StackRegister<T> {
     }
 
     /// Poke an element from the stack.
-    pub fn poke(&mut self, location: usize, element: T) {
+    pub fn poke(&mut self, location: usize, element: T) -> Result<(), VmError> {
         if location > self.0.len() {
-            panic!("Location is out of range");
+            Err(VmError::IndexOutOfBound(location, self.0.len()))
+        } else {
+            self.0[location] = element;
+            Ok(())
         }
-        self.0[location] = element;
     }
 
     /// Clears the stack.
@@ -87,13 +103,22 @@ impl<T: MpcType> MemoryArray<T> {
     }
 
     /// Returns the value in the memory stored at a given index.
-    pub fn read(&self, i: usize) -> T {
-        self.0[i]
+    pub fn read(&self, i: usize) -> Result<T, VmError> {
+        if i < self.0.len() {
+            Ok(self.0[i])
+        } else {
+            Err(VmError::IndexOutOfBound(i, self.0.len()))
+        }
     }
 
     /// Writes a given value in a given index of the memory.
-    pub fn write(&mut self, i: usize, value: T) {
-        self.0[i] = value;
+    pub fn write(&mut self, i: usize, value: T) -> Result<(), VmError> {
+        if i < self.0.len() {
+            self.0[i] = value;
+            Ok(())
+        } else {
+            Err(VmError::IndexOutOfBound(i, self.0.len()))
+        }
     }
 
     pub fn allocate() {

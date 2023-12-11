@@ -13,4 +13,7 @@ pub mod state;
 /// The vm implementation
 pub mod stoffel_vm;
 
+/// Errors for the virtual machine
+pub mod error;
+
 pub use stoffel_vm::StoffelVM;

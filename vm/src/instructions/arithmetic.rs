@@ -1,11 +1,10 @@
 use ark_ff::{BigInteger, Field, LegendreSymbol, PrimeField};
 
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 
-use crate::{processor::arithmetic::ArithmeticCore, state::MemoryArray};
+use crate::{error::VmError, processor::arithmetic::ArithmeticCore, state::MemoryArray};
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
-use std::sync::Mutex;
 use types::vm::{MemoryAddr, RegisterAddr};
 
 use num_bigint::BigUint;
@@ -25,11 +24,12 @@ pub fn ldi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     register_pos: RegisterAddr,
     immediate_value: T::Domain,
-) {
+) -> Result<(), VmError> {
     // TODO: Add error handling and a return type for successful execution
     processor
         .clear_register_mut()
-        .write(register_pos, immediate_value);
+        .write(register_pos, immediate_value)?;
+    Ok(())
 }
 
 /// Assign immediate value to secret register
@@ -37,10 +37,11 @@ pub fn ldsi<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     register_pos: RegisterAddr,
     immediate_value: Share<T::Domain>,
-) {
+) -> Result<(), VmError> {
     processor
         .secret_register_mut()
-        .write(register_pos, immediate_value);
+        .write(register_pos, immediate_value)?;
+    Ok(())
 }
 
 /// Assign clear register to clear memory value(s) by immediate address
@@ -49,9 +50,10 @@ pub fn stmc<T: MPCProtocol>(
     clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
     reg_addr: RegisterAddr,
     mem_addr: MemoryAddr,
-) {
-    let value = processor.clear_register().read(reg_addr);
-    clear_memory.lock().unwrap().write(mem_addr, value);
+) -> Result<(), VmError> {
+    let value = processor.clear_register().read(reg_addr)?;
+    clear_memory.lock().unwrap().write(mem_addr, value)?;
+    Ok(())
 }
 
 /// Assign secret register to secret memory value(s) by immediate address
@@ -60,9 +62,10 @@ pub fn stms<T: MPCProtocol>(
     secret_memory: Arc<Mutex<MemoryArray<Share<T::Domain>>>>,
     reg_addr: RegisterAddr,
     mem_addr: MemoryAddr,
-) {
-    let value = processor.secret_register().read(reg_addr);
-    secret_memory.lock().unwrap().write(mem_addr, value);
+) -> Result<(), VmError> {
+    let value = processor.secret_register().read(reg_addr)?;
+    secret_memory.lock().unwrap().write(mem_addr, value)?;
+    Ok(())
 }
 
 /// Assign clear memory value(s) to clear register by register address
@@ -71,9 +74,10 @@ pub fn ldmci<T: MPCProtocol>(
     clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
     reg_addr: RegisterAddr,
     mem_addr: MemoryAddr,
-) {
-    let value = clear_memory.lock().unwrap().read(mem_addr);
-    processor.clear_register_mut().write(reg_addr, value);
+) -> Result<(), VmError> {
+    let value = clear_memory.lock().unwrap().read(mem_addr)?;
+    processor.clear_register_mut().write(reg_addr, value)?;
+    Ok(())
 }
 
 /// Assign secret memory value(s) to secret register by register address
@@ -82,9 +86,10 @@ pub fn ldmsi<T: MPCProtocol>(
     secret_memory: Arc<Mutex<MemoryArray<Share<T::Domain>>>>,
     reg_addr: RegisterAddr,
     mem_addr: MemoryAddr,
-) {
-    let value = secret_memory.lock().unwrap().read(mem_addr);
-    processor.secret_register_mut().write(reg_addr, value);
+) -> Result<(), VmError> {
+    let value = secret_memory.lock().unwrap().read(mem_addr)?;
+    processor.secret_register_mut().write(reg_addr, value)?;
+    Ok(())
 }
 
 // Assign clear register to clear memory value(s) by register address
@@ -93,10 +98,11 @@ pub fn stmci<T: MPCProtocol>(
     clear_memory: Arc<Mutex<MemoryArray<T::Domain>>>,
     reg_addr_origin: RegisterAddr,
     reg_addr_destiny: RegisterAddr,
-) {
-    let moved_value = processor.clear_register().read(reg_addr_origin);
-    let index = processor.reg_addr_register().read(reg_addr_destiny);
-    clear_memory.lock().unwrap().write(index, moved_value);
+) -> Result<(), VmError> {
+    let moved_value = processor.clear_register().read(reg_addr_origin)?;
+    let index = processor.reg_addr_register().read(reg_addr_destiny)?;
+    clear_memory.lock().unwrap().write(index, moved_value)?;
+    Ok(())
 }
 
 // Assign secret register to secret memory value(s) by register address
@@ -105,10 +111,11 @@ pub fn stmsi<T: MPCProtocol>(
     secret_memory: Arc<Mutex<MemoryArray<Share<T::Domain>>>>,
     reg_addr_origin: RegisterAddr,
     reg_add_destiny: RegisterAddr,
-) {
-    let moved_share = processor.secret_register().read(reg_addr_origin);
-    let index = processor.reg_addr_register().read(reg_add_destiny);
-    secret_memory.lock().unwrap().write(index, moved_share);
+) -> Result<(), VmError> {
+    let moved_share = processor.secret_register().read(reg_addr_origin)?;
+    let index = processor.reg_addr_register().read(reg_add_destiny)?;
+    secret_memory.lock().unwrap().write(index, moved_share)?;
+    Ok(())
 }
 
 // Copy clear register
@@ -116,11 +123,12 @@ pub fn movc<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_origin: RegisterAddr,
     reg_addr_destiny: RegisterAddr,
-) {
-    let value = processor.clear_register().read(reg_addr_origin);
+) -> Result<(), VmError> {
+    let value = processor.clear_register().read(reg_addr_origin)?;
     processor
         .clear_register_mut()
-        .write(reg_addr_destiny, value);
+        .write(reg_addr_destiny, value)?;
+    Ok(())
 }
 
 // Copy secret register
@@ -128,11 +136,12 @@ pub fn movs<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_origin: RegisterAddr,
     reg_addr_destiny: RegisterAddr,
-) {
-    let value = processor.secret_register().read(reg_addr_origin);
+) -> Result<(), VmError> {
+    let value = processor.secret_register().read(reg_addr_origin)?;
     processor
         .secret_register_mut()
-        .write(reg_addr_destiny, value);
+        .write(reg_addr_destiny, value)?;
+    Ok(())
 }
 
 // Store number of current thread in clear integer register
@@ -140,8 +149,11 @@ pub fn ldtn<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr: RegisterAddr,
     thread_n: usize,
-) {
-    processor.reg_addr_register_mut().write(reg_addr, thread_n);
+) -> Result<(), VmError> {
+    processor
+        .reg_addr_register_mut()
+        .write(reg_addr, thread_n)?;
+    Ok(())
 }
 
 // Require on computation modulus
@@ -167,13 +179,14 @@ pub fn addc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
     let result = value1 + value2;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Secret addition of two values in the secret register given two register
@@ -183,13 +196,14 @@ pub fn adds<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let share1 = processor.secret_register().read(reg_addr1);
-    let share2 = processor.secret_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let share1 = processor.secret_register().read(reg_addr1)?;
+    let share2 = processor.secret_register().read(reg_addr2)?;
     let share_result = share1 + share2;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, share_result);
+        .write(reg_addr_result, share_result)?;
+    Ok(())
 }
 
 // Mixed addition
@@ -198,11 +212,12 @@ pub fn addm<T: MPCProtocol>(
     sec_reg_addr: RegisterAddr,
     clear_reg_addr: RegisterAddr,
     sec_reg_result: RegisterAddr,
-) {
-    let sec_value = processor.secret_register().read(sec_reg_addr);
-    let cle_value = processor.clear_register().read(clear_reg_addr);
+) -> Result<(), VmError> {
+    let sec_value = processor.secret_register().read(sec_reg_addr)?;
+    let cle_value = processor.clear_register().read(clear_reg_addr)?;
     let sum = sec_value + cle_value;
-    processor.secret_register_mut().write(sec_reg_result, sum);
+    processor.secret_register_mut().write(sec_reg_result, sum)?;
+    Ok(())
 }
 
 // Addition of clear register and immediate value
@@ -211,10 +226,11 @@ pub fn addci<T: MPCProtocol>(
     reg_addr: RegisterAddr,
     imm_value: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.clear_register().read(reg_addr);
+) -> Result<(), VmError> {
+    let stored_value = processor.clear_register().read(reg_addr)?;
     let sum = stored_value + imm_value;
-    processor.clear_register_mut().write(reg_addr_result, sum);
+    processor.clear_register_mut().write(reg_addr_result, sum)?;
+    Ok(())
 }
 
 // Addition of secret register and immediate value
@@ -223,10 +239,13 @@ pub fn addsi<T: MPCProtocol>(
     reg_addr: RegisterAddr,
     imm_value: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.secret_register().read(reg_addr);
+) -> Result<(), VmError> {
+    let stored_value = processor.secret_register().read(reg_addr)?;
     let sum = stored_value + imm_value;
-    processor.secret_register_mut().write(reg_addr_result, sum);
+    processor
+        .secret_register_mut()
+        .write(reg_addr_result, sum)?;
+    Ok(())
 }
 
 /// Clear subtraction of two values in the clear register given two register
@@ -236,13 +255,14 @@ pub fn subc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
     let result = value1 - value2;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Secret subtraction of two values in the secret register given two register
@@ -252,13 +272,14 @@ pub fn subs<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let share1 = processor.secret_register().read(reg_addr1);
-    let share2 = processor.secret_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let share1 = processor.secret_register().read(reg_addr1)?;
+    let share2 = processor.secret_register().read(reg_addr2)?;
     let share_result = share1 - share2;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, share_result);
+        .write(reg_addr_result, share_result)?;
+    Ok(())
 }
 
 /// Subtract clear from secret value
@@ -267,13 +288,14 @@ pub fn subml<T: MPCProtocol>(
     sec_reg_addr: RegisterAddr,
     clear_reg_addr: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let share = processor.secret_register().read(sec_reg_addr);
-    let clear = processor.clear_register().read(clear_reg_addr);
+) -> Result<(), VmError> {
+    let share = processor.secret_register().read(sec_reg_addr)?;
+    let clear = processor.clear_register().read(clear_reg_addr)?;
     let result = share - clear;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Subtract secret from clear value
@@ -282,13 +304,14 @@ pub fn submr<T: MPCProtocol>(
     sec_reg_addr: RegisterAddr,
     clear_reg_addr: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let share = processor.secret_register().read(sec_reg_addr);
-    let clear = processor.clear_register().read(clear_reg_addr);
+) -> Result<(), VmError> {
+    let share = processor.secret_register().read(sec_reg_addr)?;
+    let clear = processor.clear_register().read(clear_reg_addr)?;
     let result = (-share) + clear;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Subtraction immediate value from clear register
@@ -297,12 +320,13 @@ pub fn subci<T: MPCProtocol>(
     reg_addr_stored: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.clear_register().read(reg_addr_stored);
+) -> Result<(), VmError> {
+    let stored_value = processor.clear_register().read(reg_addr_stored)?;
     let result = stored_value - immediate_val;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Subtraction immediate value from secret register
@@ -311,12 +335,13 @@ pub fn subsi<T: MPCProtocol>(
     reg_addr_stored: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.secret_register().read(reg_addr_stored);
+) -> Result<(), VmError> {
+    let stored_value = processor.secret_register().read(reg_addr_stored)?;
     let result = stored_value - immediate_val;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Subtraction of clear register from immediate value
@@ -325,12 +350,13 @@ pub fn subcfi<T: MPCProtocol>(
     reg_addr_stored: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.clear_register().read(reg_addr_stored);
+) -> Result<(), VmError> {
+    let stored_value = processor.clear_register().read(reg_addr_stored)?;
     let result = immediate_val - stored_value;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Subtraction of secret register from immediate value
@@ -339,12 +365,13 @@ pub fn subsfi<T: MPCProtocol>(
     reg_addr_stored: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.secret_register().read(reg_addr_stored);
+) -> Result<(), VmError> {
+    let stored_value = processor.secret_register().read(reg_addr_stored)?;
     let result = (-stored_value) + immediate_val;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Clear multiplcation
@@ -353,13 +380,14 @@ pub fn mulc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
     let result = value1 * value2;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Multiply secret and clear value
@@ -368,13 +396,14 @@ pub fn mulm<T: MPCProtocol>(
     secret_reg_addr: RegisterAddr,
     clear_reg_addr: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let clear_value = processor.clear_register().read(clear_reg_addr);
-    let share_value = processor.secret_register().read(secret_reg_addr);
+) -> Result<(), VmError> {
+    let clear_value = processor.clear_register().read(clear_reg_addr)?;
+    let share_value = processor.secret_register().read(secret_reg_addr)?;
     let mult_share = share_value * clear_value;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, mult_share);
+        .write(reg_addr_result, mult_share)?;
+    Ok(())
 }
 
 /// Multiplication of clear register and immediate value
@@ -383,12 +412,13 @@ pub fn mulci<T: MPCProtocol>(
     reg_addr_value: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.clear_register().read(reg_addr_value);
+) -> Result<(), VmError> {
+    let stored_value = processor.clear_register().read(reg_addr_value)?;
     let result = stored_value * immediate_val;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Multiplication of secret register and immediate value
@@ -397,12 +427,13 @@ pub fn mulsi<T: MPCProtocol>(
     reg_addr_value: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let secret_value = processor.secret_register().read(reg_addr_value);
+) -> Result<(), VmError> {
+    let secret_value = processor.secret_register().read(reg_addr_value)?;
     let result = secret_value * immediate_val;
     processor
         .secret_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Clear division
@@ -411,13 +442,14 @@ pub fn divc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
     let result = value1 / value2;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Division of secret register and immediate value
@@ -426,12 +458,16 @@ pub fn divci<T: MPCProtocol>(
     reg_addr_value: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
-    let stored_value = processor.clear_register().read(reg_addr_value);
+) -> Result<(), VmError> {
+    if immediate_val == T::Domain::ZERO {
+        return Err(VmError::DivisionByZero);
+    }
+    let stored_value = processor.clear_register().read(reg_addr_value)?;
     let result = stored_value / immediate_val;
     processor
         .clear_register_mut()
-        .write(reg_addr_result, result);
+        .write(reg_addr_result, result)?;
+    Ok(())
 }
 
 /// Clear modular reduction
@@ -440,10 +476,14 @@ pub fn modc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
+) -> Result<(), VmError> {
     // Read values from the clear register.
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
+
+    if value2 == T::Domain::ZERO {
+        return Err(VmError::DivisionByZero);
+    }
 
     // support for arithmetic operations.
     let value1_bigint = from_domain_to_bigint::<T>(value1);
@@ -457,7 +497,8 @@ pub fn modc<T: MPCProtocol>(
 
     processor
         .clear_register_mut()
-        .write(reg_addr_result, modulus_field);
+        .write(reg_addr_result, modulus_field)?;
+    Ok(())
 }
 
 /// Modular reduction of clear register and immediate value
@@ -466,10 +507,10 @@ pub fn modci<T: MPCProtocol>(
     reg_addr_value: RegisterAddr,
     immediate_val: T::Domain,
     reg_addr_result: RegisterAddr,
-) {
+) -> Result<(), VmError> {
     // Converts the stored value into a BigUint value given that this library
     // has better support for arithmetic computation.
-    let stored_value = processor.clear_register().read(reg_addr_value);
+    let stored_value = processor.clear_register().read(reg_addr_value)?;
     let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
 
     // Converts the immediate value into a BigUint
@@ -481,7 +522,8 @@ pub fn modci<T: MPCProtocol>(
 
     processor
         .clear_register_mut()
-        .write(reg_addr_result, modulus_field);
+        .write(reg_addr_result, modulus_field)?;
+    Ok(())
 }
 
 /// Clear legendre symbol computation over prime p
@@ -489,8 +531,8 @@ pub fn legendrec<T: MPCProtocol>(
     processor: &mut ArithmeticCore<T>,
     reg_addr_value: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value = processor.clear_register().read(reg_addr_value);
+) -> Result<(), VmError> {
+    let value = processor.clear_register().read(reg_addr_value)?;
     let legendre_symbol = match value.legendre() {
         LegendreSymbol::Zero => T::Domain::ZERO,
         LegendreSymbol::QuadraticNonResidue => -T::Domain::ONE,
@@ -498,7 +540,8 @@ pub fn legendrec<T: MPCProtocol>(
     };
     processor
         .clear_register_mut()
-        .write(reg_addr_result, legendre_symbol);
+        .write(reg_addr_result, legendre_symbol)?;
+    Ok(())
 }
 
 // Clear truncated hash computation
@@ -517,9 +560,13 @@ pub fn floordivc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
+
+    if value2 == T::Domain::ZERO {
+        return Err(VmError::DivisionByZero);
+    }
 
     let value1_bigint = from_domain_to_bigint::<T>(value1);
     let value2_bigint = from_domain_to_bigint::<T>(value2);
@@ -529,7 +576,8 @@ pub fn floordivc<T: MPCProtocol>(
     let div_domain = from_bigint_to_domain::<T>(div);
     processor
         .clear_register_mut()
-        .write(reg_addr_result, div_domain);
+        .write(reg_addr_result, div_domain)?;
+    Ok(())
 }
 
 // Store fresh random triples in secret register
@@ -618,9 +666,9 @@ pub fn andc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
 
     let value1_bigint = from_domain_to_bigint::<T>(value1);
     let value2_bigint = from_domain_to_bigint::<T>(value2);
@@ -630,7 +678,8 @@ pub fn andc<T: MPCProtocol>(
     let and_domain = from_bigint_to_domain::<T>(and);
     processor
         .clear_register_mut()
-        .write(reg_addr_result, and_domain);
+        .write(reg_addr_result, and_domain)?;
+    Ok(())
 }
 
 // Logical XOR of clear registers
@@ -639,9 +688,9 @@ pub fn xorc<T: MPCProtocol>(
     reg_addr1: RegisterAddr,
     reg_addr2: RegisterAddr,
     reg_addr_result: RegisterAddr,
-) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
 
     let value1_bigint = from_domain_to_bigint::<T>(value1);
     let value2_bigint = from_domain_to_bigint::<T>(value2);
@@ -651,13 +700,19 @@ pub fn xorc<T: MPCProtocol>(
     let xor_domain = from_bigint_to_domain::<T>(xor);
     processor
         .clear_register_mut()
-        .write(reg_addr_result, xor_domain);
+        .write(reg_addr_result, xor_domain)?;
+    Ok(())
 }
 
 // Logical OR of clear registers
-pub fn orc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr1: RegisterAddr, reg_addr2: RegisterAddr, reg_addr_result: RegisterAddr) {
-    let value1 = processor.clear_register().read(reg_addr1);
-    let value2 = processor.clear_register().read(reg_addr2);
+pub fn orc<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr1: RegisterAddr,
+    reg_addr2: RegisterAddr,
+    reg_addr_result: RegisterAddr,
+) -> Result<(), VmError> {
+    let value1 = processor.clear_register().read(reg_addr1)?;
+    let value2 = processor.clear_register().read(reg_addr2)?;
 
     let value1_bigint = from_domain_to_bigint::<T>(value1);
     let value2_bigint = from_domain_to_bigint::<T>(value2);
@@ -667,12 +722,18 @@ pub fn orc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr1: Registe
     let or_domain = from_bigint_to_domain::<T>(or);
     processor
         .clear_register_mut()
-        .write(reg_addr_result, or_domain);
+        .write(reg_addr_result, or_domain)?;
+    Ok(())
 }
 
 // Logical AND of clear registers and immediate value
-pub fn andci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr: RegisterAddr, immediate_val: T::Domain, reg_addr_result: RegisterAddr) {
-    let stored_value = processor.clear_register().read(reg_addr);
+pub fn andci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) -> Result<(), VmError> {
+    let stored_value = processor.clear_register().read(reg_addr)?;
     let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
 
     let imm_value_bigint = from_domain_to_bigint::<T>(immediate_val);
@@ -682,12 +743,18 @@ pub fn andci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr: Regist
     let and_domain = from_bigint_to_domain::<T>(and_bigint);
     processor
         .clear_register_mut()
-        .write(reg_addr_result, and_domain);
+        .write(reg_addr_result, and_domain)?;
+    Ok(())
 }
 
 // Logical XOR of clear register and immediate value
-pub fn xorci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr: RegisterAddr, immediate_val: T::Domain, reg_addr_result: RegisterAddr) {
-    let stored_value = processor.clear_register().read(reg_addr);
+pub fn xorci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) -> Result<(), VmError> {
+    let stored_value = processor.clear_register().read(reg_addr)?;
     let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
 
     let imm_value_bigint = from_domain_to_bigint::<T>(immediate_val);
@@ -697,12 +764,18 @@ pub fn xorci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr: Regist
     let xor_domain = from_bigint_to_domain::<T>(xor_bigint);
     processor
         .clear_register_mut()
-        .write(reg_addr_result, xor_domain);
+        .write(reg_addr_result, xor_domain)?;
+    Ok(())
 }
 
 // Logical OR of clear register and immediate value
-pub fn orci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr: RegisterAddr, immediate_val: T::Domain, reg_addr_result: RegisterAddr) {
-    let stored_value = processor.clear_register().read(reg_addr);
+pub fn orci<T: MPCProtocol>(
+    processor: &mut ArithmeticCore<T>,
+    reg_addr: RegisterAddr,
+    immediate_val: T::Domain,
+    reg_addr_result: RegisterAddr,
+) -> Result<(), VmError> {
+    let stored_value = processor.clear_register().read(reg_addr)?;
     let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
 
     let imm_value_bigint = from_domain_to_bigint::<T>(immediate_val);
@@ -712,7 +785,8 @@ pub fn orci<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, reg_addr: Registe
     let or_domain = from_bigint_to_domain::<T>(or_bigint);
     processor
         .clear_register_mut()
-        .write(reg_addr_result, or_domain);
+        .write(reg_addr_result, or_domain)?;
+    Ok(())
 }
 
 // Clear logical NOT of a constant number of bits of clear register
@@ -1006,7 +1080,7 @@ mod test {
 
         ldi(&mut processor, reg_addr, value);
 
-        assert_eq!(processor.clear_register().read(reg_addr), value);
+        assert_eq!(processor.clear_register().read(reg_addr).unwrap(), value);
     }
 
     #[test]
@@ -1018,7 +1092,7 @@ mod test {
 
         ldsi(&mut processor, reg_addr, share);
 
-        assert_eq!(processor.secret_register().read(reg_addr), share);
+        assert_eq!(processor.secret_register().read(reg_addr).unwrap(), share);
     }
 
     #[test]
@@ -1028,13 +1102,13 @@ mod test {
 
         let value = Fr::new(12_u64.into());
         let share = Share::new(value);
-        processor.secret_register_mut().write(reg_addr, share);
+        processor.secret_register_mut().write(reg_addr, share).unwrap();
 
         let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
         let mem_addr: MemoryAddr = 5;
         let secret_memory = Arc::clone(memory.sec_memory());
 
-        stms(&processor, secret_memory, reg_addr, mem_addr);
+        stms(&processor, secret_memory, reg_addr, mem_addr).unwrap();
 
         assert_eq!(
             processor.secret_register().read(reg_addr),
@@ -1048,13 +1122,13 @@ mod test {
         let reg_addr: RegisterAddr = 3;
 
         let value = Fr::new(12_u64.into());
-        processor.clear_register_mut().write(reg_addr, value);
+        processor.clear_register_mut().write(reg_addr, value).unwrap();
 
         let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
         let mem_addr: MemoryAddr = 5;
         let public_memory = Arc::clone(memory.pub_memory());
 
-        stmc(&processor, public_memory, reg_addr, mem_addr);
+        stmc(&processor, public_memory, reg_addr, mem_addr).unwrap();
 
         assert_eq!(
             processor.clear_register().read(reg_addr),
@@ -1068,13 +1142,13 @@ mod test {
         let reg_addr: RegisterAddr = 3;
 
         let value = Fr::new(12_u64.into());
-        processor.clear_register_mut().write(reg_addr, value);
+        processor.clear_register_mut().write(reg_addr, value).unwrap();
 
         let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
         let mem_addr: MemoryAddr = 5;
         let public_memory = Arc::clone(memory.pub_memory());
 
-        ldmci(&mut processor, public_memory, reg_addr, mem_addr);
+        ldmci(&mut processor, public_memory, reg_addr, mem_addr).unwrap();
 
         assert_eq!(
             processor.clear_register().read(reg_addr),
@@ -1089,13 +1163,13 @@ mod test {
 
         let value = Fr::new(12_u64.into());
         let share = Share::new(value);
-        processor.secret_register_mut().write(reg_addr, share);
+        processor.secret_register_mut().write(reg_addr, share).unwrap();
 
         let memory: Memory<HoneyBadgerMPC> = Memory::new(10);
         let mem_addr: MemoryAddr = 5;
         let secret_memory = Arc::clone(memory.sec_memory());
 
-        ldmsi(&mut processor, secret_memory, reg_addr, mem_addr);
+        ldmsi(&mut processor, secret_memory, reg_addr, mem_addr).unwrap();
 
         assert_eq!(
             processor.secret_register().read(reg_addr),
@@ -1116,12 +1190,15 @@ mod test {
         let sum = value1 + value2;
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        addc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        addc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
-        assert_eq!(processor.clear_register().read(reg_addr_result), sum);
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result).unwrap(),
+            sum
+        );
     }
 
     #[test]
@@ -1140,12 +1217,15 @@ mod test {
         let share_sum = Share::new(sum);
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.secret_register_mut().write(reg_addr1, share1);
-        processor.secret_register_mut().write(reg_addr2, share2);
+        processor.secret_register_mut().write(reg_addr1, share1).unwrap();
+        processor.secret_register_mut().write(reg_addr2, share2).unwrap();
 
-        adds(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        adds(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
-        assert_eq!(processor.secret_register().read(reg_addr_result), share_sum);
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result).unwrap(),
+            share_sum
+        );
     }
 
     #[test]
@@ -1161,12 +1241,15 @@ mod test {
         let sub = value1 - value2;
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        subc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        subc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
-        assert_eq!(processor.clear_register().read(reg_addr_result), sub);
+        assert_eq!(
+            processor.clear_register().read(reg_addr_result).unwrap(),
+            sub
+        );
     }
 
     #[test]
@@ -1185,12 +1268,15 @@ mod test {
         let share_sub = Share::new(sub);
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.secret_register_mut().write(reg_addr1, share1);
-        processor.secret_register_mut().write(reg_addr2, share2);
+        processor.secret_register_mut().write(reg_addr1, share1).unwrap();
+        processor.secret_register_mut().write(reg_addr2, share2).unwrap();
 
-        subs(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        subs(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
-        assert_eq!(processor.secret_register().read(reg_addr_result), share_sub);
+        assert_eq!(
+            processor.secret_register().read(reg_addr_result).unwrap(),
+            share_sub
+        );
     }
 
     #[test]
@@ -1200,9 +1286,9 @@ mod test {
         let value = Fr::new(8_u64.into());
 
         let reg_addr_clear = 4;
-        processor.clear_register_mut().write(reg_addr_clear, value);
+        processor.clear_register_mut().write(reg_addr_clear, value).unwrap();
         let reg_addr_sec = 5;
-        processor.secret_register_mut().write(reg_addr_sec, share);
+        processor.secret_register_mut().write(reg_addr_sec, share).unwrap();
 
         let reg_addr_result = 1;
 
@@ -1211,10 +1297,10 @@ mod test {
             reg_addr_sec,
             reg_addr_clear,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             share - value
         );
     }
@@ -1226,9 +1312,9 @@ mod test {
         let value = Fr::new(8_u64.into());
 
         let reg_addr_clear = 4;
-        processor.clear_register_mut().write(reg_addr_clear, value);
+        processor.clear_register_mut().write(reg_addr_clear, value).unwrap();
         let reg_addr_sec = 5;
-        processor.secret_register_mut().write(reg_addr_sec, share);
+        processor.secret_register_mut().write(reg_addr_sec, share).unwrap();
 
         let reg_addr_result = 1;
 
@@ -1237,10 +1323,10 @@ mod test {
             reg_addr_sec,
             reg_addr_clear,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             -share + value
         );
     }
@@ -1256,17 +1342,17 @@ mod test {
         let immediate_value = Fr::new(2_u64.into());
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, stored_value);
+            .write(reg_addr_clear, stored_value).unwrap();
 
         subci(
             &mut processor,
             reg_addr_clear,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             stored_value - immediate_value
         )
     }
@@ -1282,17 +1368,17 @@ mod test {
         let immediate_value = Fr::new(2_u64.into());
         processor
             .secret_register_mut()
-            .write(reg_addr_secret, stored_value);
+            .write(reg_addr_secret, stored_value).unwrap();
 
         subsi(
             &mut processor,
             reg_addr_secret,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             stored_value - immediate_value
         )
     }
@@ -1309,17 +1395,17 @@ mod test {
 
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, stored_value);
+            .write(reg_addr_clear, stored_value).unwrap();
 
         subcfi(
             &mut processor,
             reg_addr_clear,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             immediate_value - stored_value
         )
     }
@@ -1336,17 +1422,17 @@ mod test {
 
         processor
             .secret_register_mut()
-            .write(reg_addr_secret, stored_share);
+            .write(reg_addr_secret, stored_share).unwrap();
 
         subsfi(
             &mut processor,
             reg_addr_secret,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             (-stored_share) + immediate_value
         )
     }
@@ -1362,13 +1448,13 @@ mod test {
         let value1 = Fr::from(8_u64);
         let value2 = Fr::from(10_u64);
 
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        mulc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        mulc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             value1 * value2
         );
     }
@@ -1386,20 +1472,20 @@ mod test {
 
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, value_clear);
+            .write(reg_addr_clear, value_clear).unwrap();
         processor
             .secret_register_mut()
-            .write(reg_addr_secret, value_secret);
+            .write(reg_addr_secret, value_secret).unwrap();
 
         mulm(
             &mut processor,
             reg_addr_secret,
             reg_addr_clear,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             value_secret * value_clear
         );
     }
@@ -1416,17 +1502,17 @@ mod test {
 
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, stored_value);
+            .write(reg_addr_clear, stored_value).unwrap();
 
         mulci(
             &mut processor,
             reg_addr_clear,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             stored_value * immediate_value
         );
     }
@@ -1442,13 +1528,13 @@ mod test {
         let value1 = Fr::from(8_u64);
         let value2 = Fr::from(10_u64);
 
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        divc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        divc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             value1 / value2
         );
     }
@@ -1465,17 +1551,17 @@ mod test {
 
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, stored_value);
+            .write(reg_addr_clear, stored_value).unwrap();
 
         divci(
             &mut processor,
             reg_addr_clear,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             stored_value / immediate_value
         );
     }
@@ -1491,10 +1577,10 @@ mod test {
         let value1 = Fr::from(8_u64);
         let value2 = Fr::from(10_u64);
 
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        modc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        modc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
         let value1_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(value1);
         let value2_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(value2);
@@ -1504,7 +1590,7 @@ mod test {
         let modulus_in_domain = from_bigint_to_domain::<HoneyBadgerMPC>(modulus);
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             modulus_in_domain
         );
     }
@@ -1521,14 +1607,14 @@ mod test {
 
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, stored_value);
+            .write(reg_addr_clear, stored_value).unwrap();
 
         modci(
             &mut processor,
             reg_addr_clear,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         let stored_value_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(stored_value);
         let immediate_value_bigint = from_domain_to_bigint::<HoneyBadgerMPC>(immediate_value);
@@ -1538,7 +1624,7 @@ mod test {
         let modulus_in_domain = from_bigint_to_domain::<HoneyBadgerMPC>(modulus_bigint);
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             modulus_in_domain
         )
     }
@@ -1556,17 +1642,17 @@ mod test {
 
         processor
             .reg_addr_register_mut()
-            .write(reg_addr_destiny, index);
-        processor.clear_register_mut().write(reg_addr_origin, value);
+            .write(reg_addr_destiny, index).unwrap();
+        processor.clear_register_mut().write(reg_addr_origin, value).unwrap();
 
         stmci(
             &processor,
             Arc::clone(&clear_memory),
             reg_addr_origin,
             reg_addr_destiny,
-        );
+        ).unwrap();
 
-        assert_eq!(clear_memory.lock().unwrap().read(index), value);
+        assert_eq!(clear_memory.lock().unwrap().read(index).unwrap(), value);
     }
 
     #[test]
@@ -1582,19 +1668,19 @@ mod test {
 
         processor
             .reg_addr_register_mut()
-            .write(reg_addr_destiny, index);
+            .write(reg_addr_destiny, index).unwrap();
         processor
             .secret_register_mut()
-            .write(reg_addr_origin, value);
+            .write(reg_addr_origin, value).unwrap();
 
         stmsi(
             &processor,
             Arc::clone(&secret_memory),
             reg_addr_origin,
             reg_addr_destiny,
-        );
+        ).unwrap();
 
-        assert_eq!(secret_memory.lock().unwrap().read(index), value);
+        assert_eq!(secret_memory.lock().unwrap().read(index).unwrap(), value);
     }
 
     #[test]
@@ -1605,11 +1691,14 @@ mod test {
         let value = Fr::from(13_u64);
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr_origin, value);
+        processor.clear_register_mut().write(reg_addr_origin, value).unwrap();
 
-        movc(&mut processor, reg_addr_origin, reg_addr_destiny);
+        movc(&mut processor, reg_addr_origin, reg_addr_destiny).unwrap();
 
-        assert_eq!(processor.clear_register().read(reg_addr_destiny), value);
+        assert_eq!(
+            processor.clear_register().read(reg_addr_destiny).unwrap(),
+            value
+        );
     }
 
     #[test]
@@ -1622,11 +1711,14 @@ mod test {
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
         processor
             .secret_register_mut()
-            .write(reg_addr_origin, value);
+            .write(reg_addr_origin, value).unwrap();
 
-        movs(&mut processor, reg_addr_origin, reg_addr_destiny);
+        movs(&mut processor, reg_addr_origin, reg_addr_destiny).unwrap();
 
-        assert_eq!(processor.secret_register().read(reg_addr_destiny), value);
+        assert_eq!(
+            processor.secret_register().read(reg_addr_destiny).unwrap(),
+            value
+        );
     }
 
     #[test]
@@ -1635,9 +1727,12 @@ mod test {
         let reg_addr = 3;
         let thread_n = 4;
 
-        ldtn(&mut processor, reg_addr, thread_n);
+        ldtn(&mut processor, reg_addr, thread_n).unwrap();
 
-        assert_eq!(processor.reg_addr_register().read(reg_addr), thread_n);
+        assert_eq!(
+            processor.reg_addr_register().read(reg_addr).unwrap(),
+            thread_n
+        );
     }
 
     #[test]
@@ -1653,20 +1748,20 @@ mod test {
 
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, value_clear);
+            .write(reg_addr_clear, value_clear).unwrap();
         processor
             .secret_register_mut()
-            .write(reg_addr_secret, value_secret);
+            .write(reg_addr_secret, value_secret).unwrap();
 
         addm(
             &mut processor,
             reg_addr_secret,
             reg_addr_clear,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             value_secret + value_clear
         );
     }
@@ -1683,17 +1778,17 @@ mod test {
 
         processor
             .clear_register_mut()
-            .write(reg_addr_clear, stored_value);
+            .write(reg_addr_clear, stored_value).unwrap();
 
         addci(
             &mut processor,
             reg_addr_clear,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             stored_value + immediate_value
         );
     }
@@ -1709,17 +1804,17 @@ mod test {
         let immediate_value = Fr::new(2_u64.into());
         processor
             .secret_register_mut()
-            .write(reg_addr_secret, stored_value);
+            .write(reg_addr_secret, stored_value).unwrap();
 
         addsi(
             &mut processor,
             reg_addr_secret,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             stored_value + immediate_value
         )
     }
@@ -1735,17 +1830,17 @@ mod test {
         let immediate_value = Fr::new(2_u64.into());
         processor
             .secret_register_mut()
-            .write(reg_addr_secret, stored_value);
+            .write(reg_addr_secret, stored_value).unwrap();
 
         mulsi(
             &mut processor,
             reg_addr_secret,
             immediate_value,
             reg_addr_result,
-        );
+        ).unwrap();
 
         assert_eq!(
-            processor.secret_register().read(reg_addr_result),
+            processor.secret_register().read(reg_addr_result).unwrap(),
             stored_value * immediate_value
         )
     }
@@ -1759,11 +1854,14 @@ mod test {
         let reg_result = 3;
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr, quad);
+        processor.clear_register_mut().write(reg_addr, quad).unwrap();
 
-        legendrec(&mut processor, reg_addr, reg_result);
+        legendrec(&mut processor, reg_addr, reg_result).unwrap();
 
-        assert_eq!(processor.clear_register().read(reg_result), Fr::ONE);
+        assert_eq!(
+            processor.clear_register().read(reg_result).unwrap(),
+            Fr::ONE
+        );
     }
 
     #[test]
@@ -1778,11 +1876,14 @@ mod test {
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
         processor
             .clear_register_mut()
-            .write(reg_addr, modulus_domain);
+            .write(reg_addr, modulus_domain).unwrap();
 
-        legendrec(&mut processor, reg_addr, reg_result);
+        legendrec(&mut processor, reg_addr, reg_result).unwrap();
 
-        assert_eq!(processor.clear_register().read(reg_result), Fr::ZERO);
+        assert_eq!(
+            processor.clear_register().read(reg_result).unwrap(),
+            Fr::ZERO
+        );
     }
 
     #[test]
@@ -1793,11 +1894,14 @@ mod test {
         let reg_result = 3;
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr, value);
+        processor.clear_register_mut().write(reg_addr, value).unwrap();
 
-        legendrec(&mut processor, reg_addr, reg_result);
+        legendrec(&mut processor, reg_addr, reg_result).unwrap();
 
-        assert_eq!(processor.clear_register().read(reg_result), -Fr::ONE);
+        assert_eq!(
+            processor.clear_register().read(reg_result).unwrap(),
+            -Fr::ONE
+        );
     }
 
     #[test]
@@ -1816,13 +1920,13 @@ mod test {
         let value1 = Fr::from(value1_int);
         let value2 = Fr::from(value2_int);
 
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        floordivc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        floordivc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             Fr::from(division_int)
         );
     }
@@ -1843,13 +1947,13 @@ mod test {
         let value1 = Fr::from(value1_int);
         let value2 = Fr::from(value2_int);
 
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        xorc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        xorc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             Fr::from(xor_int)
         );
     }
@@ -1870,13 +1974,13 @@ mod test {
         let value1 = Fr::from(value1_int);
         let value2 = Fr::from(value2_int);
 
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        andc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        andc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             Fr::from(and_int)
         );
     }
@@ -1897,13 +2001,13 @@ mod test {
         let value1 = Fr::from(value1_int);
         let value2 = Fr::from(value2_int);
 
-        processor.clear_register_mut().write(reg_addr1, value1);
-        processor.clear_register_mut().write(reg_addr2, value2);
+        processor.clear_register_mut().write(reg_addr1, value1).unwrap();
+        processor.clear_register_mut().write(reg_addr2, value2).unwrap();
 
-        orc(&mut processor, reg_addr1, reg_addr2, reg_addr_result);
+        orc(&mut processor, reg_addr1, reg_addr2, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             Fr::from(or_int)
         );
     }
@@ -1921,12 +2025,14 @@ mod test {
         let imm_val = Fr::from(imm_val_int);
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr_stored, stored_val);
-        
-        andci(&mut processor, reg_addr_stored, imm_val, reg_addr_result);
+        processor
+            .clear_register_mut()
+            .write(reg_addr_stored, stored_val).unwrap();
+
+        andci(&mut processor, reg_addr_stored, imm_val, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             Fr::from(and_int)
         )
     }
@@ -1944,12 +2050,14 @@ mod test {
         let imm_val = Fr::from(imm_val_int);
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr_stored, stored_val);
-        
-        orci(&mut processor, reg_addr_stored, imm_val, reg_addr_result);
+        processor
+            .clear_register_mut()
+            .write(reg_addr_stored, stored_val).unwrap();
+
+        orci(&mut processor, reg_addr_stored, imm_val, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             Fr::from(or_int)
         )
     }
@@ -1967,12 +2075,14 @@ mod test {
         let imm_val = Fr::from(imm_val_int);
 
         let mut processor: ArithmeticCore<HoneyBadgerMPC> = ArithmeticCore::new();
-        processor.clear_register_mut().write(reg_addr_stored, stored_val);
-        
-        xorci(&mut processor, reg_addr_stored, imm_val, reg_addr_result);
+        processor
+            .clear_register_mut()
+            .write(reg_addr_stored, stored_val).unwrap();
+
+        xorci(&mut processor, reg_addr_stored, imm_val, reg_addr_result).unwrap();
 
         assert_eq!(
-            processor.clear_register().read(reg_addr_result),
+            processor.clear_register().read(reg_addr_result).unwrap(),
             Fr::from(xor_int)
         )
     }
