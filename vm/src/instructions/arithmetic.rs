@@ -670,8 +670,8 @@ pub fn andc<T: MPCProtocol>(
     let value1 = processor.clear_register().read(reg_addr1)?;
     let value2 = processor.clear_register().read(reg_addr2)?;
 
-    let value1_bigint = from_domain_to_bigint::<T>(value1);
-    let value2_bigint = from_domain_to_bigint::<T>(value2);
+    let value1_bigint = value1.into_bigint();
+    let value2_bigint = value2.into_bigint();
 
     let and = value1_bigint & value2_bigint;
 

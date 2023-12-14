@@ -7,8 +7,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ark-ff = "0.4.2"
-ark-poly = "0.4.2"
-ark-bls12-381 = "0.4.0"
+ark-ff = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
+ark-poly = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
+ark-bls12-381 = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
 thiserror = "1"
 num-bigint = "0.4"

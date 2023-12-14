@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 types = {path = "../types"}
 rand = "0.8"
-ark-ff = "0.4.2"
-ark-poly = "0.4.2"
-ark-bls12-381 = "0.4.0"
+ark-ff = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
+ark-poly = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
+ark-bls12-381 = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
 num-bigint = "0.4"
