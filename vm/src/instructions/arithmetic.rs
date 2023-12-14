@@ -6,7 +6,7 @@ use crate::{error::VmError, processor::arithmetic::ArithmeticCore, state::Memory
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
 use types::vm::{MemoryAddr, RegisterAddr};
-
+use ark_ff::AdditiveGroup;
 use num_bigint::BigUint;
 
 fn from_domain_to_bigint<T: MPCProtocol>(value: T::Domain) -> BigUint {
