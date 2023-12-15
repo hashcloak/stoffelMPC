@@ -9,4 +9,4 @@ edition = "2021"
 mpc = {path = "../mpc"}
 vm = {path = "../vm"}
 types = {path = "../types"}
-tokio = {version = "0.2", features = ["full"] }
+tokio = {version = "1", features = ["full"] }

@@ -11,6 +11,9 @@ pub enum VmError {
     /// Error for invalid instruction. It contains the opcode that is being
     /// accessed wrongly.
     InvalidInstruction(usize),
+
+    /// Error for invalid conversion.
+    ConversionError,
 }
 
 impl std::error::Error for VmError {}

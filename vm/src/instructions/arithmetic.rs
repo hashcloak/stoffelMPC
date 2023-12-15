@@ -1,4 +1,4 @@
-use ark_ff::{BigInteger, Field, LegendreSymbol, PrimeField};
+use ark_ff::{BigInteger, Field, LegendreSymbol, PrimeField, BigInt};
 
 use std::sync::{Arc, Mutex};
 
@@ -6,7 +6,7 @@ use crate::{error::VmError, processor::arithmetic::ArithmeticCore, state::Memory
 use mpc::protocols::MPCProtocol;
 use mpc::share::Share;
 use types::vm::{MemoryAddr, RegisterAddr};
-
+use ark_ff::AdditiveGroup;
 use num_bigint::BigUint;
 
 fn from_domain_to_bigint<T: MPCProtocol>(value: T::Domain) -> BigUint {
@@ -670,12 +670,15 @@ pub fn andc<T: MPCProtocol>(
     let value1 = processor.clear_register().read(reg_addr1)?;
     let value2 = processor.clear_register().read(reg_addr2)?;
 
-    let value1_bigint = from_domain_to_bigint::<T>(value1);
-    let value2_bigint = from_domain_to_bigint::<T>(value2);
+    let value1_bigint = value1.into_bigint();
+    let value2_bigint = value2.into_bigint();
 
     let and = value1_bigint & value2_bigint;
 
-    let and_domain = from_bigint_to_domain::<T>(and);
+    let and_domain = match T::Domain::from_bigint(and) {
+        Some(value) => value,
+        None => return Err(VmError::ConversionError),
+    };
     processor
         .clear_register_mut()
         .write(reg_addr_result, and_domain)?;
@@ -692,12 +695,15 @@ pub fn xorc<T: MPCProtocol>(
     let value1 = processor.clear_register().read(reg_addr1)?;
     let value2 = processor.clear_register().read(reg_addr2)?;
 
-    let value1_bigint = from_domain_to_bigint::<T>(value1);
-    let value2_bigint = from_domain_to_bigint::<T>(value2);
+    let value1_bigint = value1.into_bigint();
+    let value2_bigint = value2.into_bigint();
 
     let xor = value1_bigint ^ value2_bigint;
 
-    let xor_domain = from_bigint_to_domain::<T>(xor);
+    let xor_domain = match T::Domain::from_bigint(xor) {
+        Some(value) => value,
+        None => return Err(VmError::ConversionError),
+    };
     processor
         .clear_register_mut()
         .write(reg_addr_result, xor_domain)?;
@@ -714,12 +720,15 @@ pub fn orc<T: MPCProtocol>(
     let value1 = processor.clear_register().read(reg_addr1)?;
     let value2 = processor.clear_register().read(reg_addr2)?;
 
-    let value1_bigint = from_domain_to_bigint::<T>(value1);
-    let value2_bigint = from_domain_to_bigint::<T>(value2);
+    let value1_bigint = value1.into_bigint();
+    let value2_bigint = value2.into_bigint();
 
     let or = value1_bigint | value2_bigint;
 
-    let or_domain = from_bigint_to_domain::<T>(or);
+    let or_domain = match T::Domain::from_bigint(or) {
+        Some(value) => value,
+        None => return Err(VmError::ConversionError),
+    };
     processor
         .clear_register_mut()
         .write(reg_addr_result, or_domain)?;
@@ -734,13 +743,16 @@ pub fn andci<T: MPCProtocol>(
     reg_addr_result: RegisterAddr,
 ) -> Result<(), VmError> {
     let stored_value = processor.clear_register().read(reg_addr)?;
-    let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
+    let stored_value_bigint = stored_value.into_bigint();
 
-    let imm_value_bigint = from_domain_to_bigint::<T>(immediate_val);
+    let imm_value_bigint = immediate_val.into_bigint();
 
     let and_bigint = stored_value_bigint & imm_value_bigint;
 
-    let and_domain = from_bigint_to_domain::<T>(and_bigint);
+    let and_domain = match T::Domain::from_bigint(and_bigint) {
+        Some(value) => value, 
+        None => return Err(VmError::ConversionError),
+    };
     processor
         .clear_register_mut()
         .write(reg_addr_result, and_domain)?;
@@ -755,13 +767,16 @@ pub fn xorci<T: MPCProtocol>(
     reg_addr_result: RegisterAddr,
 ) -> Result<(), VmError> {
     let stored_value = processor.clear_register().read(reg_addr)?;
-    let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
+    let stored_value_bigint = stored_value.into_bigint();
 
-    let imm_value_bigint = from_domain_to_bigint::<T>(immediate_val);
+    let imm_value_bigint = immediate_val.into_bigint();
 
     let xor_bigint = stored_value_bigint ^ imm_value_bigint;
 
-    let xor_domain = from_bigint_to_domain::<T>(xor_bigint);
+    let xor_domain = match T::Domain::from_bigint(xor_bigint) {
+        Some(value) => value,
+        None => return Err(VmError::ConversionError),
+    };
     processor
         .clear_register_mut()
         .write(reg_addr_result, xor_domain)?;
@@ -776,13 +791,16 @@ pub fn orci<T: MPCProtocol>(
     reg_addr_result: RegisterAddr,
 ) -> Result<(), VmError> {
     let stored_value = processor.clear_register().read(reg_addr)?;
-    let stored_value_bigint = from_domain_to_bigint::<T>(stored_value);
+    let stored_value_bigint = stored_value.into_bigint();
 
-    let imm_value_bigint = from_domain_to_bigint::<T>(immediate_val);
+    let imm_value_bigint = immediate_val.into_bigint();
 
     let or_bigint = stored_value_bigint | imm_value_bigint;
 
-    let or_domain = from_bigint_to_domain::<T>(or_bigint);
+    let or_domain = match T::Domain::from_bigint(or_bigint) {
+        Some(value) => value, 
+        None => return Err(VmError::ConversionError),
+    };
     processor
         .clear_register_mut()
         .write(reg_addr_result, or_domain)?;
@@ -1078,7 +1096,10 @@ mod test {
         let reg_addr: RegisterAddr = 4;
         let value = Fr::new(12_u64.into());
 
-        ldi(&mut processor, reg_addr, value);
+        match ldi(&mut processor, reg_addr, value) {
+            Err(err) => panic!("{}", err),
+            Ok(()) => {}
+        };
 
         assert_eq!(processor.clear_register().read(reg_addr).unwrap(), value);
     }
@@ -1090,7 +1111,10 @@ mod test {
         let value = Fr::new(12_u64.into());
         let share = Share::new(value);
 
-        ldsi(&mut processor, reg_addr, share);
+        match ldsi(&mut processor, reg_addr, share) {
+            Err(err) => panic!("{}", err),
+            Ok(()) => {}
+        };
 
         assert_eq!(processor.secret_register().read(reg_addr).unwrap(), share);
     }
