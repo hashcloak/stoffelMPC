@@ -10,8 +10,8 @@ types = {path = "../types"}
 mpc = {path = "../mpc"}
 futures = { version = "0.3" }
 tokio = {version = "1", features = ["full"] }
-ark-ff = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
-ark-poly = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
-ark-ec = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
-ark-bls12-381 = { git = "https://github.com/arkworks-rs/algebra.git", rev = "b7b988f" }
+ark-ff = { git = "https://github.com/arkworks-rs/algebra.git", rev = "d9527c8" }
+ark-poly = { git = "https://github.com/arkworks-rs/algebra.git", rev = "d9527c8" }
+ark-ec = { git = "https://github.com/arkworks-rs/algebra.git", rev = "d9527c8" }
+ark-bls12-381 = { git = "https://github.com/arkworks-rs/algebra.git", rev = "d9527c8" }
 num-bigint = "0.4.4"
