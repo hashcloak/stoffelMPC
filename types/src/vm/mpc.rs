@@ -1,15 +1,29 @@
-use std::ops::{Add, Mul};
+use std::ops::{Add, Mul, Sub};
 
 /// This trait is a catch-all for a type that is used
 /// within the virtual machine
-pub trait Number:
-    Add<Output = Self> + Mul<Output = Self> + Copy + Default + std::fmt::Debug + Sized + 'static
+pub trait MpcType:
+    Add<Output = Self>
+    + Sub<Output = Self>
+    + Mul<Output = Self>
+    + Copy
+    + Default
+    + std::fmt::Debug
+    + Sized
+    + 'static
 {
     /// Add two numbers
     ///
     /// Use the implementation provided by the implementor
     fn add(self, b: Self) -> Self {
         Add::add(self, b)
+    }
+
+    /// Subtract two numbers
+    ///
+    /// Use the implementation provided by the implementor
+    fn sub(self, b: Self) -> Self {
+        Sub::sub(self, b)
     }
 
     /// Multiply two numbers
@@ -50,4 +64,4 @@ pub trait Number:
     }
 }
 
-impl Number for u32 {}
+impl MpcType for u32 {}

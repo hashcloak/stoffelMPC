@@ -42,9 +42,9 @@ pub fn divint(processor: &mut impl Processor) {
     todo!();
 }
 
-// Unconditional relative jump in the bytecode
-pub fn jmp(processor: &mut impl Processor) {
-    todo!();
+/// Unconditional relative jump in the bytecode
+pub fn jmp(processor: &mut impl Processor, jump_size: usize) {
+    processor.relative_jump(jump_size);
 }
 
 // Conditional relative jump in the bytecode

@@ -1,19 +1,16 @@
+use ark_ff::PrimeField;
 use std::fmt::Debug;
-use types::compiler::CompilerType;
-use types::vm::Number;
+use types::vm::MpcType;
 
 pub mod honey_badger;
 
 pub trait MPCProtocol: Debug {
-    type Public: CompilerType;
-    type Secret: CompilerType;
-    type VmType: Number + Debug;
+    /// Represents the underlying domain of computation used by the protocol.
+    type Domain: PrimeField + MpcType;
 
     fn compute();
 
     fn setup();
 
-    fn into_vm_type(number: impl CompilerType + Into<Self::VmType>) -> Self::VmType;
-
-    fn send(value: &Self::VmType, recipient: Box<dyn std::io::Write>);
+    fn send(value: &Self::Domain, recipient: Box<dyn std::io::Write>);
 }

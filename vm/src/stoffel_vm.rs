@@ -1,7 +1,8 @@
-use super::instructions::opcodes::Opcode;
-use super::instructions::{arithmetic, boolean, common};
+use mpc::protocols::MPCProtocol;
+
 use super::processor::Processor;
-use super::program::Program;
+use super::schedule::Schedule;
+use super::state::Memory;
 
 #[derive(Debug, Clone, Copy, Default)]
 pub enum VMMode {
@@ -12,28 +13,38 @@ pub enum VMMode {
 }
 
 #[derive(Debug)]
-pub struct StoffelVM<T: Processor> {
+pub struct StoffelVM<T: Processor, U: MPCProtocol> {
+    /// Processors in the virtual machine.
     processors: Vec<T>,
+    /// Program counter of the virtual machine.
     program_counter: usize,
+    /// Mode of execution of the virtual machine.
     mode: VMMode,
-    code: Program<T>,
+    /// Schedule for current execution. It contains the programs that will be
+    /// executed during the session.
+    scheduler: Schedule,
+    /// Global memory of the VM.
+    memory: Memory<U>,
 }
 
-impl<T: Processor> StoffelVM<T> {
-    pub fn new() -> Self {
+impl<T: Processor, U: MPCProtocol> StoffelVM<T, U> {
+    /// Creates a new virual machine.
+    pub fn new(memory_size: usize) -> Self {
         Self {
             processors: vec![],
             program_counter: 0,
             mode: VMMode::default(),
-            code: Program::new(),
+            scheduler: Schedule::new(),
+            memory: Memory::new(memory_size),
         }
     }
 
+    /// Loads and parses bytecode.
     pub fn load_byte_code(&mut self, bytes: impl AsRef<[u8]>) {
-        self.code.parse_bytes(bytes.as_ref())
+        todo!();
     }
 
-    pub fn run() -> Result<(), Box<dyn std::error::Error>>{
+    pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         todo!();
     }
 
@@ -57,8 +68,32 @@ impl<T: Processor> StoffelVM<T> {
         todo!();
     }
 
-    pub fn get_current_program_counter(&self) -> usize {
+    pub fn program_counter(&self) -> usize {
         self.program_counter
+    }
+
+    pub fn processors(&self) -> &Vec<T> {
+        &self.processors
+    }
+
+    pub fn mode(&self) -> &VMMode {
+        &self.mode
+    }
+
+    pub fn scheduler(&self) -> &Schedule {
+        &self.scheduler
+    }
+
+    pub fn memory(&self) -> &Memory<U> {
+        &self.memory
+    }
+
+    pub fn memory_mut(&mut self) -> &mut Memory<U> {
+        &mut self.memory
+    }
+
+    pub fn processors_mut(&mut self) -> &mut Vec<T> {
+        &mut self.processors
     }
 }
 
@@ -70,6 +105,7 @@ mod tests {
 
     #[test]
     fn test_vm_new() {
-        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>>::new();
+        let memory_size = 10;
+        let _vm = StoffelVM::<ArithmeticCore<HoneyBadgerMPC>, HoneyBadgerMPC>::new(memory_size);
     }
 }

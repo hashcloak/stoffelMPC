@@ -1,8 +1,12 @@
+use mpc::protocols::MPCProtocol;
+
+use crate::{state::Register, Program};
+
 pub mod arithmetic;
 pub mod boolean;
 
 pub trait Processor: std::fmt::Debug {
-    fn clear_registers(&mut self) {
+    fn clean_registers(&mut self) {
         todo!()
     }
 
@@ -14,21 +18,15 @@ pub trait Processor: std::fmt::Debug {
         todo!()
     }
 
-    fn execute(&mut self) {
+    fn execute(&mut self, program: Program) {
         todo!()
     }
 
-    fn jump(&mut self) {
-        todo!()
-    }
+    fn jump(&mut self, new_program_counter: usize);
 
-    fn relative_jump(&mut self) {
-        todo!()
-    }
+    fn relative_jump(&mut self, n_positions: usize);
 
-    fn increment_program_counter(&mut self) {
-        todo!()
-    }
+    fn increment_program_counter(&mut self);
 
     fn read_tape(&self) {
         todo!()

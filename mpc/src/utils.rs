@@ -2,9 +2,9 @@ pub use polynomial::Polynomial;
 
 mod polynomial {
 
-    use ark_ff::Field;
+    use ark_ff::fields::Field;
     use ark_poly::univariate::DensePolynomial;
-    use ark_poly::{Polynomial as ArkPolynomial, UVPolynomial};
+    use ark_poly::{DenseUVPolynomial, Polynomial as ArkPolynomial};
     use rand::thread_rng;
 
     /// A struct representing a polynomial
