@@ -1,5 +1,8 @@
 # StoffelMPC
 
+> [!NOTE]
+> This repo is no longer maintained. The work continues at [StoffelVM](https://github.com/Stoffel-Labs/StoffelVM).
+
 StoffelMPC is a framework for multi-party computation (MPC).
 It allows developers to write MPC software in a domain specific
 language which abstracts away the inner working details of MPC protocols.
