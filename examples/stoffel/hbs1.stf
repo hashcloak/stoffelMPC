@@ -1,0 +1,84 @@
+// HBS where we care about the privacy of traders and LPs
+
+program HoneyBadgerSwap {
+    struct Pool {
+        assetAID: int,
+        assetBID: int,
+        amountA: sint,
+        amountB: sint,
+        k: sint
+    }
+    
+    struct UserData {
+        userID: sint,
+        assets: Map<int, sint>
+    }
+    
+    struct LPData {
+        lpID: sint,
+        shares: sint,
+        userData: UserData
+    }
+    
+    storage sint totalShares;
+    storage Pool pool;
+    
+    storage Map<sint, UserData> userData;
+    storage Map<sint, LPData> lpData;
+    
+    fn constructor(assetAID: sint, amountA: sint, assetBID: sint, amountB: sint) {
+        sint k = amountA * amountB;
+        pool = Pool {assetAID: assetAID, amountA: amountA, assetBID:assetBID, amountB: amountB, k: k};
+    }
+    
+    // Will need to create an unsigned integer type for the language
+    pub fn Trade(amountA: sint, amountB: sint) -> bool {
+        // But since we don't have an unsigned type (yet), we need to do a check which is expensive
+        if amountA < 0 or amount B < 0 {
+            return false;
+        }
+        
+        sint newAmountA = pools[0].amountA - amountA;
+        sint priceAssetB = pools[0].k / (pools[0].amountA - newAmountA)
+        sint newAmountB = pools[0].k / priceAssetB
+        
+        userData[userID].assets[assetA] -= amountA;
+        userData[userID].assets[assetB] += amountB;
+
+        pools[0].amountA = newAmountA;
+        pools[0].amountB = newAmountB;
+    }
+    
+    // Obviously, needs way more input validation. Will be added when we have more details
+    // about the language for a complete, realistic example.
+    pub fn AddLiquidity(lpID: sint, amountA: sint, maxAmountB: sint) -> sint {
+        sint tokenBAmount = (amountA * pool.amountB) / pool.amountA;
+        sint sharesMinted = (amountA * totalShares) / pool.amountA;
+
+        lpData[lpID].shares += sharesMinted;
+        totalShares += sharesMinted;
+
+        lpData[lpID].userData.amountA += amountA;
+        lpData[lpID].userData.amountB += amountB;
+
+        pool.amountA += amountA;
+        pool.amountB += tokenBAmount;
+        
+    }
+    
+    // Again, missing some basic functionality but does what we need to do for basic ideation on syntax
+    pub fn RemoveLiquidity(lpID: sint, shares: sint) {
+        sint amountA = (shares * pool.amountA) / totalShares;
+        sint amountB = (shares * pool.amountB) / totalShares;
+
+        lpData[lpID].shares -= shares;
+        totalShares -= shares;
+
+        lpData[lpID].userData.amountA -= amountA;
+        lpData[lpID].userData.amountB -= amountB;
+
+        pool.amountA -= amountA;
+        pool.amountB -= amountB;
+    }
+
+}
