@@ -1,17 +1,18 @@
 use crate::processor::arithmetic::ArithmeticCore;
 use mpc::protocols::MPCProtocol;
 
-// Assign immediate value to clear register
-pub fn ldi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
-    todo!();
+/// Assign immediate value to clear register
+pub fn ldi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>, register_pos: usize, immediate_value: T::VmType) {
+    // TODO: Add error handling and a return type for successful execution
+    processor.public_register.write(register_pos, immediate_value);
 }
 
-// Assign immeidate value to secret register
+/// Assign immeidate value to secret register
 pub fn ldsi<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
     todo!();
 }
 
-// Assign clear register to clear memory value(s) by immediate address
+/// Assign clear register to clear memory value(s) by immediate address
 pub fn stmc<T: MPCProtocol>(processor: &mut ArithmeticCore<T>) {
     todo!();
 }

@@ -4,7 +4,10 @@
 mod instructions;
 /// A processor is component of the stoffelVM that handles the core processing within the MPC VM
 pub mod processor;
-mod program;
+/// A module for handling StoffelMPC programs
+pub mod program;
+
+pub use program::Program;
 /// Collects structs to manage state like registers and so on
 mod state;
 /// The vm implementation

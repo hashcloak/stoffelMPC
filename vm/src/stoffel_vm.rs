@@ -1,3 +1,5 @@
+use super::instructions::opcodes::Opcode;
+use super::instructions::{arithmetic, boolean, common};
 use super::processor::Processor;
 use super::program::Program;
 
@@ -14,7 +16,7 @@ pub struct StoffelVM<T: Processor> {
     processors: Vec<T>,
     program_counter: usize,
     mode: VMMode,
-    code: Program,
+    code: Program<T>,
 }
 
 impl<T: Processor> StoffelVM<T> {
@@ -29,6 +31,10 @@ impl<T: Processor> StoffelVM<T> {
 
     pub fn load_byte_code(&mut self, bytes: impl AsRef<[u8]>) {
         self.code.parse_bytes(bytes.as_ref())
+    }
+
+    pub fn run() -> Result<(), Box<dyn std::error::Error>>{
+        todo!();
     }
 
     pub fn execute(&mut self) -> i32 {

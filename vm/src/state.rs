@@ -10,11 +10,11 @@ impl<T: Number, const N: usize> Default for Register<T, N> {
 }
 
 impl<T: Number, const N: usize> Register<T, N> {
-    fn read(&self, i: usize) -> T {
+    pub fn read(&self, i: usize) -> T {
         self.0[i]
     }
 
-    fn write(&mut self, i: usize, element: T) {
+    pub fn write(&mut self, i: usize, element: T) {
         self.0[i] = element;
     }
 }
@@ -23,19 +23,19 @@ impl<T: Number, const N: usize> Register<T, N> {
 pub struct StackRegister<T: Number>(Vec<T>);
 
 impl<T: Number> StackRegister<T> {
-    fn push(&mut self, element: T) {
+    pub fn push(&mut self, element: T) {
         self.0.push(element);
     }
 
-    fn pop(&mut self) -> T {
+    pub fn pop(&mut self) -> T {
         self.0.pop().unwrap()
     }
 
-    fn peek(&self, location: usize) -> Option<&T> {
+    pub fn peek(&self, location: usize) -> Option<&T> {
         self.0.get(location)
     }
 
-    fn poke(&mut self, location: usize, element: T) {
+    pub fn poke(&mut self, location: usize, element: T) {
         if location > self.0.len() {
             panic!("location is out of range");
         }
@@ -51,23 +51,23 @@ impl<T: Number> Memory<T> {
         todo!();
     }
 
-    fn read() -> T {
+    pub fn read() -> T {
         todo!();
     }
 
-    fn write() {
+    pub fn write() {
         todo!();
     }
 
-    fn allocate() {
+    pub fn allocate() {
         todo!();
     }
 
-    fn deallocate() {
+    pub fn deallocate() {
         todo!();
     }
 
-    fn resize() {
+    pub fn resize() {
         todo!();
     }
 }
