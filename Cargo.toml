@@ -7,5 +7,6 @@ members = [
     "types",
     "zkp",
     "blockchain",
-    "player"
+    "player",
+    "mwrc"
 ]
